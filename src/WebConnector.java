@@ -12,8 +12,8 @@ public class WebConnector {
 
     private static final String httpsOrderURL= "https://api.sandbox.paypal.com/v1/payments/payment";    // TODO: create config file
     private static final String httpsRequestTokenURL = "https://api.sandbox.paypal.com/v1/oauth2/token";    // TODO: create config file
-    private static final String clientID = "AcFqcYBSXzVbmPht-op8fBya5LeihNDYc-HBl4IHuk67rHlAQvFTTM7goWiyVh7UYSDrzs6U0AfKCS0v"; // TODO: create SECURED config file
-    private static final String secret = "EKAI_OsYzRfSWYWV-HQ8COLUgm8pGVPsDdNKt5kxXJZPUkupaip4wfyOah0IhNNLAWHgRF61Aqid9-7c"; // TODO: create SECURED config file
+    private static final String clientID = ""; // TODO: create SECURED config file
+    private static final String secret = ""; // TODO: create SECURED config file
     private String accessToken;
     private Logger logger;
 
