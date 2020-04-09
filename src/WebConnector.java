@@ -12,8 +12,8 @@ public class WebConnector {
 
     private static final String httpsOrderURL= "https://api.sandbox.paypal.com/v1/payments/payment";    // TODO: create config file
     private static final String httpsRequestTokenURL = "https://api.sandbox.paypal.com/v1/oauth2/token";    // TODO: create config file
-    private static final String clientID = ""; // TODO: create SECURED config file
-    private static final String secret = ""; // TODO: create SECURED config file
+    private static final String clientID = "AcFqcYBSXzVbmPht-op8fBya5LeihNDYc-HBl4IHuk67rHlAQvFTTM7goWiyVh7UYSDrzs6U0AfKCS0v"; // TODO: create SECURED config file
+    private static final String secret = "EKAI_OsYzRfSWYWV-HQ8COLUgm8pGVPsDdNKt5kxXJZPUkupaip4wfyOah0IhNNLAWHgRF61Aqid9-7c"; // TODO: create SECURED config file
     private String accessToken;
     private Logger logger;
 
@@ -47,12 +47,8 @@ public class WebConnector {
 
 
     public String setOrder(String order) throws Exception{
-        URL myurl = new URL(httpsOrderURL);
-        HttpsURLConnection con = (HttpsURLConnection)myurl.openConnection();
-        con.setRequestMethod("POST");
+        HttpsURLConnection con = getDefaultConnection(httpsOrderURL);
         con.setRequestProperty("Content-length", String.valueOf(order.length()));
-        con.setRequestProperty("Content-Type","application/json");
-        con.setRequestProperty("Authorization", "Bearer " + accessToken);
         return sendPostRequest(con, order);
     }
 
@@ -76,15 +72,15 @@ public class WebConnector {
     }
 
     public String executeOrder(String executeLink, String payId) throws Exception {
-        URL myurl = new URL(executeLink);
-        HttpsURLConnection con = (HttpsURLConnection)myurl.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Content-Type", "application/json");
-        con.setRequestProperty("Authorization", "Bearer " + accessToken);
+        HttpsURLConnection con = getDefaultConnection(executeLink);
         HashMap<String, String> reqJson = new HashMap<>(1);
         reqJson.put("payer_id", payId);
         logger.info(String.format("Executing link: %s", executeLink));
         return sendPostRequest(con, (new Gson()).toJson(reqJson));
+    }
+
+    public String sendPayment(String sendPayDetails) {
+
     }
 
     private String sendPostRequest(HttpsURLConnection con, String content) throws Exception {
@@ -106,5 +102,15 @@ public class WebConnector {
         input.close();
         logger.info(String.format("Https POST response: %s", resp.toString()));
         return resp.toString();
+    }
+
+    private HttpsURLConnection getDefaultConnection(String url) throws Exception {
+        URL conUrl = new URL(url);
+        HttpsURLConnection con = (HttpsURLConnection)conUrl.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type","application/json");
+        con.setRequestProperty("Authorization", "Bearer " + accessToken);
+
+        return con;
     }
 }
