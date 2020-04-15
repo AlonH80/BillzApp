@@ -52,7 +52,17 @@ public class PaymentManager implements Observer {
         fh.setFormatter(formatter);
     }
 
-    public void processPayRequest(String userId, Double amount) throws Exception{
+    public String transferMoney(String userIdFrom, String userIdTo, Double amount) throws Exception {
+        // TODO: get userIdFrom and userIdTo from db
+        //String userToMail = "sb-mqfsr1408810@personal.example.com";
+        String waitApprovedKey = processPayRequest(userIdTo, amount);
+        waitingApproved.get(waitApprovedKey).put("userToMail", "sb-mqfsr1408810@personal.example.com");
+        waitingApproved.get(waitApprovedKey).put("amount", amount.toString());
+        // TODO: add transaction info to db
+        return waitApprovedKey;
+    }
+
+    private String processPayRequest(String userId, Double amount) throws Exception{
         String order = createOrder(amount);
         logger.info(order);
         String webResp = webConnector.setOrder(order);
@@ -69,15 +79,41 @@ public class PaymentManager implements Observer {
                 relevantLinks.put("execute", currLink);
             }
         });
-        waitingApproved.put(respMap.get("id").toString(), relevantLinks);
+        String waitApprovedKey = respMap.get("id").toString();
+        waitingApproved.put(waitApprovedKey, relevantLinks);
+        return waitApprovedKey;
+    }
 
+    private void processGetPayRequest(String userMail, Double amount) throws Exception {
+        HashMap<String, Object> getPayMap = getMapFromJsonFile(componentConfig.get("sendTemplatePath").toString());
+        LinkedTreeMap<String, Object> senderBatch = (LinkedTreeMap<String, Object>)(getPayMap.get("sender_batch_header"));
+        ArrayList<LinkedTreeMap<String, Object>> items = (ArrayList<LinkedTreeMap<String, Object>>)getPayMap.get("items");
+        LinkedTreeMap<String, Object> item = items.get(0);
+        ((LinkedTreeMap<String, Object>)item.get("amount")).put("value", amount);
+        item.put("receiver", userMail);
+        senderBatch.put("sender_batch_id", generateSenderBatchId());
+//        items.remove(0);
+//        items.add(item);
+        getPayMap.put("sender_batch_header", senderBatch);
+        getPayMap.put("items", items);
+        String payMapAfterUpdate = (new Gson()).toJson(getPayMap);
+        String resp = webConnector.sendPayment(payMapAfterUpdate);
     }
 
     private String generateInvoice() throws Exception {
-        String newInvoice = String.format("%04d", Integer.parseInt(componentConfig.get("lastInvoice")) + 1);
-        componentConfig.replace("lastInvoice", newInvoice);
+        Integer invoiceInt = Integer.parseInt(componentConfig.get("lastInvoice")) + 1;
+        String newInvoice = String.format("get_%04d", invoiceInt);
+        componentConfig.replace("lastInvoice", invoiceInt.toString());
         saveConfig();
         return newInvoice;
+    }
+
+    private String generateSenderBatchId() throws Exception {
+        Integer sendBatchInt = Integer.parseInt(componentConfig.get("lastSendBatch")) + 1;
+        String newSendBatch = String.format("send_%04d", sendBatchInt);
+        componentConfig.replace("lastSendBatch", sendBatchInt.toString());
+        saveConfig();
+        return newSendBatch;
     }
 
     private String createOrder(Double amount) throws Exception {
@@ -154,10 +190,31 @@ public class PaymentManager implements Observer {
         HashMap<String, String> args = (HashMap<String, String>)arg;
         logger.info(args.toString());
         try {
-            webConnector.executeOrder(waitingApproved.get(args.get("paymentId")).get("execute"), args.get("PayerID"));
+            if (args.get("type").equals("execute")) {
+                HashMap<String, String> paymentMap = waitingApproved.get(args.get("paymentId"));
+                webConnector.executeOrder(paymentMap.get("execute"), args.get("PayerID"));
+                String userMailTo = paymentMap.get("userToMail");
+                Double amount = Double.parseDouble(paymentMap.get("amount"));
+                processGetPayRequest(userMailTo, amount);
+            }
+            else if (args.get("type").equals("transferMoney")) {
+                String waitApprovedKey = transferMoney(args.get("userIdFrom"),
+                              args.get("userIdTo"),
+                              Double.parseDouble(args.get("amount"))
+                );
+                String responeJson = (new Gson()).toJson(waitingApproved.get(waitApprovedKey));
+                paymentServer.sendManagerResponse(args.get("pendQueueId"), responeJson);
+            }
         }
         catch (Exception e){
+            logger.warning(e.getMessage());
             Arrays.stream(e.getStackTrace()).forEach(st->logger.warning(st.toString()));
         }
+    }
+
+    private HashMap<String, Object> getMapFromJsonFile(String jsonPath) throws Exception {
+        JsonReader jsonReader = new JsonReader(new FileReader(jsonPath));
+        HashMap<String, Object> jsonMap = (new Gson()).fromJson(jsonReader, HashMap.class);
+        return jsonMap;
     }
 }

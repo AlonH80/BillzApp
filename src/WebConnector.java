@@ -1,5 +1,7 @@
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.stream.JsonReader;
+
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -11,16 +13,28 @@ import java.util.logging.Logger;
 public class WebConnector {
 
     private static final String httpsOrderURL= "https://api.sandbox.paypal.com/v1/payments/payment";    // TODO: create config file
+    private static final String httpsSendPayURL = "https://api.sandbox.paypal.com/v1/payments/payouts";
     private static final String httpsRequestTokenURL = "https://api.sandbox.paypal.com/v1/oauth2/token";    // TODO: create config file
-    private static final String clientID = "AcFqcYBSXzVbmPht-op8fBya5LeihNDYc-HBl4IHuk67rHlAQvFTTM7goWiyVh7UYSDrzs6U0AfKCS0v"; // TODO: create SECURED config file
-    private static final String secret = "EKAI_OsYzRfSWYWV-HQ8COLUgm8pGVPsDdNKt5kxXJZPUkupaip4wfyOah0IhNNLAWHgRF61Aqid9-7c"; // TODO: create SECURED config file
+    private static String clientID; // TODO: create SECURED config file
+    private static String secret; // TODO: create SECURED config file
     private String accessToken;
     private Logger logger;
 
-
-    public WebConnector() throws Exception {
-
+    static {
+        try {
+            JsonReader jsonReader = new JsonReader(new FileReader("/Users/alonhartanu/Desktop/Java/PaymentComponent/src/keys.encrypt"));
+            HashMap<String, Object> jsonMap = (new Gson()).fromJson(jsonReader, HashMap.class);
+            clientID = jsonMap.get("clientID").toString();
+            secret = jsonMap.get("secret").toString();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
+
+//    public WebConnector() throws Exception {
+//
+//    }
 
     public void setLogger(Logger logger) {
         this.logger = logger;
@@ -79,8 +93,12 @@ public class WebConnector {
         return sendPostRequest(con, (new Gson()).toJson(reqJson));
     }
 
-    public String sendPayment(String sendPayDetails) {
-
+    public String sendPayment(String sendPayDetails) throws Exception {
+        HttpsURLConnection con = getDefaultConnection(httpsSendPayURL);
+        logger.info("Send pay info");
+        logger.info(sendPayDetails);
+        String resp = sendPostRequest(con, sendPayDetails);
+        return resp;
     }
 
     private String sendPostRequest(HttpsURLConnection con, String content) throws Exception {
@@ -112,5 +130,9 @@ public class WebConnector {
         con.setRequestProperty("Authorization", "Bearer " + accessToken);
 
         return con;
+    }
+
+    private void diagnoseResponse(String resp){
+        return;
     }
 }

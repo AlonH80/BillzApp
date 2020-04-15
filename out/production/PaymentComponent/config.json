@@ -1,7 +1,1 @@
-{
-  "access_token":"A21AAGs-REwtgPJQJvsOPSQT7lcDy1NKH-HR7LthK1TD20HuNOTCEOGEkjsVN2pSNMKVDjDg-TkjT3YjijE2s6gElWw20c4QA",
-  "lastInvoice":"0017",
-  "orderTemplatePath":"/Users/alonhartanu/Desktop/FinalProject/shell_commands/example_order.json",
-  "expires_in":"32400.0",
-  "nonce":"2020-04-06T13:54:32ZGLIStHeu-KFXUJiGiLJ2m0FkYG8A6oW6DaYT10ppTtQ"
-}
+{"access_token":"A21AAGaLLrEmhr2uPAxW7VkF8dIOpQ29rEYEEodT6LTwA_68-yUUHtz6TW4d3ddi_NerHF7ZUJZVVecpcCHSgEZrcwx_ZhJ-A","lastInvoice":"44","orderTemplatePath":"/Users/alonhartanu/Desktop/FinalProject/shell_commands/example_order.json","sendTemplatePath":"/Users/alonhartanu/Desktop/FinalProject/shell_commands/sendpay_template.json","expires_in":"32400.0","nonce":"2020-04-15T16:19:27Zjm1wjY7nRECy6X2SecMoSySJ6L_Y7_-wMtBV9vtFV5A","lastSendBatch":"12"}
