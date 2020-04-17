@@ -7,14 +7,17 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../gson-2.8.5.jar!/" />
+          <root url="jar://$MODULE_DIR$/gson-2.8.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" scope="PROVIDED" name="Tomcat 8.5.42" level="application_server_libraries" />
+    <orderEntry type="module" module-name="PaymentServer" />
+    <orderEntry type="library" name="org.mongodb:mongodb-driver-sync:4.0.2" level="project" />
   </component>
 </module>
