@@ -46,6 +46,11 @@ public class PaymentManager implements Observer {
     }
 
     private void initLogger() throws Exception {
+        File logsDirectory = new File(logsPath);
+        if (! logsDirectory.exists()) {
+            logsDirectory.mkdir();
+        }
+
         String logFullPath = String.format("%s/pm_%s", logsPath, (new SimpleDateFormat("yy_MM_dd___HH_mm")).format(Calendar.getInstance().getTime()));
         System.setProperty("java.util.logging.SimpleFormatter.format",
                 "[%1$tF %1$tT] {%2$s} - %4$s -  %5$s%6$s%n");
@@ -105,8 +110,6 @@ public class PaymentManager implements Observer {
         ((LinkedTreeMap<String, Object>)item.get("amount")).put("value", amount);
         item.put("receiver", userMail);
         senderBatch.put("sender_batch_id", generateSenderBatchId());
-//        items.remove(0);
-//        items.add(item);
         getPayMap.put("sender_batch_header", senderBatch);
         getPayMap.put("items", items);
         String payMapAfterUpdate = (new Gson()).toJson(getPayMap);

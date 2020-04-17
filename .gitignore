@@ -1,3 +1,11 @@
 .idea/*
 out/*
 logs
+gson-2.8.5.jar
+*.iml
+src/*.iml
+PaymentServer/*.iml
+PaymentServer/src/*.iml
+PaymentServer/src/payment_referral
+src/keys.encrypt
+src/config.json
