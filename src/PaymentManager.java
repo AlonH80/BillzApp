@@ -18,8 +18,9 @@ public class PaymentManager implements Observer {
     private PaymentServer paymentServer;
     private Logger logger;
     private WebConnector webConnector;
+    private MongoConnector mongoConnector;
     private HashMap<String, String> componentConfig;
-    private HashMap<String, HashMap<String, String>> infoCache;
+    private HashMap<String, HashMap<String, Object>> recordPending;
     private HashMap<String, HashMap<String, String>> waitingApproved;
     private final static String confPath = "/Users/alonhartanu/Desktop/Java/PaymentComponent/src/config.json";
     private final static String logsPath = "/Users/alonhartanu/Desktop/Java/PaymentComponent/logs/";
@@ -31,14 +32,17 @@ public class PaymentManager implements Observer {
         paymentServer.addObserver(this);
         paymentServer.setLogger(logger);
         webConnector = new WebConnector();
+        webConnector.setLogger(logger);
+        mongoConnector = new MongoConnector();
+        mongoConnector.setLogger(logger);
         componentConfig = new HashMap<>();
         waitingApproved = new HashMap<>();
         HashMap<String, Object> tmpComponentConfig = (new Gson()).fromJson(new JsonReader(new FileReader(confPath)), HashMap.class);
         tmpComponentConfig.forEach((k,v)->componentConfig.put(k, v.toString()));
         logger.info(String.format("ComponentConfig: %s", componentConfig.toString()));
-        webConnector.setLogger(logger);
         checkFileExist(componentConfig.get("orderTemplatePath"));
         verifyAccessToken();
+        recordPending = new HashMap<>();
     }
 
     private void initLogger() throws Exception {
@@ -53,12 +57,21 @@ public class PaymentManager implements Observer {
     }
 
     public String transferMoney(String userIdFrom, String userIdTo, Double amount) throws Exception {
-        // TODO: get userIdFrom and userIdTo from db
-        //String userToMail = "sb-mqfsr1408810@personal.example.com";
-        String waitApprovedKey = processPayRequest(userIdTo, amount);
-        waitingApproved.get(waitApprovedKey).put("userToMail", "sb-mqfsr1408810@personal.example.com");
-        waitingApproved.get(waitApprovedKey).put("amount", amount.toString());
-        // TODO: add transaction info to db
+        String waitApprovedKey = null;
+        Object queryUserMailTo = mongoConnector.getUser(userIdTo).get("payPalMail");
+        Object queryUserMailFrom = mongoConnector.getUser(userIdFrom).get("payPalMail");
+        if (queryUserMailTo!=null && queryUserMailFrom!=null){
+            String userToMail = queryUserMailTo.toString();
+            String userFromMail = queryUserMailFrom.toString();
+            waitApprovedKey = processPayRequest(userIdTo, amount);
+            waitingApproved.get(waitApprovedKey).put("userToMail", userToMail);
+            waitingApproved.get(waitApprovedKey).put("userFromMail", userFromMail);
+            waitingApproved.get(waitApprovedKey).put("amount", amount.toString());
+            waitingApproved.get(waitApprovedKey).put("userIdFrom", userIdFrom);
+            waitingApproved.get(waitApprovedKey).put("userIdTo", userIdTo);
+            return waitApprovedKey;
+        }
+
         return waitApprovedKey;
     }
 
@@ -196,14 +209,24 @@ public class PaymentManager implements Observer {
                 String userMailTo = paymentMap.get("userToMail");
                 Double amount = Double.parseDouble(paymentMap.get("amount"));
                 processGetPayRequest(userMailTo, amount);
+                mongoConnector.recordTransaction(paymentMap.get("userIdFrom"),
+                                                 paymentMap.get("userIdTo"),
+                                                 Double.parseDouble(paymentMap.get("amount")));
             }
             else if (args.get("type").equals("transferMoney")) {
                 String waitApprovedKey = transferMoney(args.get("userIdFrom"),
                               args.get("userIdTo"),
                               Double.parseDouble(args.get("amount"))
                 );
-                String responeJson = (new Gson()).toJson(waitingApproved.get(waitApprovedKey));
-                paymentServer.sendManagerResponse(args.get("pendQueueId"), responeJson);
+                if (waitApprovedKey!=null) {
+                    String responeJson = (new Gson()).toJson(waitingApproved.get(waitApprovedKey));
+                    paymentServer.sendManagerResponse(args.get("pendQueueId"), responeJson);
+                }
+                else{
+                    Map<String, String> errorMap = new HashMap<>(1);
+                    errorMap.put("error", "payPalMail not specified");
+                    paymentServer.sendManagerResponse(args.get("pendQueueId"), (new Gson()).toJson(errorMap));
+                }
             }
         }
         catch (Exception e){

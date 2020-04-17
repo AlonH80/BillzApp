@@ -19,7 +19,12 @@ function payRequest(userIdFrom, userIdTo, amount) {
         success: function(data){
             jsonData = JSON.parse(data);
             console.log(jsonData);
-            $( "body" ).append("<a href='" + jsonData.approval_url  +"'>" + jsonData.approval_url + "</a>")
+            if ("error" in jsonData){
+                $( "body" ).append("<div>Error: " + jsonData.error + "</div>")
+            }
+            else{
+                $( "body" ).append("<a href='" + jsonData.approval_url  +"'>" + jsonData.approval_url + "</a>")
+            }
         },
         error: function (e) {
             console.log("status code: " + e.status.toString());
