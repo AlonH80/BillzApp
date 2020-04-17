@@ -8,4 +8,4 @@ PaymentServer/*.iml
 PaymentServer/src/*.iml
 PaymentServer/src/payment_referral
 src/keys.encrypt
-src/config.json
+src/config.json*

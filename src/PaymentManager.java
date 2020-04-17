@@ -207,14 +207,20 @@ public class PaymentManager implements Observer {
         logger.info(args.toString());
         try {
             if (args.get("type").equals("execute")) {
-                HashMap<String, String> paymentMap = waitingApproved.get(args.get("paymentId"));
-                webConnector.executeOrder(paymentMap.get("execute"), args.get("PayerID"));
-                String userMailTo = paymentMap.get("userToMail");
-                Double amount = Double.parseDouble(paymentMap.get("amount"));
-                processGetPayRequest(userMailTo, amount);
-                mongoConnector.recordTransaction(paymentMap.get("userIdFrom"),
-                                                 paymentMap.get("userIdTo"),
-                                                 Double.parseDouble(paymentMap.get("amount")));
+                if (waitingApproved.keySet().contains(args.get("paymentId"))) {
+                    HashMap<String, String> paymentMap = waitingApproved.get(args.get("paymentId"));
+                    webConnector.executeOrder(paymentMap.get("execute"), args.get("PayerID"));
+                    String userMailTo = paymentMap.get("userToMail");
+                    Double amount = Double.parseDouble(paymentMap.get("amount"));
+                    processGetPayRequest(userMailTo, amount);
+                    mongoConnector.recordTransaction(paymentMap.get("userIdFrom"),
+                            paymentMap.get("userIdTo"),
+                            Double.parseDouble(paymentMap.get("amount")));
+                    waitingApproved.remove(args.get("paymentId"));
+                }
+                else{
+                    logger.warning(String.format("%s is not waiting approved", args.get("paymentId")));
+                }
             }
             else if (args.get("type").equals("transferMoney")) {
                 String waitApprovedKey = transferMoney(args.get("userIdFrom"),
