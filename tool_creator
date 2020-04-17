@@ -1,1 +1,0 @@
-keytool -genkeypair -keyalg RSA -alias /Users/alonhartanu/.keychain -keypass PaymentServer -keystore ps.keystore -storepass PaymentServer
