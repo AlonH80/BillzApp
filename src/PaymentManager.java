@@ -21,27 +21,16 @@ public class PaymentManager implements Observer {
     private HashMap<String, String> componentConfig;
     private HashMap<String, HashMap<String, Object>> recordPending;
     private HashMap<String, HashMap<String, String>> waitingApproved;
-    private final static String confPath = "resources/config.json";// "/Users/alonhartanu/Desktop/Java/PaymentComponent/src/config.json";
-    private final static String logsPath = "logs/";//"/Users/alonhartanu/Desktop/Java/PaymentComponent/logs/";
+    private final static String confPath = "resources/config.json";
+    private final static String logsPath = "logs/";
 
     public PaymentManager() throws Exception {
-        initLogger();
-        paymentServer = new PaymentServer();
-        logger.info("Server started on port 8001");
-        paymentServer.addObserver(this);
-        paymentServer.setLogger(logger);
-        webConnector = new WebConnector();
-        webConnector.setLogger(logger);
-        mongoConnector = new MongoConnector();
-        mongoConnector.setLogger(logger);
         componentConfig = new HashMap<>();
         waitingApproved = new HashMap<>();
-        HashMap<String, Object> tmpComponentConfig = (new Gson()).fromJson(new JsonReader(new FileReader(confPath)), HashMap.class);
-        tmpComponentConfig.forEach((k,v)->componentConfig.put(k, v.toString()));
-        logger.info(String.format("ComponentConfig: %s", componentConfig.toString()));
-        checkFileExist(componentConfig.get("orderTemplatePath"));
-        verifyAccessToken();
         recordPending = new HashMap<>();
+        initLogger();
+        initConfigFile();
+        initConnectors();
     }
 
     private void initLogger() throws Exception {
@@ -58,6 +47,25 @@ public class PaymentManager implements Observer {
         logger.addHandler(fh);
         SimpleFormatter formatter = new SimpleFormatter();
         fh.setFormatter(formatter);
+    }
+
+    private void initConnectors() throws Exception {
+        paymentServer = new PaymentServer();
+        logger.info("Server started on port 8001");
+        paymentServer.addObserver(this);
+        paymentServer.setLogger(logger);
+        webConnector = new WebConnector();
+        webConnector.setLogger(logger);
+        verifyAccessToken();
+        mongoConnector = new MongoConnector(componentConfig.get("mongoAddress"), Integer.parseInt(componentConfig.get("mongoPort")));
+        mongoConnector.setLogger(logger);
+    }
+
+    private void initConfigFile() throws Exception {
+        HashMap<String, Object> tmpComponentConfig = (new Gson()).fromJson(new JsonReader(new FileReader(confPath)), HashMap.class);
+        tmpComponentConfig.forEach((k,v)->componentConfig.put(k, v.toString()));
+        logger.info(String.format("ComponentConfig: %s", componentConfig.toString()));
+        checkFileExist(componentConfig.get("orderTemplatePath"));
     }
 
     public String transferMoney(String userIdFrom, String userIdTo, Double amount) throws Exception {
