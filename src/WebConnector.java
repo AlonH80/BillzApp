@@ -22,7 +22,8 @@ public class WebConnector {
 
     static {
         try {
-            JsonReader jsonReader = new JsonReader(new FileReader("/Users/alonhartanu/Desktop/Java/PaymentComponent/src/keys.encrypt"));
+            //JsonReader jsonReader = new JsonReader(new FileReader("/Users/alonhartanu/Desktop/Java/PaymentComponent/src/keys.encrypt"));
+            JsonReader jsonReader = new JsonReader(new FileReader("resources/keys.encrypt"));
             HashMap<String, Object> jsonMap = (new Gson()).fromJson(jsonReader, HashMap.class);
             clientID = jsonMap.get("clientID").toString();
             secret = jsonMap.get("secret").toString();

@@ -1,3 +1,5 @@
+
+//import com.billz.PaymentServer.PaymentServer;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
@@ -5,12 +7,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.nio.file.Files;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.FileHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
@@ -22,8 +21,8 @@ public class PaymentManager implements Observer {
     private HashMap<String, String> componentConfig;
     private HashMap<String, HashMap<String, Object>> recordPending;
     private HashMap<String, HashMap<String, String>> waitingApproved;
-    private final static String confPath = "/Users/alonhartanu/Desktop/Java/PaymentComponent/src/config.json";
-    private final static String logsPath = "/Users/alonhartanu/Desktop/Java/PaymentComponent/logs/";
+    private final static String confPath = "resources/config.json";// "/Users/alonhartanu/Desktop/Java/PaymentComponent/src/config.json";
+    private final static String logsPath = "logs/";//"/Users/alonhartanu/Desktop/Java/PaymentComponent/logs/";
 
     public PaymentManager() throws Exception {
         initLogger();

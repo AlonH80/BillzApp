@@ -7,16 +7,13 @@ import org.bson.BsonString;
 import org.bson.Document;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class MongoConnector {
 
     private  String address = "localhost"; // TODO: add to config
-    private int port = 27017; // TODO: add to config
+    private int port = 27017    ; // TODO: add to config
     private MongoClient client;
     private Logger logger;
 
@@ -57,7 +54,7 @@ public class MongoConnector {
     public void insert(String database, String collection, Map<String, Object> insertMap) {
         MongoDatabase mongoDatabase = client.getDatabase(database);
         MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collection);
-        insertMap.put("date", LocalDateTime.now()); //TODO: set proper date format
+        insertMap.put("date", Calendar.getInstance().getTime().toString()); //TODO: set proper date format
         InsertOneResult res = mongoCollection.insertOne(new Document(insertMap));
         logger.info(String.format("inserted to %s.%s: %s", database, collection, (new Gson()).toJson(insertMap)));
     }

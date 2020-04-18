@@ -1,4 +1,4 @@
-paymentServer = "https://localhost:8001";
+paymentServer = "https://localhost:8002";
 
 function onPayReqClick() {
     var userIdFrom = $("#userIdFrom")[0].value;

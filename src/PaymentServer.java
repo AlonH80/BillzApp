@@ -1,22 +1,21 @@
+import com.google.gson.Gson;
 import com.sun.net.httpserver.*;
 
 import javax.net.ssl.*;
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.security.KeyStore;
-import java.security.cert.Certificate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Observable;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.logging.Logger;
-import com.google.gson.Gson;
 
 public class PaymentServer extends Observable {
     private HttpsServer server;
     private Logger logger;
     private HashMap<String, HttpExchange> pendingManagerResponse;
-    private static final String resourcesPath = "/Users/alonhartanu/Desktop/Java/PaymentComponent/WebResources";
+    private static final String resourcesPath = "resources/"; //"/Users/alonhartanu/Desktop/Java/PaymentComponent/WebResources";
 
     public PaymentServer() throws Exception {
         super();
@@ -56,7 +55,7 @@ public class PaymentServer extends Observable {
         // Initialise the keystore
         char[] password = "PaymentServer".toCharArray();
         KeyStore ks = KeyStore.getInstance("JKS");
-        FileInputStream fis = new FileInputStream("/Users/alonhartanu/.keychain/ps.keystore");
+        FileInputStream fis = new FileInputStream("resources/ps.keystore"); //TODO: add to config file
         ks.load(fis, password);
 
         // Set up the key manager factory
