@@ -53,7 +53,7 @@ public class MongoConnector {
     public void insert(String database, String collection, Map<String, Object> insertMap) {
         MongoDatabase mongoDatabase = client.getDatabase(database);
         MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collection);
-        insertMap.put("date", Calendar.getInstance(TimeZone.getTimeZone("IDT")).getTime().toString());
+        insertMap.put("date", Utils.generateDateTimeStamp());
         InsertOneResult res = mongoCollection.insertOne(new Document(insertMap));
         logger.info(String.format("inserted to %s.%s: %s", database, collection, (new Gson()).toJson(insertMap)));
     }
