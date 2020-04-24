@@ -1,0 +1,6 @@
+{
+  "mongoAddress": "localhost",
+  "mongoPort": "27017",
+  "mongoAppDB": "billzDB",
+  "mongoAppCollection": "UsersAuth"
+}
