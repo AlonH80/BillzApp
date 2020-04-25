@@ -126,6 +126,7 @@ public class UsersManager implements Observer {
         else if (!verifyPassword(userId, password)){
             resMap.put("status", "fail");
             resMap.put("error", "Authentication failed");
+            // TODO: in case of exception, put that message in error
         }
         else {
             resMap.put("status", "success");
@@ -150,6 +151,7 @@ public class UsersManager implements Observer {
         }
         else {
             resMap.put("status", addUser(userId, password)? "success" : "fail");
+            // TODO: in case of exception, put that message in error
         }
 
         return resMap;
@@ -175,6 +177,7 @@ public class UsersManager implements Observer {
         }
         else {
             resMap.put("status", changeUserPassword(userId, password, newPassword)? "success" : "fail");
+            // TODO: in case of exception, put that message in error
         }
 
         return resMap;

@@ -15,8 +15,8 @@ public class MongoConnector {
     private int port;
     private MongoClient client;
     private Logger logger;
-    private String defaultDB = "billzDB"; // TODO: get from config file
-    private String defaultCollection = "UsersAuth"; // TODO: get from config file
+    private String defaultDB = "billzDB";
+    private String defaultCollection = "UsersAuth";
 
     public MongoConnector(){
         this.address = "localhost";
