@@ -38,6 +38,14 @@ public class MongoConnector {
         this.logger = logger;
     }
 
+    public void setDefaultDB(String db) {
+        defaultDB = db;
+    }
+
+    public void setDefaultCollection(String collection) {
+        defaultCollection = collection;
+    }
+
     private void insert(String database, String collection, Map<String, Object> insertMap) {
         MongoDatabase mongoDatabase = client.getDatabase(database);
         MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collection);
@@ -54,7 +62,7 @@ public class MongoConnector {
         logger.info(String.format("Updated info regard %s in %s.%s", queryMap.get("userID"), database, collection));
     }
 
-    private ArrayList<Map<String, Object>> find(String database, String collection, Map<String, String> findMap) {
+    public ArrayList<Map<String, Object>> find(String database, String collection, Map<String, String> findMap) {
         ArrayList<Map<String, Object>> resMap = new ArrayList<>();
         MongoDatabase mongoDatabase = client.getDatabase(database);
         MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collection);
@@ -65,7 +73,7 @@ public class MongoConnector {
             resMap.add(docMap);
             //document.forEach((k, v)-> docMap.put(k, v));
         });
-        logger.info(String.format("find info regard %s in %s.%s", resMap.get(0).get("userID"), database, collection));
+        logger.info(String.format("find in %s.%s, query: %s", database, collection, Utils.mapToJson(findMap)));
 
         return resMap;
     }
@@ -77,13 +85,19 @@ public class MongoConnector {
     }
 
     public boolean insertUser(String userID, String salt, String hashedPassword) {
-        // verifyUniqUserId;
-        LinkedTreeMap<String, Object> newUserMap = new LinkedTreeMap<>();
-        newUserMap.put("userID", userID);
-        newUserMap.put("salt", salt);
-        newUserMap.put("password", hashedPassword);
-        insert(defaultDB,defaultCollection, newUserMap);
-        return true;
+        boolean userInserted = false;
+        if (!isUserIdExist(userID)) {
+            LinkedTreeMap<String, Object> newUserMap = new LinkedTreeMap<>();
+            newUserMap.put("userID", userID);
+            newUserMap.put("salt", salt);
+            newUserMap.put("password", hashedPassword);
+            insert(defaultDB, defaultCollection, newUserMap);
+            userInserted = true;
+        }
+        else {
+            logger.warning(String.format("User id %s already exist", userID));
+        }
+        return userInserted;
     }
 
     public boolean checkPasswordMatch(String userID, String hashedPassword) {
@@ -120,6 +134,30 @@ public class MongoConnector {
             return false;
         }
 
+    }
+
+    private HashSet<String> getAllUsersIds() {
+        ArrayList<Map<String, Object>> usersAuthMap = find(defaultDB, defaultCollection, new HashMap<>());
+        HashSet<String> usersIds = new HashSet<>(usersAuthMap.size());
+        usersAuthMap.forEach(m->usersIds.add(m.get("userID").toString()));
+
+        return usersIds;
+    }
+
+    public boolean isUserIdExist(String userId) {
+        return getAllUsersIds().contains(userId);
+    }
+
+    private HashSet<String> getAllSalts() {
+        ArrayList<Map<String, Object>> usersAuthMap = find(defaultDB, defaultCollection, new HashMap<>());
+        HashSet<String> salts = new HashSet<>(usersAuthMap.size());
+        usersAuthMap.forEach(m->salts.add(m.get("salt").toString()));
+
+        return salts;
+    }
+
+    public boolean isSaltExist(String salt) {
+        return getAllSalts().contains(salt);
     }
 }
 

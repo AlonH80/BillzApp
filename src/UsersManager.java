@@ -13,19 +13,20 @@ public class UsersManager implements Observer {
     private MongoConnector mongoConnector;
     private Encryptor encryptor;
     private HashMap<String, String> componentConfig;
-//    private HashMap<String, HashMap<String, Object>> recordPending;
-//    private HashMap<String, HashMap<String, String>> waitingApproved;
     private final static String confPath = "resources/config.json";
     private final static String logsPath = "logs/";
+    private final static int MINIMUM_PWD_LEN = 6;
 
     public UsersManager() throws Exception {
         initLogger();
         initConfig();
-        usersAuthServer = new UsersAuthServer();
+        usersAuthServer = new UsersAuthServer(Integer.parseInt(componentConfig.get("UsersAuthServerPort")));
         usersAuthServer.setLogger(logger);
         usersAuthServer.addObserver(this);
         mongoConnector = new MongoConnector(componentConfig.get("mongoAddress"), Integer.parseInt(componentConfig.get("mongoPort")));
         mongoConnector.setLogger(logger);
+        mongoConnector.setDefaultDB(componentConfig.get("mongoAppDB"));
+        mongoConnector.setDefaultCollection(componentConfig.get("mongoAppCollection"));
         encryptor = new Encryptor();
     }
 
@@ -56,6 +57,10 @@ public class UsersManager implements Observer {
 
     private boolean addUser(String userId, String inputPassword) {
         String salt = encryptor.generateSalt();
+        while(mongoConnector.isSaltExist(salt)) {
+            salt = encryptor.generateSalt();
+        }
+
         String hashedPassword = encryptor.getEncryptedPassword(inputPassword, salt);
         return mongoConnector.insertUser(userId, salt, hashedPassword);
     }
@@ -77,28 +82,28 @@ public class UsersManager implements Observer {
         return mongoConnector.checkPasswordMatch(userId, hashedPassword);
     }
 
+    private boolean isValidPasswordForm(String password) {
+        return Utils.containsLowerCase(password) && Utils.containsUpperCase(password) && password.length() >= MINIMUM_PWD_LEN;
+    }
+
     @Override
     public void update(Observable o, Object arg) {
         HashMap<String, Object> requestMap = (HashMap<String, Object>)arg;
         String reqType = requestMap.get("type").toString();
-        String userId = requestMap.get("userId").toString();
-        String password = requestMap.get("password").toString();
-        HashMap<String, String> resMap = new HashMap<>(1);
-        resMap.put("status", "fail");
-        boolean res = false;
+        HashMap<String, String> resMap = new HashMap<>(2);
 
         if (reqType.equals("login")) {
-            res = verifyPassword(userId, password);
+            resMap = handleLoginRequest(requestMap);
         }
         else if (reqType.equals("set")) {
-            res = addUser(userId, password);
+            resMap = handleSetRequest(requestMap);
         }
         else if (reqType.equals("change")) {
-            res = changeUserPassword(userId, password, requestMap.get("newPassword").toString());
+            resMap = handleChangeRequest(requestMap);
         }
-
-        if (res) {
-            resMap.replace("status", "success");
+        else {
+            resMap.put("status", "fail");
+            resMap.put("error", String.format("Unknown request type: %s", reqType));
         }
 
         try {
@@ -108,5 +113,70 @@ public class UsersManager implements Observer {
             logger.warning(e.getMessage());
             Arrays.stream(e.getStackTrace()).forEach(st->logger.warning(st.toString()));
         }
+    }
+
+    private HashMap<String, String> handleLoginRequest(HashMap<String, Object> requestMap) {
+        HashMap<String, String> resMap = new HashMap<>(1);
+        String userId = requestMap.get("userId").toString();
+        String password = requestMap.get("password").toString();
+        if (!mongoConnector.isUserIdExist(userId)){
+            resMap.put("status", "fail");
+            resMap.put("error", "user id doesn't exist");
+        }
+        else if (!verifyPassword(userId, password)){
+            resMap.put("status", "fail");
+            resMap.put("error", "Authentication failed");
+        }
+        else {
+            resMap.put("status", "success");
+        }
+
+
+        return resMap;
+    }
+
+    private HashMap<String, String> handleSetRequest(HashMap<String, Object> requestMap) {
+        HashMap<String, String> resMap = new HashMap<>(2);
+        String userId = requestMap.get("userId").toString();
+        String password = requestMap.get("password").toString();
+
+        if (mongoConnector.isUserIdExist(userId)){
+            resMap.put("status", "fail");
+            resMap.put("error", "user id already exist");
+        }
+        else if(!isValidPasswordForm(password)) {
+            resMap.put("status", "fail");
+            resMap.put("error", String.format("Invalid password form: must contain lower-case, upper-case and minimum length of %d", MINIMUM_PWD_LEN));
+        }
+        else {
+            resMap.put("status", addUser(userId, password)? "success" : "fail");
+        }
+
+        return resMap;
+    }
+
+    private HashMap<String, String> handleChangeRequest(HashMap<String, Object> requestMap) {
+        HashMap<String, String> resMap = new HashMap<>(2);
+        String userId = requestMap.get("userId").toString();
+        String password = requestMap.get("password").toString();
+        String newPassword = requestMap.get("newPassword").toString();
+
+        if (!mongoConnector.isUserIdExist(userId)){
+            resMap.put("status", "fail");
+            resMap.put("error", "user id not found");
+        }
+        else if (!verifyPassword(userId, password)) {
+            resMap.put("status", "fail");
+            resMap.put("error", "Authentication failed");
+        }
+        else if (!isValidPasswordForm(newPassword)){
+            resMap.put("status", "fail");
+            resMap.put("error", String.format("Invalid password form: must contain lower-case, upper-case and minimum length of %d", MINIMUM_PWD_LEN));
+        }
+        else {
+            resMap.put("status", changeUserPassword(userId, password, newPassword)? "success" : "fail");
+        }
+
+        return resMap;
     }
 }

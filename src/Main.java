@@ -1,6 +1,9 @@
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -10,6 +13,9 @@ public class Main {
     public static void main(String[] args) {
         try {
             UsersManager usersManager = new UsersManager();
+//            MongoConnector mongoConnector = new MongoConnector();
+//            ArrayList<Map<String, Object>> findMap = mongoConnector.find("billzDB", "UsersAuth", new HashMap<>());
+//            findMap.forEach(m-> System.out.println(m.get("userID").toString()));
         }
         catch (Exception e) {
             e.printStackTrace();

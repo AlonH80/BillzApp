@@ -35,7 +35,6 @@ function sendRequest(jsonData) {
         url: authServer,
         data: JSON.stringify(jsonData),
         success: function(jsonData ){
-            //jsonData = JSON.parse(data);
             console.log(jsonData);
             if ("error" in jsonData){
                 $( "body" ).append("<div>Error: " + jsonData.error + "</div>")

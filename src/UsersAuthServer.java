@@ -29,11 +29,11 @@ public class UsersAuthServer extends Observable {
     private LinkedTreeMap<String, HttpExchange> pendingManagerResponse;
     private static final String resourcesPath = "resources/";
 
-    public UsersAuthServer() throws Exception {
+    public UsersAuthServer(int port) throws Exception {
         super();
         pendingManagerResponse = new LinkedTreeMap<>();
         SSLContext sslContext = loadCertificate();
-        server = HttpsServer.create(new InetSocketAddress("localhost", 8002), 0);
+        server = HttpsServer.create(new InetSocketAddress("localhost", port), 0);
         server.setHttpsConfigurator(new HttpsConfigurator(sslContext) {
             public void configure(HttpsParameters params) {
                 try {
@@ -137,11 +137,12 @@ public class UsersAuthServer extends Observable {
             if (splitURI.length > 1) {
                 requestFile = splitURI[1];
             }
-            if (!requestFile.contains(".js")) {
-                requestFile = String.format("%s.html", requestFile);
-            }
-            else if (requestFile.contains("favicon")) {
+
+            if (requestFile.contains("favicon")) {
                 return "";
+            }
+            else if (!requestFile.contains(".js")) {
+                requestFile = String.format("%s.html", requestFile);
             }
 
             requestFile = String.format("%s/%s", resourcesPath,  requestFile);

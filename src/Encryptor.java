@@ -1,6 +1,7 @@
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashSet;
 import java.util.Random;
 
 public class Encryptor {
@@ -14,10 +15,15 @@ public class Encryptor {
     public String generateSalt() {
         Random rand = new Random();
         rand.setSeed(System.currentTimeMillis());
-        char[] specialChars = {'!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '-', '+', '=', '{', '}', '|', '>', '<', '?', ',', '.', ';'};
+        char[] specialChars = {'!', '@', '#', '$', '%',
+                               '^', '&', '*', '(', ')',
+                               '_', '-', '+', '=', '{',
+                               '}', '|', '>', '<', '?',
+                               ',', '.', ';'};
         StringBuilder salt = new StringBuilder();
         char currRandChar = '0';
         int currCategory, currRandNum;
+
         while(salt.length() < saltSize) {
             currRandNum = rand.nextInt();
             currRandNum = Math.abs(currRandNum);

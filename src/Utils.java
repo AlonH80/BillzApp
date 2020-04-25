@@ -33,4 +33,30 @@ public class Utils {
     public static HashMap<String,Object> jsonFileToMap(String filePath) throws Exception {
         return (new Gson()).fromJson(new JsonReader(new FileReader(filePath)), HashMap.class);
     }
+
+    public static boolean containsLowerCase(String str) {
+        boolean res = false;
+
+        for (char ch : str.toCharArray()) {
+            if (Character.isLowerCase(ch)) {
+                res = true;
+                break;
+            }
+        }
+
+        return res;
+    }
+
+    public static boolean containsUpperCase(String str) {
+        boolean res = false;
+
+        for (char ch : str.toCharArray()) {
+            if (Character.isUpperCase(ch)) {
+                res = true;
+                break;
+            }
+        }
+
+        return res;
+    }
 }
