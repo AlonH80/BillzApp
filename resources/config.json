@@ -1,0 +1,5 @@
+{
+  "logsPath": "/Users/alonhartanu/Desktop/Java/AppartmentManage/logs",
+  "mongoAddress": "localhost",
+  "mongoPort": "27017"
+}

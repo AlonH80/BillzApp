@@ -1,0 +1,5 @@
+out
+.idea/*
+logs
+gson-2.8.5.jar
+*.iml
