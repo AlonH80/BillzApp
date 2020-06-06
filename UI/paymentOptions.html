@@ -20,7 +20,7 @@
         <nav class="left">
             <a href="#menu"><span>Menu</span></a>
         </nav>
-        <a href="#"><img src="images/billzlogo.png" style="height: 70%;vertical-align: middle;"></a>				
+        <a href="#"><img src="images/billzlogo.png" style="height: 70%;vertical-align: middle;"></a>
         <nav class="right">
             <a href="#" class="button alt">Log in</a>
         </nav>
@@ -42,26 +42,27 @@
     <h1 style="text-align: center;">Payment Options</h1>
     <section id="main" class="wrapper">
         <h2>Hey, Guy!</h2>
-        <span>Who do you want to pay back?</span>
-        <select class="selectpicker">
-            <option>Alon - 442$</option>
-            <option>Ofir - 35$</option>
-            <option>Yuval - 120$</option>
-        </select>
-        <span>How much do you want to pay?</span>
-        <br>
-        <input type="text" placeholder="Enter the desired payment amount">
-        <br>
-        <span>How do you want to pay?</span>
-        <select class="selectpicker">
-            <option>Paypal</option>
-            <option>Bank Transfer</option>
-            <option>Check</option>
-            <option>Cash</option>
-            <option>Other</option>
-        </select>
-
-        <a href="#" class="button special">PAY!</a>
+        <form id="payRoomateForm">
+          <span>Who do you want to pay back?</span>
+          <select name="payTo" class="selectpicker, payFormProp">
+              <option>Alon</option>
+              <option>Ofir</option>
+              <option>Yuval</option>
+          </select>
+          <span>How much do you want to pay?</span>
+          <br>
+          <input type="text" placeholder="Enter the desired payment amount" class="payFormProp" name="amount">
+          <br>
+          <span>How do you want to pay?</span>
+          <select class="selectpicker, payFormProp" name="payMethod">
+              <option>Paypal</option>
+              <option>Bank Transfer</option>
+              <option>Check</option>
+              <option>Cash</option>
+              <option>Other</option>
+          </select>
+          <button type="submit" class="btn btn-success btn-lg btn-block">PAY!</button>
+       </form>
 
     </section>
 
@@ -87,6 +88,8 @@
     <script src="assets/js/skel.min.js"></script>
     <script src="assets/js/util.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/serverCalls.js"></script>
+  	<script>setOnSendPayment()</script>
 </body>
 
 </html>

@@ -42,9 +42,9 @@
 			</header>
 			<div style="block">
 				<div class="log-form">
-					<form>
+					<form id="loginForm">
 						<input type="text" title="username" placeholder="username" />
-						<input type="password" title="username" placeholder="password" />
+						<input type="password" title="password" placeholder="password" />
 						<button type="submit" class="btn">Login</button>
 						<a class="forgot" href="#">Forgot Username?</a>
 					</form>
@@ -76,6 +76,10 @@
 	<script src="assets/js/skel.min.js"></script>
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
+  <script src="https://bitwiseshiftleft.github.io/sjcl/sjcl.js"></script>
+	<script src="assets/js/serverCalls.js"></script>
+
+	<script>setOnLoginRequest()</script>
 
 </body>
 

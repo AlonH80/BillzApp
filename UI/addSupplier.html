@@ -20,7 +20,7 @@
         <nav class="left">
             <a href="#menu"><span>Menu</span></a>
         </nav>
-        <a href="#"><img src="images/billzlogo.png" style="height: 70%;vertical-align: middle;"></a>				
+        <a href="#"><img src="images/billzlogo.png" style="height: 70%;vertical-align: middle;"></a>
         <nav class="right">
             <a href="#" class="button alt">Log in</a>
         </nav>
@@ -46,7 +46,7 @@
                 <div class="col-md-2">
                     <span>How's the Supplier?</span>
                 </div>
-                <select class="selectpicker">
+                <select class="selectpicker" id="supplierType">
                     <option>Electricity</option>
                     <option>Water</option>
                     <option>Property Tax</option>
@@ -57,7 +57,7 @@
                 <div class="col-md-2">
                     <span>Who's Paying?</span>
                 </div>
-                <select class="selectpicker">
+                <select class="selectpicker" id="billOwner">
                     <option>Alon</option>
                     <option>Ofir</option>
                     <option>Yuval</option>
@@ -95,7 +95,7 @@
                 </table>
             </div>
             <br>
-            <a href="#" class="button special">SUBMIT</a>
+            <button class="button special" onclick="getAndPutParticipants()">SUBMIT</button>
         </div>
     </section>
 
@@ -126,6 +126,7 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <script src="assets/js/serverCalls.js"></script>
 
 
 </body>

@@ -6,7 +6,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="assets/css/main.css" />
-    <link rel="stylesheet" href="assets/css/register.css" />       
+    <link rel="stylesheet" href="assets/css/register.css" />
 </head>
 
 <body class="subpage">
@@ -36,14 +36,14 @@
 
 	<!-- Main -->
     <div class="signup-form">
-        <form action="/examples/actions/confirmation.php" method="post">
+        <form id="signupForm">
             <h2>Register</h2>
             <p class="hint-text">Create your account. It's free and only takes a minute.</p>
             <div class="form-group">
                 <div class="row">
                     <div class="col-xs-6"><input type="text" class="form-control" name="first_name" placeholder="First Name" required="required"></div>
                     <div class="col-xs-6"><input type="text" class="form-control" name="last_name" placeholder="Last Name" required="required"></div>
-                </div>        	
+                </div>
             </div>
             <div class="form-group">
                 <input type="email" class="form-control" name="email" placeholder="Email" required="required">
@@ -56,9 +56,10 @@
             </div>
             <div class="form-group">
                 <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password" required="required">
-            </div>        
+            </div>
             <div class="form-group">
-                <label class="checkbox-inline"><input type="checkbox" required="required"> I accept the <a href="#">Terms of Use</a> &amp; <a href="#">Privacy Policy</a></label>
+							  <input type="checkbox" id="tou" required="required" value="terms_of_use">
+                <label for="tou" class="checkbox-inline"> I accept the <a href="#">Terms of Use</a> &amp; <a href="#">Privacy Policy</a></label>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-success btn-lg btn-block">Register Now</button>
@@ -88,6 +89,8 @@
 	<script src="assets/js/skel.min.js"></script>
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
+	<script src="assets/js/serverCalls.js"></script>
+	<script>setRegisterForm();</script>
 </body>
 
 </html>
