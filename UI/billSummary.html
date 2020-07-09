@@ -39,7 +39,7 @@
     </nav>
 
     <!-- Main -->
-    <h1 style="text-align: center;">Bill Summery</h1>
+    <h1 style="text-align: center;">Bill Summary</h1>
     <section id="main" class="wrapper">
         <div class="container">
             <div class="table-wrapper">
@@ -55,15 +55,15 @@
                             <th>Paying Date</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="summaryRows">
                         <tr>
-                            <td>Israel Electric Corporation</td>
+                            <!--td>Israel Electric Corporation</td>
                             <td>Alon</td>
                             <td>Khever ha-Le'umim St 2, Tel Aviv-Yafo</td>
                             <td>123456789</td>
                             <td>987654321</td>
                             <td>888 $</td>
-                            <td>01/04/2020</td>
+                            <td>01/04/2020</td-->
                         </tr>
                     </tbody>
                 </table>
@@ -98,7 +98,8 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
-
+    <script src="assets/js/serverCalls.js"></script>
+    <script>getBillSummary();</script>
 
 </body>
 

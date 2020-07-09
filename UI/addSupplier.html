@@ -58,10 +58,6 @@
                     <span>Who's Paying?</span>
                 </div>
                 <select class="selectpicker" id="billOwner">
-                    <option>Alon</option>
-                    <option>Ofir</option>
-                    <option>Yuval</option>
-                    <option>Guy</option>
                 </select>
             </div>
 
@@ -74,8 +70,8 @@
                             <th>Part</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
+                    <tbody id="roomatesSplit">
+                        <!--tr>
                             <td>Alon</td>
                             <td><input type="text" value="25%"></td>
                         </tr>
@@ -90,7 +86,7 @@
                         <tr>
                             <td>Guy</td>
                             <td><input type="text" value="25%"></td>
-                        </tr>
+                        </tr-->
                     </tbody>
                 </table>
             </div>
@@ -127,6 +123,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
     <script src="assets/js/serverCalls.js"></script>
+    <script>getRoomates();</script>
 
 
 </body>

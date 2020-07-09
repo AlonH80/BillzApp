@@ -15,6 +15,10 @@ def generate_html(html_template_path: str, input_values: dict):
     return html_rend
 
 
+def get_json_from_request():
+    return json.loads(request.get_data().decode())
+
+
 def read_file(file_path: str):
     with open(file_path, "rb") as file:
         return file.read()
@@ -84,6 +88,41 @@ def get_html_page(html_file):
     print("remote_addr: {}".format(request.remote_addr))
     return read_file("{}/{}.html".format(root_folder, html_file))
 
+
+def get_roomates(token):
+    return ["Yuval", "Ofir", "Guy"]
+
+
+def get_bill_info(token):
+    json = {
+    "supplier": "Elec",
+    "payer": "Alon",
+    "address": "brazil 3",
+    "bill_number": "1",
+    "account_number": "12",
+    "amount": "2000",
+    "paying_date": "1/1/20"}
+    return [json, json]
+
+
+def get_general_summary(token):
+    rows=[]
+    rows.append({"bill": "Netflix", "date": "10.3", "status": "Need to pay", "amount": 15})
+    rows.append({"bill": "Water", "date": "15.3", "status": "Paid", "amount": 20})
+    return rows
+
+@app.route("/getInfo", methods=["POST"])
+def get_db_info():
+    dat = get_json_from_request()
+    print(dat)
+    if dat["requestType"].__eq__("roomates"):
+        dat["infoFromDb"] = "randInfo"
+        dat["roomates"] = get_roomates(dat["token"])
+    elif dat["requestType"].__eq__("billSummary"):
+        dat["billSummary"] = get_bill_info(dat["token"])
+    elif dat["requestType"].__eq__("generalSummary"):
+        dat["generalSummary"] = get_general_summary(dat["token"])
+    return dat
 
 
 # @app.route("/folder_search", methods=["GET", "POST"])

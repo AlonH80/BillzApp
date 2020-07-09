@@ -244,11 +244,11 @@
 }
 
 .chart .bar-my3 .face.side-0 .growing-bar, .chart .bar-my3 .face.side-1 .growing-bar {
-    transform: translateY(50%);
+    transform: translateY(90%);
     opacity: 0.8;
 }
 .chart .bar-my3 .face.side-0 .growing-bar:before, .chart .bar-my3 .face.side-1 .growing-bar:before {
-    content: "344";
+    content: "100";
 }
 
 

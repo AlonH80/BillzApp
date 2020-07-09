@@ -54,8 +54,8 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr style="background-color:#cc0000;">
+                <tbody id="generalSummaryRows">
+                    <!--tr style="background-color:#cc0000;">
                         <td>Netflix</td>
                         <td>10.3</td>
                         <td>Need to Pay</td>
@@ -159,7 +159,7 @@
                         <td>Paid</td>
                         <td>30$</td>
                         <td> <a href="#" class="button special">Details</a> </td>
-                    </tr>
+                    </tr-->
                 </tbody>
             </table>
         </div>
@@ -187,6 +187,8 @@
     <script src="assets/js/skel.min.js"></script>
     <script src="assets/js/util.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/serverCalls.js"></script>
+    <script>getGeneralSummary();</script>
 </body>
 
 </html>
