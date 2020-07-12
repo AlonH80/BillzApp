@@ -1,11 +1,10 @@
-import javax.rmi.CORBA.Util;
 import java.util.Map;
 
 public class HttpsClient {
 
     public static void main(String[] args) {
         try {
-            //PaymentManager paymentManager = new PaymentManager();
+            Server server = new Server();
             System.out.println(Utils.generateDateTimeStamp());
         }
         catch (Exception e){

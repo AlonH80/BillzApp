@@ -1,4 +1,4 @@
-import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import com.mongodb.ConnectionString;
 import com.mongodb.client.*;
 import com.mongodb.client.result.InsertOneResult;
@@ -15,8 +15,12 @@ public class MongoConnector {
     private int port;
     private MongoClient client;
     private Logger logger;
+    private String defaultDB = "billzDB";
+    private String defaultCollection = "UsersAuth";
 
     public MongoConnector(){
+        this.address = "localhost";
+        this.port = 27017;
         initClient();
     }
 
@@ -34,6 +38,30 @@ public class MongoConnector {
         this.logger = logger;
     }
 
+    public void setDefaultDB(String db) {
+        defaultDB = db;
+    }
+
+    public void setDefaultCollection(String collection) {
+        defaultCollection = collection;
+    }
+
+    private void insert(String database, String collection, Map<String, Object> insertMap) {
+        MongoDatabase mongoDatabase = client.getDatabase(database);
+        MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collection);
+        insertMap.put("date", Utils.generateDateTimeStamp());
+        InsertOneResult res = mongoCollection.insertOne(new Document(insertMap));
+        logger.info(String.format("inserted info regard %s to %s.%s", insertMap.get("userID"), database, collection));
+    }
+
+    private void update(String database, String collection, Map<String, Object> queryMap, Map<String, Object> updateMap) {
+        updateMap.put("date", Utils.generateDateTimeStamp());
+        MongoDatabase mongoDatabase = client.getDatabase(database);
+        MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collection);
+        mongoCollection.findOneAndReplace(mapToBson(queryMap), new Document(updateMap));
+        logger.info(String.format("Updated info regard %s in %s.%s", queryMap.get("userID"), database, collection));
+    }
+
     public ArrayList<Map<String, Object>> find(String database, String collection, Map<String, String> findMap) {
         ArrayList<Map<String, Object>> resMap = new ArrayList<>();
         MongoDatabase mongoDatabase = client.getDatabase(database);
@@ -45,38 +73,91 @@ public class MongoConnector {
             resMap.add(docMap);
             //document.forEach((k, v)-> docMap.put(k, v));
         });
-        logger.info(String.format("find in %s.%s: %s", database, collection, (new Gson()).toJson(resMap)));
+        logger.info(String.format("find in %s.%s, query: %s", database, collection, Utils.mapToJson(findMap)));
 
         return resMap;
     }
 
-    public void insert(String database, String collection, Map<String, Object> insertMap) {
-        MongoDatabase mongoDatabase = client.getDatabase(database);
-        MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(collection);
-        insertMap.put("date", Utils.generateDateTimeStamp());
-        InsertOneResult res = mongoCollection.insertOne(new Document(insertMap));
-        logger.info(String.format("inserted to %s.%s: %s", database, collection, (new Gson()).toJson(insertMap)));
-    }
-
-    public Map<String, Object> getUser(String userId) {
-        HashMap<String, String> userMap = new HashMap<>(1);
-        userMap.put("id", userId);
-        Map<String, Object> resMap = find("billzDB", "users", userMap).get(0);
-        logger.info(String.format("user map: %s", (new Gson()).toJson(resMap)));
-        return resMap;
-    }
-
-    public void recordTransaction(String userIdFrom, String userIdTo, Double amount) {
-        Map<String, Object> recordMap = new LinkedHashMap<>(3);
-        recordMap.put("userIdFrom", userIdFrom);
-        recordMap.put("userIdTo", userIdTo);
-        recordMap.put("amount", amount);
-        insert("billzDB", "transactions", recordMap);
-    }
-
-    private BsonDocument mapToBson(Map<String, String> map) {
+    private BsonDocument mapToBson(Map<String, ?> map) {
         BsonDocument bsonDocument = new BsonDocument();
-        map.forEach((k, v) -> bsonDocument.append(k, new BsonString(v)));
+        map.forEach((k, v) -> bsonDocument.append(k, new BsonString(v.toString())));
         return bsonDocument;
     }
+
+    public boolean insertUser(String userID, String salt, String hashedPassword) {
+        boolean userInserted = false;
+        if (!isUserIdExist(userID)) {
+            LinkedTreeMap<String, Object> newUserMap = new LinkedTreeMap<>();
+            newUserMap.put("userID", userID);
+            newUserMap.put("salt", salt);
+            newUserMap.put("password", hashedPassword);
+            insert(defaultDB, defaultCollection, newUserMap);
+            userInserted = true;
+        }
+        else {
+            logger.warning(String.format("User id %s already exist", userID));
+        }
+        return userInserted;
+    }
+
+    public boolean checkPasswordMatch(String userID, String hashedPassword) {
+        HashMap<String, String> queryMap = new HashMap<>(1);
+        queryMap.put("userID", userID);
+        String passwordInDB = find(defaultDB,defaultCollection, queryMap).get(0).get("password").toString();
+        boolean passwordMatch = passwordInDB.equals(hashedPassword);
+        if (!passwordMatch) {
+            logger.warning(String.format("User %s entered incorrect password", userID));
+        }
+        return passwordMatch;
+    }
+
+    public String getUserSalt(String userID) {
+        HashMap<String, String> queryMap = new HashMap<>(1);
+        queryMap.put("userID", userID);
+        String userSalt = find(defaultDB,defaultCollection, queryMap).get(0).get("salt").toString();
+
+        return userSalt;
+    }
+
+    public boolean updateUserPassword(String userID, String salt, String hashedPassword) {
+        try {
+            HashMap<String, Object> queryMap = new HashMap<>(1);
+            queryMap.put("userID", userID);
+            LinkedTreeMap<String, Object> updateMap = new LinkedTreeMap<>();
+            updateMap.put("userID", userID);
+            updateMap.put("salt", salt);
+            updateMap.put("password", hashedPassword);
+            update(defaultDB, defaultCollection, queryMap, updateMap);
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
+
+    }
+
+    private HashSet<String> getAllUsersIds() {
+        ArrayList<Map<String, Object>> usersAuthMap = find(defaultDB, defaultCollection, new HashMap<>());
+        HashSet<String> usersIds = new HashSet<>(usersAuthMap.size());
+        usersAuthMap.forEach(m->usersIds.add(m.get("userID").toString()));
+
+        return usersIds;
+    }
+
+    public boolean isUserIdExist(String userId) {
+        return getAllUsersIds().contains(userId);
+    }
+
+    private HashSet<String> getAllSalts() {
+        ArrayList<Map<String, Object>> usersAuthMap = find(defaultDB, defaultCollection, new HashMap<>());
+        HashSet<String> salts = new HashSet<>(usersAuthMap.size());
+        usersAuthMap.forEach(m->salts.add(m.get("salt").toString()));
+
+        return salts;
+    }
+
+    public boolean isSaltExist(String salt) {
+        return getAllSalts().contains(salt);
+    }
 }
+

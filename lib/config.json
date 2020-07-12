@@ -1,0 +1,11 @@
+{
+  "access_token":"A21AAHW80vHvBy2GqKDUJDJjh6ilWL4nviMIq1rreVe8C4CaeDEqyhHCQ1Wsu585wjsA2g6AOsdhf5zksXPz33L4iwpuCGEmA",
+  "lastInvoice":"1",
+  "orderTemplatePath":"resources/example_order.json",
+  "sendTemplatePath":"resources/sendpay_template.json",
+  "expires_in":"32400.0",
+  "nonce":"2020-04-18T17:20:29ZyhevqWpvk4G5cuuAVhjAwWrxfFu2jSnDIrBZMnR0WyE",
+  "lastSendBatch":"26",
+  "mongoAddress": "localhost",
+  "mongoPort": "27017"
+}
