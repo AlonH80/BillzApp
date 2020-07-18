@@ -111,6 +111,24 @@ def get_general_summary(token):
     rows.append({"bill": "Water", "date": "15.3", "status": "Paid", "amount": 20})
     return rows
 
+def get_balance(token):
+    roomates = []
+    roomates.append({"roomate": "Alon", "balance": "-50"})
+    roomates.append({"roomate": "JJ", "balance": "10"})
+    roomates.append({"roomate": "Yuv", "balance": "0"})
+    return roomates
+
+
+def get_messages(token):
+    msgs = []
+    msgs.append({"message": "you owe me mf", "type": "debt"})
+    msgs.append({"message": "I joined", "type": "user_joined"})
+    msgs.append({"message": "Yuval joined", "type": "roomate_joined"})
+    msgs.append({"message": "Guy got the payment", "type": "payment_approved"})
+    msgs.append({"message": "You need to pay netflix", "type": "pay_reminder"})
+    return msgs
+
+
 @app.route("/getInfo", methods=["POST"])
 def get_db_info():
     dat = get_json_from_request()
@@ -122,6 +140,10 @@ def get_db_info():
         dat["billSummary"] = get_bill_info(dat["token"])
     elif dat["requestType"].__eq__("generalSummary"):
         dat["generalSummary"] = get_general_summary(dat["token"])
+    elif dat["requestType"].__eq__("balance"):
+        dat["balance"] = get_balance(dat["token"])
+    elif dat["requestType"].__eq__("messages"):
+        dat["messages"] = get_messages(dat["token"])
     return dat
 
 

@@ -42,16 +42,16 @@
 	<div class="table-wrapper">
 		<table class="alt">
 			<thead>
-				<tr>
+				<tr id="balanceRow">
 					<th>
-						<h3>Yuval owes you:</h3>
+						<!--h3>Yuval owes you:</h3>
 						<div class="col chart small-font-size">
-							<div class="bar bar-my1 yellow">
+							<div class="bar yellow">
 								<div class="face side-0">
-									<div class="growing-bar"></div>
+									<div class="growing-bar" style="transform: translateY(25%);opacity: 0.8;"></div>
 								</div>
 								<div class="face side-1">
-									<div class="growing-bar"></div>
+									<div class="growing-bar" style="transform: translateY(25%);opacity: 0.8;"></div>
 								</div>
 								<div class="face top"></div>
 								<div class="face floor"></div>
@@ -62,7 +62,7 @@
 					<th>
 						<h3>Ofir owes you:</h3>
 						<div class="col chart small-font-size">
-							<div class="bar bar-my2 cyan">
+							<div class="bar bar-61 cyan">
 								<div class="face side-0">
 									<div class="growing-bar"></div>
 								</div>
@@ -91,7 +91,7 @@
 							</div>
 						</div>
 						<h3>200 $</h3>
-					</th>
+					</th-->
 
 				</tr>
 			</thead>
@@ -119,6 +119,8 @@
 		<script src="assets/js/skel.min.js"></script>
 		<script src="assets/js/util.js"></script>
 		<script src="assets/js/main.js"></script>
+		<script src="assets/js/serverCalls.js"></script>
+		<script>getBalance();</script>
 </body>
 
 </html>
