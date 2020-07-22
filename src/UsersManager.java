@@ -1,5 +1,4 @@
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.FileHandler;
@@ -111,7 +110,7 @@ public class UsersManager {
         }
 
         try {
-            server.sendManagerRepsonse(requestMap.get("pendQueueId").toString(), Utils.mapToJson(resMap));
+            server.sendManagerResponse(requestMap.get("pendQueueId").toString(), Utils.mapToJson(resMap));
         }
         catch (Exception e){
             logger.warning(e.getMessage());

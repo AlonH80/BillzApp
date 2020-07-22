@@ -144,9 +144,7 @@ public class UsersAuthServer extends Observable {
             else if (!requestFile.contains(".js")) {
                 requestFile = String.format("%s.html", requestFile);
             }
-
             requestFile = String.format("%s/%s", resourcesPath,  requestFile);
-
             return fileToString(requestFile);
         }
 

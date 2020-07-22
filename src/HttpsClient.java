@@ -4,7 +4,7 @@ public class HttpsClient {
 
     public static void main(String[] args) {
         try {
-            Server server = new Server();
+            new Server();
             System.out.println(Utils.generateDateTimeStamp());
         }
         catch (Exception e){

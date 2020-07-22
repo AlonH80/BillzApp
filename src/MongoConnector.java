@@ -1,3 +1,4 @@
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.mongodb.ConnectionString;
 import com.mongodb.client.*;
@@ -156,8 +157,26 @@ public class MongoConnector {
         return salts;
     }
 
+    public Map<String, Object> getUser(String userId) {
+        HashMap<String, String> userMap = new HashMap<>(1);
+        userMap.put("id", userId);
+        Map<String, Object> resMap = find("billzDB", "users", userMap).get(0);
+        logger.info(String.format("user map: %s", (new Gson()).toJson(resMap)));
+        return resMap;
+    }
+
+    public void recordTransaction(String userIdFrom, String userIdTo, Double amount) {
+        Map<String, Object> recordMap = new LinkedHashMap<>(3);
+        recordMap.put("userIdFrom", userIdFrom);
+        recordMap.put("userIdTo", userIdTo);
+        recordMap.put("amount", amount);
+        insert("billzDB", "transactions", recordMap);
+    }
+
     public boolean isSaltExist(String salt) {
         return getAllSalts().contains(salt);
     }
 }
+
+
 

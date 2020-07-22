@@ -13,13 +13,14 @@ public class Server extends Observable {
     private HttpServer server;
     private Logger logger;
     private static final String resourcesPath = "resources/"; //"/Users/alonhartanu/Desktop/Java/PaymentComponent/WebResources";
-//    private PaymentManager PaymentManager;
+    private PaymentManager paymentManager;
     private UsersManager usersManager;
     private LinkedTreeMap<String, HttpExchange> pendingManagerResponse;
 
     public Server() throws Exception {
         usersManager = new UsersManager(this);
         setLogger((usersManager.getLogger()));
+        paymentManager = new PaymentManager(this);
         pendingManagerResponse = new LinkedTreeMap<>();
         server = HttpServer.create(new InetSocketAddress("localhost", 8001), 0);
         server.createContext("/", new MyHttpHandler());
@@ -27,11 +28,11 @@ public class Server extends Observable {
         server.start();
     }
 
-    public void setLogger(Logger logger){
+    public void setLogger(Logger logger) {
         this.logger = logger;
     }
 
-    public void sendManagerRepsonse(String pendQueueId, String managerResponse) throws IOException {
+    public void sendManagerResponse(String pendQueueId, String managerResponse) throws IOException {
         HttpExchange httpExchange = pendingManagerResponse.get(pendQueueId);
         sendDefaultResponse(httpExchange, managerResponse);
         pendingManagerResponse.remove(pendQueueId);
@@ -77,7 +78,7 @@ public class Server extends Observable {
             BufferedReader br = new BufferedReader(new InputStreamReader(bod));
             StringBuilder reqBody = new StringBuilder();
             String line = br.readLine();
-            while(line != null){
+            while (line != null) {
                 reqBody.append(line);
                 line = br.readLine();
             }
@@ -85,14 +86,24 @@ public class Server extends Observable {
             return (HashMap<String, Object>) Utils.jsonToMap(reqBody.toString());
         }
 
-        synchronized private void handlePostResponse(HttpExchange httpExchange, HashMap<String, Object> requestParamValue)  throws IOException {
+        synchronized private void handlePostResponse(HttpExchange httpExchange, HashMap<String, Object> requestParamValue) throws IOException {
             httpExchange.getResponseHeaders().set("Content-Type", "application/json");
             Integer pendSize = pendingManagerResponse.size();
             requestParamValue.put("pendQueueId", pendSize.toString());
             pendingManagerResponse.put(pendSize.toString(), httpExchange);
+            String reqType = requestParamValue.get("type").toString();
 //            setChanged();
 //            notifyObservers(requestParamValue);
-            usersManager.update(requestParamValue);
+            switch (reqType) {
+                case "login":
+                case "set":
+                case "change":
+                    usersManager.update(requestParamValue);
+                    break;
+                case "execute":
+                    paymentManager.update(requestParamValue);
+                    break;
+            }
             //sendDefaultResponse(httpExchange,"{\"asd\":\"asd\"}");
         }
 
