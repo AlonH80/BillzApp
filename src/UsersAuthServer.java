@@ -163,7 +163,7 @@ public class UsersAuthServer extends Observable {
 
         private void handleGetResponse(HttpExchange httpExchange, String htmlContent) throws IOException {
             if (htmlContent.isEmpty()) {
-                htmlContent = fileToString(String.format("%s/loginPage.html", resourcesPath));
+                htmlContent = fileToString(String.format("%s/index.html", resourcesPath));
             }
             sendDefaultResponse(httpExchange, htmlContent);
         }

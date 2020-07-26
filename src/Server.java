@@ -2,6 +2,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.sun.net.httpserver.*;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ public class Server extends Observable {
     private HttpServer server;
     private Logger logger;
     private static final String resourcesPath = "resources/"; //"/Users/alonhartanu/Desktop/Java/PaymentComponent/WebResources";
+    private static final String UiPath = "UI/";
     private PaymentManager paymentManager;
     private UsersManager usersManager;
     private LinkedTreeMap<String, HttpExchange> pendingManagerResponse;
@@ -22,7 +24,8 @@ public class Server extends Observable {
         setLogger((usersManager.getLogger()));
         paymentManager = new PaymentManager(this);
         pendingManagerResponse = new LinkedTreeMap<>();
-        server = HttpServer.create(new InetSocketAddress("localhost", 8001), 0);
+        server = HttpServer.create(new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 8001), 0);
+        //server = HttpServer.create(new InetSocketAddress("localhost", 8001), 0);
         server.createContext("/", new MyHttpHandler());
         server.setExecutor(Executors.newFixedThreadPool(10));
         server.start();
@@ -39,13 +42,15 @@ public class Server extends Observable {
     }
 
     private void sendDefaultResponse(HttpExchange httpExchange, String response) throws IOException {
-        OutputStream outputStream = httpExchange.getResponseBody();
         //Headers responseHeaders = httpExchange.getResponseHeaders();
         //responseHeaders.set("Access-Control-Allow-Origin", "https://localhost:63342");
-        httpExchange.sendResponseHeaders(200, response.length());
-        outputStream.write(response.getBytes());
-        outputStream.flush();
-        outputStream.close();
+
+        byte[] bs = response.getBytes("UTF-8");
+        httpExchange.sendResponseHeaders(200, bs.length);
+        OutputStream os = httpExchange.getResponseBody();
+        os.write(bs);
+        os.flush();
+        os.close();
     }
 
 
@@ -55,7 +60,7 @@ public class Server extends Observable {
             try {
                 if ("GET".equals(httpExchange.getRequestMethod())) {
                     String requestParamValue = handleGetRequest(httpExchange);
-                    //handleGetResponse(httpExchange, requestParamValue);
+                    handleGetResponse(httpExchange, requestParamValue);
 
                 } else if ("POST".equals(httpExchange.getRequestMethod())) {
                     HashMap<String, Object> requestParamValue = handlePostRequest(httpExchange);
@@ -67,10 +72,22 @@ public class Server extends Observable {
             }
         }
 
+        private void handleGetResponse(HttpExchange httpExchange, String htmlContent) throws IOException {
+            if (htmlContent.isEmpty()) {
+                htmlContent = fileToString(String.format("%s/index.html", UiPath));
+            }
+            sendDefaultResponse(httpExchange, htmlContent);
+        }
 
         private String handleGetRequest(HttpExchange httpExchange) throws IOException {
-            sendDefaultResponse(httpExchange, "<p>123</p>");
-            return "";
+            String requestURI = httpExchange.getRequestURI().toString();
+            if (requestURI.contains("favicon")||requestURI.contains("compass")) {
+                return "";
+            }
+            if (requestURI.matches("/")) {
+                return fileToString(String.format("%s/%s", "UI", "register.html"));
+            }
+            return fileToString(String.format("%s%s", "UI", requestURI).split("\\?")[0]);
         }
 
         private HashMap<String, Object> handlePostRequest(HttpExchange httpExchange) throws IOException {
@@ -104,21 +121,18 @@ public class Server extends Observable {
                     paymentManager.update(requestParamValue);
                     break;
             }
-            //sendDefaultResponse(httpExchange,"{\"asd\":\"asd\"}");
         }
 
 
-//        private String handlePostRequest(HttpExchange httpExchange) throws IOException {
-//            InputStream bod = httpExchange.getRequestBody();
-//            BufferedReader br = new BufferedReader(new InputStreamReader(bod));
-//            StringBuilder reqBody = new StringBuilder();
-//            String line = br.readLine();
-//            while (line != null) {
-//                reqBody.append(line);
-//                line = br.readLine();
-//            }
-//            logger.info(reqBody.toString());
-//            return reqBody.toString();
-//        }
+        public String fileToString(String filePath) throws IOException {
+            StringBuilder sb = new StringBuilder();
+            BufferedReader br = new BufferedReader(new FileReader(filePath));
+            int nextCh = br.read();
+            while (nextCh != -1) {
+                sb.append((char) nextCh);
+                nextCh = br.read();
+            }
+            return sb.toString();
+        }
     }
 }
