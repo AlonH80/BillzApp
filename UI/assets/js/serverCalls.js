@@ -1,4 +1,3 @@
-server_address="http://localhost:8055"
 
 function sendRequest(serverURL, jsonData, onResponse) {
   $.ajax({
@@ -15,6 +14,20 @@ function sendRequest(serverURL, jsonData, onResponse) {
     });
 }
 
+function sendGetRequest(serverURL, onResponse) {
+    $.ajax({
+        method: "GET",
+        url: serverURL,
+        success: function(dataRec){
+            onResponse(dataRec);
+            //console.log(dataRec);
+        },
+        error: function (e) {
+            console.log("status code: " + e.status.toString());
+        }
+    });
+}
+
 
 function setRegisterForm() {
     $("form#signupForm").submit(function (e) {
@@ -24,13 +37,38 @@ function setRegisterForm() {
         for (i=0;i<inps.length; i++) {
             map_inps[inps[i].name] = inps[i].value;
         }
+        map_inps["type"] = "set";
+        map_inps["userId"] = map_inps["user_name"];
         //map_inps["confirm_password"]="none";
-        sendRequest(server_address+"/regForm", map_inps, onRegisterConfirmed);
+        sendRequest(server_address, map_inps, onRegisterConfirmed);
    });
 }
 
 function onRegisterConfirmed(jsonData) {
   console.log(jsonData);
+  sessionStorage.setItem("user_name", jsonData["userId"]);
+  setToken("jimbo");
+  window.location.href = server_address + "/index.html";
+  //sendGetRequest(server_address + "/index.html", renderPage);
+}
+
+function requestForPage(pageURL) {
+    jsonInfo = {"page": pageURL, "token": sessionStorage.getItem("user_token"), "userId": sessionStorage.getItem("user_name")};
+    sendRequest(server_address, jsonInfo, data => { onPageApproved(data["page"]); });
+}
+
+function onPageApproved(pageURL) {
+    window.location.href = server_address + "/index.html";
+}
+
+function setToken(token) {
+    sessionStorage.removeItem("user_token");
+    sessionStorage.setItem("user_token", token);
+}
+
+function setHelloLabel() {
+    helloNode = $("#welcome-header")[0];
+    helloNode.textContent = "Welcome " + sessionStorage.getItem("user_name") +"!";
 }
 
 function setSendBillFile() {

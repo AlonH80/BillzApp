@@ -1,0 +1,3 @@
+- Register/login request should return user name and token
+- Request for page should return approve (data is user_name + token)
+- Handle get *.png

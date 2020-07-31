@@ -16,7 +16,8 @@ def generate_html(html_template_path: str, input_values: dict):
 
 
 def get_json_from_request():
-    return json.loads(request.get_data().decode())
+    req = request
+    # return json.loads(req.get_data().decode())
 
 
 def read_file(file_path: str):
