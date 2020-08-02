@@ -18,19 +18,23 @@
 		</nav>
 		<a href="#"><img src="images/billzlogo.png" style="height: 70%;vertical-align: middle;"></a>
 		<nav class="right">
-			<a href="#" class="button alt">Log in</a>
+			<a href="javascript:logUserOut()" class="button alt">Log out</a>
 		</nav>
 	</header>
 
 	<!-- Menu -->
 	<nav id="menu">
 		<ul class="links">
-			<li><a href="#">History</a></li>
-			<li><a href="#">Add Bill</a></li>
-			<li><a href="#">Settings</a></li>
+			<li><a href="javascript:redirectToPage('index.html')">Home</a></li>
+			<li><a href="javascript:redirectToPage('messages.html')">Messages</a></li>
+			<li><a href="javascript:redirectToPage('addBill.html')">Add Bill</a></li>
+			<li><a href="javascript:redirectToPage('addSupplier.html')">Add Supplier</a></li>
+			<li><a href="javascript:redirectToPage('billSummary.html')">Bill History</a></li>
+			<li><a href="javascript:redirectToPage('generalSummary.html')">History</a></li>
+			<li><a href="javascript:redirectToPage('settings.html')">Settings</a></li>
 		</ul>
 		<ul class="actions vertical">
-			<li><a href="#" class="button fit">Login</a></li>
+			<li><a href="javascript:logUserOut()" class="button fit">Log out</a></li>
 		</ul>
 	</nav>
 
@@ -119,6 +123,7 @@
 		<script src="assets/js/skel.min.js"></script>
 		<script src="assets/js/util.js"></script>
 		<script src="assets/js/main.js"></script>
+		<script src="assets/js/variables.js"></script>
 		<script src="assets/js/serverCalls.js"></script>
 		<script>getBalance();</script>
 		<script>setHelloLabel();</script>

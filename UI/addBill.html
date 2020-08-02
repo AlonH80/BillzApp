@@ -22,16 +22,20 @@
         </nav>
         <a href="#"><img src="images/billzlogo.png" style="height: 70%;vertical-align: middle;"></a>
         <nav class="right">
-            <a href="#" class="button alt">Log in</a>
+            <a href="javascript:logUserOut()" class="button alt">Log out</a>
         </nav>
     </header>
 
     <!-- Menu -->
     <nav id="menu">
         <ul class="links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="generic.html">Generic</a></li>
-            <li><a href="elements.html">Elements</a></li>
+            <li><a href="javascript:redirectToPage('index.html')">Home</a></li>
+            <li><a href="javascript:redirectToPage('messages.html')">Messages</a></li>
+            <li><a href="javascript:redirectToPage('addBill.html')">Add Bill</a></li>
+            <li><a href="javascript:redirectToPage('addSupplier.html')">Add Supplier</a></li>
+            <li><a href="javascript:redirectToPage('billSummary.html')">Bill History</a></li>
+            <li><a href="javascript:redirectToPage('generalSummary.html')">History</a></li>
+            <li><a href="javascript:redirectToPage('settings.html')">Settings</a></li>
         </ul>
         <ul class="actions vertical">
             <li><a href="#" class="button fit">Login</a></li>
@@ -99,6 +103,7 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <script src="assets/js/variables.js"></script>
     <script src="assets/js/serverCalls.js"></script>
     <script>setSendBillFile();</script>
 

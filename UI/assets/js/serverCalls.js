@@ -44,12 +44,48 @@ function setRegisterForm() {
    });
 }
 
+function setLoginForm() {
+    $("form#loginForm").submit(function (e) {
+        e.preventDefault();
+        inps = $(".form-control");
+        map_inps = { };
+        for (i=0;i<inps.length; i++) {
+            map_inps[inps[i].name] = inps[i].value;
+        }
+        map_inps["type"] = "login";
+        map_inps["userId"] = map_inps["user_name"];
+        sessionStorage.setItem("user_name", map_inps["userId"]);
+        //map_inps["confirm_password"]="none";
+        sendRequest(server_address, map_inps, onLoginConfirmed);
+    });
+}
+
 function onRegisterConfirmed(jsonData) {
   console.log(jsonData);
-  sessionStorage.setItem("user_name", jsonData["userId"]);
-  setToken("jimbo");
-  window.location.href = server_address + "/index.html";
-  //sendGetRequest(server_address + "/index.html", renderPage);
+  if (jsonData["status"] === "success") {
+      sessionStorage.setItem("user_name", jsonData["userId"]);
+      setToken("jimbo");
+      //window.location.href = server_address + "/index.html";
+      onPageApproved(server_address + "/index.html");
+  }
+  else {
+      unsuccessNode = $("#unsuccess-reg")[0];
+      unsuccessNode.textContent = "Error: " + jsonData["error"];
+  }
+}
+
+function onLoginConfirmed(jsonData) {
+    console.log(jsonData);
+    if (jsonData["status"] === "success") {
+        setToken("jimbo");
+        //window.location.href = server_address + "/index.html";
+        onPageApproved(server_address + "/index.html");
+    }
+    else {
+        sessionStorage.removeItem("user_name");
+        unsuccessNode = $("#unsuccess-log")[0];
+        unsuccessNode.textContent = "Error: " + jsonData["error"];
+    }
 }
 
 function requestForPage(pageURL) {
@@ -68,7 +104,16 @@ function setToken(token) {
 
 function setHelloLabel() {
     helloNode = $("#welcome-header")[0];
-    helloNode.textContent = "Welcome " + sessionStorage.getItem("user_name") +"!";
+    if (sessionStorage.getItem("user_name") != null){
+        helloNode.textContent = "Welcome " + sessionStorage.getItem("user_name") +"!";
+    }
+}
+
+function setHeyLabel() {
+    helloNode = $("#hey-header")[0];
+    if (sessionStorage.getItem("user_name") != null){
+        helloNode.textContent = "Hey " + sessionStorage.getItem("user_name") +"!";
+    }
 }
 
 function setSendBillFile() {
@@ -109,16 +154,16 @@ function getAndPutParticipants() {
     sendRequest(server_address+"/regForm", supplier_map, console.log);
 }
 
-function setOnLoginRequest() {
-  $("form#loginForm").submit(function (e) {
-      e.preventDefault();
-      inps = $("input", $("#loginForm")[0]);
-      map_inps = { };
-      map_inps[inps[0].title] = inps[0].value;
-      map_inps[inps[1].title] = sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash(inps[1].value));
-      sendRequest(server_address+"/regForm", map_inps, console.log);
- });
-}
+// function setOnLoginRequest() {
+//   $("form#loginForm").submit(function (e) {
+//       e.preventDefault();
+//       inps = $("input", $("#loginForm")[0]);
+//       map_inps = { };
+//       map_inps[inps[0].title] = inps[0].value;
+//       map_inps[inps[1].title] = sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash(inps[1].value));
+//       sendRequest(server_address+"/regForm", map_inps, console.log);
+//  });
+// }
 
 function setOnAddRoomateRequest() {
   $("form#addRoomate").submit(function (e) {
@@ -437,4 +482,15 @@ function createImgNode(msgType) {
     imgNode.style.setProperty("width", "20px");
     imgNode.style.setProperty("height", "20px");
     return imgNode;
+}
+
+function redirectToPage(page) {
+    window.location.href = server_address + "/" + page;
+}
+
+function logUserOut() {
+    sessionStorage.removeItem("user_token");
+    sessionStorage.removeItem("user_name");
+    window.location.href = server_address;
+    // call to server to erase session
 }
