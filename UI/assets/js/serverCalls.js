@@ -60,6 +60,22 @@ function setLoginForm() {
     });
 }
 
+function setChangePassForm() {
+    $("form#changePassForm").submit(function (e) {
+        e.preventDefault();
+        inps = $(".form-control");
+        map_inps = { };
+        for (i=0;i<inps.length; i++) {
+            map_inps[inps[i].name] = inps[i].value;
+        }
+        map_inps["type"] = "change_password";
+        map_inps["token"] = sessionStorage.getItem("token");
+        map_inps["user_name"] = sessionStorage.getItem("user_name");
+        //map_inps["confirm_password"]="none";
+        sendRequest(server_address, map_inps, onLoginConfirmed);
+    });
+}
+
 function onRegisterConfirmed(jsonData) {
   console.log(jsonData);
   if (jsonData["status"] === "success") {
@@ -402,55 +418,55 @@ function createBarNode(balance, maxBalance) {
     return divMainBar;
 }
 
-function getSvgNode(msgType) {
-    type_json = {
-        "debt": {
-            "bi_class": "bi-exclamation-octagon-fill",
-            "d": "M11.46.146A.5.5 0 0011.107 0H4.893a.5.5 0 00-.353.146L.146 4.54A.5.5 0 000 4.893v6.214a.5.5 0 00.146.353l4.394 4.394a.5.5 0 00.353.146h6.214a.5.5 0 00.353-.146l4.394-4.394a.5.5 0 00.146-.353V4.893a.5.5 0 00-.146-.353L11.46.146zM8 4a.905.905 0 00-.9.995l.35 3.507a.552.552 0 001.1 0l.35-3.507A.905.905 0 008 4zm.002 6a1 1 0 100 2 1 1 0 000-2z"
-        },
-        "roomate_joined" :{
-            "bi_class": "bi-person-plus-fill",
-            "d": "M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 100-6 3 3 0 000 6zm7.5-3a.5.5 0 01.5.5v2a.5.5 0 01-.5.5h-2a.5.5 0 010-1H13V5.5a.5.5 0 01.5-.5z",
-            "d2": "M13 7.5a.5.5 0 01.5-.5h2a.5.5 0 010 1H14v1.5a.5.5 0 01-1 0v-2z"
-        },
-        "payment_approved" :{
-            "bi_class": "bi-check-circle",
-            "d": "M15.354 2.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3-3a.5.5 0 11.708-.708L8 9.293l6.646-6.647a.5.5 0 01.708 0z",
-            "d2": "M8 2.5A5.5 5.5 0 1013.5 8a.5.5 0 011 0 6.5 6.5 0 11-3.25-5.63.5.5 0 11-.5.865A5.472 5.472 0 008 2.5z"
-        },
-        "pay_reminder" :{
-            "bi_class": "bi-bell-fill",
-            "d": "M8 16a2 2 0 002-2H6a2 2 0 002 2zm.995-14.901a1 1 0 10-1.99 0A5.002 5.002 0 003 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z",
-        },
-        "user_joined" :{
-            "bi_class": "bi-house-door-fill",
-            "d": "M6.5 10.995V14.5a.5.5 0 01-.5.5H2a.5.5 0 01-.5-.5v-7a.5.5 0 01.146-.354l6-6a.5.5 0 01.708 0l6 6a.5.5 0 01.146.354v7a.5.5 0 01-.5.5h-4a.5.5 0 01-.5-.5V11c0-.25-.25-.5-.5-.5H7c-.25 0-.5.25-.5.495z",
-            "d2": "M13 2.5V6l-2-2V2.5a.5.5 0 01.5-.5h1a.5.5 0 01.5.5z"
-        }
-    };
-    svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svgNode.classList.add("bi");
-    svgNode.classList.add(type_json[msgType].bi_class);
-    svgNode.classList.add(type_json[msgType].bi_class);
-
-    svgNode.setAttribute("width", "1em"); svgNode.setAttribute("height", "1em");
-    svgNode.setAttribute("viewBox", "0 0 16 16"); svgNode.setAttribute("fill", "currentColor");
-    svgNode.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-
-    path1 = document.createElement("path");
-    path1.setAttribute("fill-rule","evenodd");
-    path1.setAttribute("d", type_json[msgType].d);
-    path1.setAttribute("clip-rule","evenodd");
-    svgNode.append(path1);
-    if ("d2" in type_json[msgType]) {
-        path2 = document.createElement("path");
-        path2.setAttribute("d", type_json[msgType].d2);
-        path2.d=type_json[msgType].d2;
-        path2.setAttribute("clip-rule","evenodd");
-        svgNode.append(path2);
-    }
-    return svgNode;
-}
+// function getSvgNode(msgType) {
+//     type_json = {
+//         "debt": {
+//             "bi_class": "bi-exclamation-octagon-fill",
+//             "d": "M11.46.146A.5.5 0 0011.107 0H4.893a.5.5 0 00-.353.146L.146 4.54A.5.5 0 000 4.893v6.214a.5.5 0 00.146.353l4.394 4.394a.5.5 0 00.353.146h6.214a.5.5 0 00.353-.146l4.394-4.394a.5.5 0 00.146-.353V4.893a.5.5 0 00-.146-.353L11.46.146zM8 4a.905.905 0 00-.9.995l.35 3.507a.552.552 0 001.1 0l.35-3.507A.905.905 0 008 4zm.002 6a1 1 0 100 2 1 1 0 000-2z"
+//         },
+//         "roomate_joined" :{
+//             "bi_class": "bi-person-plus-fill",
+//             "d": "M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 100-6 3 3 0 000 6zm7.5-3a.5.5 0 01.5.5v2a.5.5 0 01-.5.5h-2a.5.5 0 010-1H13V5.5a.5.5 0 01.5-.5z",
+//             "d2": "M13 7.5a.5.5 0 01.5-.5h2a.5.5 0 010 1H14v1.5a.5.5 0 01-1 0v-2z"
+//         },
+//         "payment_approved" :{
+//             "bi_class": "bi-check-circle",
+//             "d": "M15.354 2.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3-3a.5.5 0 11.708-.708L8 9.293l6.646-6.647a.5.5 0 01.708 0z",
+//             "d2": "M8 2.5A5.5 5.5 0 1013.5 8a.5.5 0 011 0 6.5 6.5 0 11-3.25-5.63.5.5 0 11-.5.865A5.472 5.472 0 008 2.5z"
+//         },
+//         "pay_reminder" :{
+//             "bi_class": "bi-bell-fill",
+//             "d": "M8 16a2 2 0 002-2H6a2 2 0 002 2zm.995-14.901a1 1 0 10-1.99 0A5.002 5.002 0 003 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z",
+//         },
+//         "user_joined" :{
+//             "bi_class": "bi-house-door-fill",
+//             "d": "M6.5 10.995V14.5a.5.5 0 01-.5.5H2a.5.5 0 01-.5-.5v-7a.5.5 0 01.146-.354l6-6a.5.5 0 01.708 0l6 6a.5.5 0 01.146.354v7a.5.5 0 01-.5.5h-4a.5.5 0 01-.5-.5V11c0-.25-.25-.5-.5-.5H7c-.25 0-.5.25-.5.495z",
+//             "d2": "M13 2.5V6l-2-2V2.5a.5.5 0 01.5-.5h1a.5.5 0 01.5.5z"
+//         }
+//     };
+//     svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+//     svgNode.classList.add("bi");
+//     svgNode.classList.add(type_json[msgType].bi_class);
+//     svgNode.classList.add(type_json[msgType].bi_class);
+//
+//     svgNode.setAttribute("width", "1em"); svgNode.setAttribute("height", "1em");
+//     svgNode.setAttribute("viewBox", "0 0 16 16"); svgNode.setAttribute("fill", "currentColor");
+//     svgNode.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+//
+//     path1 = document.createElement("path");
+//     path1.setAttribute("fill-rule","evenodd");
+//     path1.setAttribute("d", type_json[msgType].d);
+//     path1.setAttribute("clip-rule","evenodd");
+//     svgNode.append(path1);
+//     if ("d2" in type_json[msgType]) {
+//         path2 = document.createElement("path");
+//         path2.setAttribute("d", type_json[msgType].d2);
+//         path2.d=type_json[msgType].d2;
+//         path2.setAttribute("clip-rule","evenodd");
+//         svgNode.append(path2);
+//     }
+//     return svgNode;
+// }
 
 function createMsgRow(msgsNode, msgJson) {
     msgRow = document.createElement("tr");
@@ -493,4 +509,101 @@ function logUserOut() {
     sessionStorage.removeItem("user_name");
     window.location.href = server_address;
     // call to server to erase session
+}
+
+function getSuppliers() {
+    server_url = server_address;
+    jsonInfo = {"requestType": "suppliers", "token": "aaaa"};
+    onResp = dat => {
+        dat["suppliers"].map(jsonData=>{
+            createHouseBox(jsonData);
+        });
+    };
+    sendRequest(server_url, jsonInfo, onResp);
+}
+
+function createHouseBox(jsonData) {
+    let supplier = jsonData["supplier"];
+    let owner = jsonData["owner"];
+    let roomates = jsonData["roomates"]; // type: json {roomate, part}
+    let suppliers_container = $("#suppliers-container")[0];
+    let houseboxNode = document.createElement("div");
+    let supplier_header = document.createElement("div");
+    let supplier_info = document.createElement("div");
+    let owner_header = document.createElement("div");
+    let owner_info = document.createElement("div");
+
+    supplier_header.style.setProperty("margin-top", "3px");
+    supplier_header.style.setProperty("padding", "0px");
+    supplier_header_label = document.createElement("label");
+    supplier_header_label.style.setProperty("font-weight" ,"bold");
+    supplier_header_label.style.setProperty("font-size" ,"100%");
+    supplier_header_label.textContent = "Supplier";
+    supplier_header.appendChild(supplier_header_label);
+    houseboxNode.appendChild(supplier_header);
+
+    supplier_info.style.setProperty("margin-top", "3px");
+    supplier_info.style.setProperty("padding", "0px");
+    supplier_info_label = document.createElement("label");
+    supplier_info_label.style.setProperty("font-weight" ,"bold");
+    supplier_info_label.style.setProperty("font-size" ,"100%");
+    supplier_info_label.textContent = supplier;
+    supplier_info.appendChild(supplier_info_label);
+    houseboxNode.appendChild(supplier_info);
+
+    owner_header.style.setProperty("margin-top", "2px");
+    owner_header.style.setProperty("padding", "0px");
+    owner_header_label = document.createElement("label");
+    owner_header_label.style.setProperty("font-weight" ,"bold");
+    owner_header_label.style.setProperty("font-size" ,"100%");
+    owner_header_label.textContent = "Owner";
+    owner_header.appendChild(owner_header_label);
+    houseboxNode.appendChild(owner_header);
+
+    owner_info.style.setProperty("margin-top", "2px");
+    owner_info.style.setProperty("padding", "0px");
+    owner_info_label = document.createElement("label");
+    owner_info_label.style.setProperty("font-weight" ,"bold");
+    owner_info_label.style.setProperty("font-size" ,"100%");
+    owner_info_label.textContent = owner;
+    owner_info.appendChild(owner_info_label);
+    houseboxNode.appendChild(owner_info);
+
+    let billSplitHeader = document.createElement("div");
+    billSplitHeader.style.setProperty("color", "black");
+    billSplitHeader.style.setProperty("margin-bottom", "0px");
+    billSplitHeader.style.setProperty("vertical-align", "center");
+    billSplitHeader.style.setProperty("font-weight", "bold");
+    billSplitHeader.textContent = "Bill split";
+    houseboxNode.appendChild(billSplitHeader);
+
+    let emptySpan = document.createElement("span");
+    houseboxNode.appendChild(emptySpan);
+
+    let roomatesBox = document.createElement("ul");
+    roomatesBox.classList.add("roomates");
+    for (i in roomates) {
+        let roomateRow = document.createElement("li");
+        let rooomates_str = roomates[i]["roomate"].padEnd(20) + roomates[i]["part"];
+        roomatesBox.appendChild(roomateRow);
+    }
+    houseboxNode.appendChild(roomatesBox);
+    houseboxNode.appendChild(emptySpan);
+
+    suppliers_container.appendChild(houseboxNode);
+}
+
+function changeSetting(setting_id) {
+    input_nd = $("#"+setting_id)[0];
+    input_value = input_nd.value;
+    requestJson = {"requestType": "changeSetting", "setting": setting_id, "value": input_value};
+    onChangeDone = jsonData => {
+        if (jsonData["status"] === "success") {
+            redirectToPage("settings.html");
+        }
+        else {
+            $("#change-err")[0].textContent = jsonData["error"];
+        }
+    };
+    sendRequest(server_url, requestJson, onChangeDone);
 }
