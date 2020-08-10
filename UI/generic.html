@@ -6,6 +6,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link rel="stylesheet" href="assets/css/main.css" />
+	<link rel="stylesheet" href="assets/css/alon.css" />
 </head>
 
 <body class="subpage">
@@ -15,14 +16,14 @@
 		<nav class="left">
 			<a href="#menu"><span>Menu</span></a>
 		</nav>
-		<a href="#"><img src="images/billzlogo.png" style="height: 70%;vertical-align: middle;"></a>
+		<a href="/"><img src="images/billzlogo.png" style="height: 70%;vertical-align: middle;"></a>
 		<nav class="right">
-			<a href="#" class="button alt">Log in</a>
+			<a href="javascript:logUserOut()" class="button alt">Log in</a>
 		</nav>
 	</header>
 
 	<!-- Menu -->
-	<nav id="menu">
+	<!--nav id="menu">
 		<ul class="links">
 			<li><a href="#">History</a></li>
 			<li><a href="#">Add Bill</a></li>
@@ -31,7 +32,7 @@
 		<ul class="actions vertical">
 			<li><a href="#" class="button fit">Login</a></li>
 		</ul>
-	</nav>
+	</nav-->
 
 	<!-- Main -->
 	<section id="main" class="wrapper">
@@ -46,6 +47,7 @@
 						<input type="text" title="username" placeholder="username" />
 						<input type="password" title="password" placeholder="password" />
 						<button type="submit" class="btn">Login</button>
+						<div id="unsuccess-log" style="color: red;"></div>
 						<a class="forgot" href="#">Forgot Username?</a>
 					</form>
 				</div>
@@ -76,10 +78,10 @@
 	<script src="assets/js/skel.min.js"></script>
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
-  <script src="https://bitwiseshiftleft.github.io/sjcl/sjcl.js"></script>
+  	<script src="https://bitwiseshiftleft.github.io/sjcl/sjcl.js"></script>
+	<script src="assets/js/variables.js"></script>
 	<script src="assets/js/serverCalls.js"></script>
-
-	<script>setOnLoginRequest()</script>
+	<script>setLoginForm()</script>
 
 </body>
 

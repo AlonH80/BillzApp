@@ -4,9 +4,7 @@ import com.sun.net.httpserver.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Observable;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
@@ -17,12 +15,16 @@ public class Server extends Observable {
     private static final String UiPath = "UI/";
     private PaymentManager paymentManager;
     private UsersManager usersManager;
+    private MessageManager messageManager;
+    private ApartsManager apartsManager;
     private LinkedTreeMap<String, HttpExchange> pendingManagerResponse;
 
     public Server() throws Exception {
+        logger = Utils.getLogger();
         usersManager = new UsersManager(this);
-        setLogger((usersManager.getLogger()));
+        messageManager = new MessageManager(this);
         paymentManager = new PaymentManager(this);
+        apartsManager = new ApartsManager();
         pendingManagerResponse = new LinkedTreeMap<>();
         server = HttpServer.create(new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 8001), 0);
         //server = HttpServer.create(new InetSocketAddress("localhost", 8001), 0);
@@ -42,9 +44,6 @@ public class Server extends Observable {
     }
 
     private void sendDefaultResponse(HttpExchange httpExchange, String response) throws IOException {
-        //Headers responseHeaders = httpExchange.getResponseHeaders();
-        //responseHeaders.set("Access-Control-Allow-Origin", "https://localhost:63342");
-
         byte[] bs = response.getBytes("UTF-8");
         httpExchange.sendResponseHeaders(200, bs.length);
         OutputStream os = httpExchange.getResponseBody();
@@ -87,8 +86,35 @@ public class Server extends Observable {
             if (requestURI.matches("/")) {
                 return fileToString(String.format("%s/%s", "UI", "register.html"));
             }
+            else if (requestURI.endsWith(".png") || requestURI.endsWith(".ico") || requestURI.toLowerCase().contains("fontawesome")) {
+                returnImage(httpExchange, UiPath + requestURI);
+                return "";
+            }
             return fileToString(String.format("%s%s", "UI", requestURI).split("\\?")[0]);
         }
+
+
+
+
+        public void returnImage(HttpExchange httpExchange, String imgPath) throws IOException {
+            File imgFile = new File(imgPath);
+            if(imgFile.exists()) {
+                httpExchange.getResponseHeaders().set("Content-Type", "application/octet-stream");
+                OutputStream out = httpExchange.getResponseBody();
+                FileInputStream in = new FileInputStream(imgFile);
+                byte[] bs = in.readAllBytes();
+                httpExchange.sendResponseHeaders(200, bs.length);
+                // copy from in to out
+                out.write(bs);
+                out.flush();
+                out.close();
+                in.close();
+            }else {
+                throw new FileNotFoundException();
+            }
+        }
+
+
 
         private HashMap<String, Object> handlePostRequest(HttpExchange httpExchange) throws IOException {
             InputStream bod = httpExchange.getRequestBody();
@@ -103,14 +129,12 @@ public class Server extends Observable {
             return (HashMap<String, Object>) Utils.jsonToMap(reqBody.toString());
         }
 
-        synchronized private void handlePostResponse(HttpExchange httpExchange, HashMap<String, Object> requestParamValue) throws IOException {
+        synchronized private void handlePostResponse(HttpExchange httpExchange, HashMap<String, Object> requestParamValue) throws Exception {
             httpExchange.getResponseHeaders().set("Content-Type", "application/json");
             Integer pendSize = pendingManagerResponse.size();
             requestParamValue.put("pendQueueId", pendSize.toString());
             pendingManagerResponse.put(pendSize.toString(), httpExchange);
             String reqType = requestParamValue.get("type").toString();
-//            setChanged();
-//            notifyObservers(requestParamValue);
             switch (reqType) {
                 case "login":
                 case "set":
@@ -119,6 +143,13 @@ public class Server extends Observable {
                     break;
                 case "execute":
                     paymentManager.update(requestParamValue);
+                    break;
+                case "messages":
+                    List res = messageManager.getMessages(requestParamValue.get("userId").toString());
+                    sendDefaultResponse(httpExchange,Utils.listToJson(res));
+                    break;
+                case "addSupplier":
+                    apartsManager.addSupplierToApartment(requestParamValue.get("apartmentId").toString(),requestParamValue.get("billOwner").toString(),Enum.valueOf(Supplier.TYPE.class,requestParamValue.get("supplier").toString().toUpperCase()));
                     break;
             }
         }

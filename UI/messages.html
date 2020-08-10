@@ -12,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="assets/css/main.css" />
     <link rel="stylesheet" href="assets/css/generalSummary.css" />
+    <link rel="stylesheet" href="assets/css/alon.css" />
 </head>
 
 <body class="subpage">
@@ -23,16 +24,21 @@
         </nav>
         <a href="#"><img src="images/billzlogo.png" style="height: 70%;vertical-align: middle;"></a>
         <nav class="right">
-            <a href="#" class="button alt">Log in</a>
+            <a href="javascript:logUserOut()" class="button alt">Log out</a>
         </nav>
     </header>
 
     <!-- Menu -->
     <nav id="menu">
         <ul class="links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="generic.html">Generic</a></li>
-            <li><a href="elements.html">Elements</a></li>
+            <li><a href="javascript:redirectToPage('index.html')">Home</a></li>
+            <li><a href="javascript:redirectToPage('messages.html')">Messages</a></li>
+            <li><a href="javascript:redirectToPage('suppliers.html')">Suppliers</a></li>
+            <li><a href="javascript:redirectToPage('addBill.html')">Add Bill</a></li>
+            <li><a href="javascript:redirectToPage('addSupplier.html')">Add Supplier</a></li>
+            <li><a href="javascript:redirectToPage('billSummary.html')">Bill History</a></li>
+            <li><a href="javascript:redirectToPage('generalSummary.html')">History</a></li>
+            <li><a href="javascript:redirectToPage('settings.html')">Settings</a></li>
         </ul>
         <ul class="actions vertical">
             <li><a href="#" class="button fit">Login</a></li>
@@ -40,12 +46,12 @@
     </nav>
 
     <!-- Main -->
-    <h1 style="text-align: center;">All-Time Summary</h1>
+    <h1 style="text-align: center;">Messages</h1>
     <section id="main" class="wrapper">
-        <h2>Hey, Guy!</h2>
+        <!--h2 id="hey-header" style="text-align: left;">Hey!</h2-->
         <div class="table-wrapper">
             <table class="alt" id="msgsContainer">
-                    <!--tr>
+                    <tr>
                         <td>
                             <svg class="bi bi-exclamation-octagon-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M11.46.146A.5.5 0 0011.107 0H4.893a.5.5 0 00-.353.146L.146 4.54A.5.5 0 000 4.893v6.214a.5.5 0 00.146.353l4.394 4.394a.5.5 0 00.353.146h6.214a.5.5 0 00.353-.146l4.394-4.394a.5.5 0 00.146-.353V4.893a.5.5 0 00-.146-.353L11.46.146zM8 4a.905.905 0 00-.9.995l.35 3.507a.552.552 0 001.1 0l.35-3.507A.905.905 0 008 4zm.002 6a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd"/>
@@ -55,7 +61,7 @@
                             Alon just paid the water bill, Your debt - 12$  |  25/10/20
                         </td>
                     </tr>
-                <tr>
+                <!--tr>
      <td>
          <svg class="bi bi-person-plus-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
              <path fill-rule="evenodd" d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 100-6 3 3 0 000 6zm7.5-3a.5.5 0 01.5.5v2a.5.5 0 01-.5.5h-2a.5.5 0 010-1H13V5.5a.5.5 0 01.5-.5z" clip-rule="evenodd"/>
@@ -118,10 +124,12 @@
     <script src="assets/js/skel.min.js"></script>
     <script src="assets/js/util.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/variables.js"></script>
     <script src="assets/js/serverCalls.js"></script>
     <script>$(window).load(function() {
         getMessages();
     });</script>
+    <!--script>setHeyLabel();</script-->
 </body>
 
 </html>

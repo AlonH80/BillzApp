@@ -58,7 +58,7 @@ public class PaymentManager {
 //        paymentServer.setLogger(logger);
         webConnector = new WebConnector();
         webConnector.setLogger(logger);
-        //verifyAccessToken();
+        //verifyAccessToken();//////////////////////
         mongoConnector = new MongoConnector(componentConfig.get("mongoAddress"), Integer.parseInt(componentConfig.get("mongoPort")));
         mongoConnector.setLogger(logger);
 
@@ -82,7 +82,7 @@ public class PaymentManager {
         HashMap<String, Object> tmpComponentConfig = (new Gson()).fromJson(new JsonReader(new FileReader(confPath)), HashMap.class);
         tmpComponentConfig.forEach((k,v)->componentConfig.put(k, v.toString()));
         logger.info(String.format("ComponentConfig: %s", componentConfig.toString()));
-//        checkFileExist(componentConfig.get("orderTemplatePath"));
+//        checkFileExist(componentConfig.get("orderTemplatePath"));///////////////////////
     }
 
     public String transferMoney(String userIdFrom, String userIdTo, Double amount) throws Exception {

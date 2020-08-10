@@ -5,8 +5,11 @@
 	<title>Generic - Intensify by TEMPLATED</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="assets/css/welcome.css" />
+	<link rel="stylesheet" href="assets/css/font-awesome.min.css" />
     <link rel="stylesheet" href="assets/css/main.css" />
     <link rel="stylesheet" href="assets/css/register.css" />
+    <link rel="stylesheet" href="assets/css/alon.css" />
 </head>
 
 <body class="subpage">
@@ -16,18 +19,17 @@
 		<nav class="left">
 			<a href="#menu"><span>Menu</span></a>
 		</nav>
-		<a href="#"><img src="images/billzlogo.png" style="height: 70%;vertical-align: middle;"></a>
+		<a href="/"><img src="images/billzlogo.png" style="height: 70%;vertical-align: middle;"></a>
 		<nav class="right">
-			<a href="#" class="button alt">Log in</a>
+			<a href="/login.html" class="button alt">Log in</a>
 		</nav>
 	</header>
 
 	<!-- Menu -->
 	<nav id="menu">
 		<ul class="links">
-			<li><a href="#">History</a></li>
-			<li><a href="#">Add Bill</a></li>
-			<li><a href="#">Settings</a></li>
+			<li><a href="javascript:redirectToPage('login.html')">Login</a></li>
+			<li><a href="javascript:redirectToPage('aboutUs.html')">About us</a></li>
 		</ul>
 		<ul class="actions vertical">
 			<li><a href="#" class="button fit">Login</a></li>
@@ -40,10 +42,7 @@
             <h2>Register</h2>
             <p class="hint-text">Create your account. It's free and only takes a minute.</p>
             <div class="form-group">
-                <div class="row">
-                    <div class="col-xs-6"><input type="text" class="form-control" name="first_name" placeholder="First Name" required="required"></div>
-                    <div class="col-xs-6"><input type="text" class="form-control" name="last_name" placeholder="Last Name" required="required"></div>
-                </div>
+				<input type="text" class="form-control" name="user_name" placeholder="User Name" required="required">
             </div>
             <div class="form-group">
                 <input type="email" class="form-control" name="email" placeholder="Email" required="required">
@@ -64,6 +63,7 @@
             <div class="form-group">
                 <button type="submit" class="btn btn-success btn-lg btn-block">Register Now</button>
             </div>
+			<div id="unsuccess-reg" style="color: red;"></div>
         </form>
         <div class="text-center">Already have an account? <a href="#">Sign in</a></div>
     </div>
@@ -89,6 +89,7 @@
 	<script src="assets/js/skel.min.js"></script>
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
+	<script src="assets/js/variables.js"></script>
 	<script src="assets/js/serverCalls.js"></script>
 	<script>setRegisterForm();</script>
 </body>
