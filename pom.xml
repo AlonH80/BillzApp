@@ -68,6 +68,10 @@
                 <executions>
                     <execution>
                         <configuration>
+                            <descriptorRefs>
+                                <!-- This tells Maven to include all dependencies -->
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
                             <additionalProperties>
                                 <java.source>${maven.compiler.source}</java.source>
                                 <java.target>${maven.compiler.target}</java.target>
