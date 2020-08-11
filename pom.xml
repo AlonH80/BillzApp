@@ -45,26 +45,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>2.2.4</version>
-            </plugin>
-            <plugin>
-                <groupId>org.mongodb</groupId>
-                <artifactId>bson</artifactId>
-                <version>4.1.0</version>
-            </plugin>
-            <plugin>
-                <groupId>org.mongodb</groupId>
-                <artifactId>mongodb-driver-sync</artifactId>
-                <version>4.1.0</version>
-            </plugin>
-            <plugin>
-                <groupId>org.mongodb</groupId>
-                <artifactId>mongodb-driver-core</artifactId>
-                <version>4.1.0</version>
-            </plugin>
-            <plugin>
                 <inherited>true</inherited>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -77,7 +57,7 @@
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
-                        <phase>package</phase>
+                        <phase>compile</phase>
                         <goals><goal>copy-dependencies</goal></goals>
                     </execution>
                 </executions>
