@@ -12,3 +12,4 @@ src/config.json*
 remote_connect
 resources/*keys*
 resources/config.json
+target
