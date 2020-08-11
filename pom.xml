@@ -74,6 +74,11 @@
                             <!--</additionalProperties>-->
                         <!--</configuration>-->
                         <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>HttpsClient</mainClass>
+                                </manifest>
+                            </archive>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>billzGroup</groupId>
