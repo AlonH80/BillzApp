@@ -51,7 +51,6 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <finalName>BillzServer</finalName>
                 </configuration>
             </plugin>
             <plugin>
