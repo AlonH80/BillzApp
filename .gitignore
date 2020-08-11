@@ -1,7 +1,6 @@
 .idea/*
 out/*
 logs
-gson-2.8.5.jar
 *.iml
 src/*.iml
 com.billz.PaymentServer.PaymentServer/*.iml
