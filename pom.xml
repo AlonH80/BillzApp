@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>groupId</groupId>
+    <groupId>billzGroup</groupId>
     <artifactId>BillzServer</artifactId>
     <version>1.0-SNAPSHOT</version>
     <repositories>
@@ -37,11 +37,21 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <executions>
                     <execution>
+                        <!--<configuration>-->
+                            <!--<additionalProperties>-->
+                                <!--<java.source>${maven.compiler.source}</java.source>-->
+                                <!--<java.target>${maven.compiler.target}</java.target>-->
+                            <!--</additionalProperties>-->
+                        <!--</configuration>-->
                         <configuration>
-                            <additionalProperties>
-                                <java.source>${maven.compiler.source}</java.source>
-                                <java.target>${maven.compiler.target}</java.target>
-                            </additionalProperties>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>billzGroup</groupId>
+                                    <artifactId>BillzServer</artifactId>
+                                    <version>1.0-SNAPSHOT</version>
+                                    <destFileName>billzServer.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
                         </configuration>
                     </execution>
                 </executions>
