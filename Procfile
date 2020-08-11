@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -jar target/BillzServer-1.0-SNAPSHOT.jar
+web: java $JAVA_OPTS -cp target/classes:targer/dependency/* HttpsClient
