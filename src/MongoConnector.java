@@ -34,6 +34,10 @@ public class MongoConnector {
 
 
     public MongoConnector() throws Exception {
+//        MongoClientURI uri = new MongoClientURI();
+//
+//        MongoClient mongoClient = new MongoClient(uri);
+//        MongoDatabase database = mongoClient.getDatabase("test");
         logger = Utils.getLogger();
         initConfig();
         this.address = componentConfig.get("mongoAddress");
@@ -48,7 +52,9 @@ public class MongoConnector {
     }
 
     private void initClient() {
-        client = MongoClients.create(String.format("mongodb://%s:%d", address, port));
+        String serverAddress = "mongodb+srv://billz:billz@billzcluster.t8xqb.mongodb.net/billzDB?retryWrites=true&w=majority";
+        // client = MongoClients.create(String.format("mongodb://%s:%d", address, port));
+        client = MongoClients.create(serverAddress);
     }
 
     public void setLogger(Logger logger) {
