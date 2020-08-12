@@ -1,1 +1,1 @@
-web: web: java $JAVA_OPTS -cp target/classes:target/dependency/* HttpsClient
+web: java $JAVA_OPTS -cp target/classes:target/dependency/* HttpsClient
