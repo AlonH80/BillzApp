@@ -1,1 +1,1 @@
-web: java -jar target/BillzServer-1.0-SNAPSHOT.jar
+web: java -cp target/BillzServer-1.0-SNAPSHOT.jar HttpsClient.class
