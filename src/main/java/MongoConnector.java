@@ -21,7 +21,7 @@ public class MongoConnector {
     private String defaultCollection = "UsersAuth";
     private static MongoConnector instance = null;
     private static HashMap<String, String> componentConfig;
-    private final static String confPath = "target/resources/config.json";
+    private final static String confPath = "src/test/resources/config.json";
 
     public static MongoConnector getInstance() throws Exception {
         if (instance == null) {
