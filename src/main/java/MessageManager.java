@@ -12,7 +12,7 @@ public class MessageManager {
     private HashMap<String, String> componentConfig;
     private HashMap<String, HashMap<String, Object>> recordPending;
     private HashMap<String, HashMap<String, String>> waitingApproved;
-    private final static String confPath = "src/test/resources/config.json";
+    private final static String confPath = "target/classes/resources/config.json";
     private final static String logsPath = "logs/";
 
 

@@ -10,7 +10,7 @@ public class UsersManager {
     private MongoConnector mongoConnector;
     private Encryptor encryptor;
     private HashMap<String, String> componentConfig;
-    private final static String confPath = "src/test/resources/config.json";
+    private final static String confPath = "target/classes/resources/config.json";
     private final static String logsPath = "logs/";
     private final static int MINIMUM_PWD_LEN = 6;
     private Server server;
