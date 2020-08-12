@@ -77,6 +77,12 @@
                 <executions>
                     <execution>
                         <configuration>
+                            <archive>
+                                <manifest>
+                                    <addClasspath>true</addClasspath>
+                                    <mainClass>HttpsClient</mainClass>
+                                </manifest>
+                            </archive>
                             <additionalProperties>
                                 <java.source>${maven.compiler.source}</java.source>
                                 <java.target>${maven.compiler.target}</java.target>
