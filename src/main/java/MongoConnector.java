@@ -21,7 +21,7 @@ public class MongoConnector {
     private String defaultCollection = "UsersAuth";
     private static MongoConnector instance = null;
     private static HashMap<String, String> componentConfig;
-    private final static String confPath = "target/classes/resources/config.json";
+    private final static String confPath = "config.json";
 
     public static MongoConnector getInstance() throws Exception {
         if (instance == null) {
@@ -214,6 +214,7 @@ public class MongoConnector {
     private void initConfig() throws Exception {
         componentConfig = new HashMap<>();
         HashMap<String, Object> tmpConfig = Utils.jsonFileToMap(confPath);
+        //Map<String, String> tmpConfig = System.getenv();
         tmpConfig.forEach((k, v) -> componentConfig.put(k, v.toString()));
         logger.info(String.format("ComponentConfig: %s", componentConfig.toString()));
     }
