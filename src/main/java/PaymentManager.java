@@ -22,7 +22,7 @@ public class PaymentManager {
     private HashMap<String, String> componentConfig;
     private HashMap<String, HashMap<String, Object>> recordPending;
     private HashMap<String, HashMap<String, String>> waitingApproved;
-    private final static String confPath = "resources/config.json";
+    private final static String confPath = "target/resources/config.json";
     private final static String logsPath = "logs/";
 
     public PaymentManager(Server server) throws Exception {
@@ -65,7 +65,7 @@ public class PaymentManager {
                 // Initialise the keystore
         char[] password = "PaymentServer".toCharArray();
         KeyStore ks = KeyStore.getInstance("JKS");
-        FileInputStream fis = new FileInputStream("resources/ps.keystore"); //TODO: add to config file
+        FileInputStream fis = new FileInputStream("target/resources/ps.keystore"); //TODO: add to config file
         ks.load(fis, password);
 
         // Set up the key manager factory
