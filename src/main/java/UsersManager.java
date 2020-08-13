@@ -113,7 +113,10 @@ public class UsersManager {
         String password = requestMap.get("password").toString();
         String paypal = requestMap.get("paypal").toString();
         String email = requestMap.get("email").toString();
-        String apartmentId = requestMap.get("apartmentId").toString();
+        String apartmentId = "0";
+        if (requestMap.containsKey("apartmentId")) {
+            apartmentId = requestMap.get("apartmentId").toString();
+        }
         if (mongoConnector.isUserIdExist(userId)) {
             resMap.put("status", "fail");
             resMap.put("error", "user id already exist");
