@@ -203,8 +203,8 @@ function setOnSendPayment() {
           map_inps[inps[i].name] = inps[i].value;
       }
       //map_inps["confirm_password"]="none";
-      sendRequest(server_address+"/regForm", map_inps, onRegisterConfirmed);
-      sendRequest("10.100.102.7:8055"+"/regForm", map_inps, onRegisterConfirmed);
+      sendRequest(server_address, map_inps, onRegisterConfirmed);
+      sendRequest(server_address, map_inps, onRegisterConfirmed);
  });
 }
 
