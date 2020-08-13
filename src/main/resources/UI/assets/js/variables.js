@@ -1,1 +1,1 @@
-server_address="https://billz-app.herokuapp.com/";
+server_address="https://billz-app.herokuapp.com";
