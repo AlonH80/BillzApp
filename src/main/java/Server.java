@@ -11,8 +11,8 @@ import java.util.logging.Logger;
 public class Server extends Observable {
     private HttpServer server;
     private Logger logger;
-    private static final String resourcesPath = System.getProperty("user.dir") +"/resources/config.json";; //"/Users/alonhartanu/Desktop/Java/PaymentComponent/WebResources";
-    private static final String UiPath = "UI/";
+    private static final String resourcesPath = Utils.confPath;; //"/Users/alonhartanu/Desktop/Java/PaymentComponent/WebResources";
+    private static final String UiPath = System.getProperty("user.dir") + "target/classes/UI/";
     private PaymentManager paymentManager;
     private UsersManager usersManager;
     private MessageManager messageManager;
@@ -26,7 +26,8 @@ public class Server extends Observable {
         paymentManager = new PaymentManager(this);
         apartsManager = new ApartsManager();
         pendingManagerResponse = new LinkedTreeMap<>();
-        server = HttpServer.create(new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 8001), 0);
+        int port = Integer.parseInt(System.getenv("PORT"));
+        server = HttpServer.create(new InetSocketAddress(InetAddress.getByName("0.0.0.0"), port), 0);
         //server = HttpServer.create(new InetSocketAddress("localhost", 8001), 0);
         server.createContext("/", new MyHttpHandler());
         server.setExecutor(Executors.newFixedThreadPool(10));
@@ -84,7 +85,7 @@ public class Server extends Observable {
                 return "";
             }
             if (requestURI.matches("/")) {
-                return fileToString(String.format("%s/%s", "UI", "register.html"));
+                return fileToString(String.format("%s/%s", "https://alonh80.github.io/", "register.html"));
             }
             else if (requestURI.endsWith(".png") || requestURI.endsWith(".ico") || requestURI.toLowerCase().contains("fontawesome")) {
                 returnImage(httpExchange, UiPath + requestURI);
