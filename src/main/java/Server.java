@@ -91,7 +91,7 @@ public class Server extends Observable {
                 returnImage(httpExchange, UiPath + requestURI);
                 return "";
             }
-            return fileToString(String.format("%s%s", "UI", requestURI).split("\\?")[0]);
+            return fileToString(String.format("%s%s", UiPath, requestURI).split("\\?")[0]);
         }
 
 
