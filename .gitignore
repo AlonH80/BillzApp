@@ -9,6 +9,4 @@ com.billz.PaymentServer.PaymentServer/src/payment_referral
 src/keys.encrypt
 src/config.json*
 remote_connect
-resources/*keys*
-resources/config.json
 target
