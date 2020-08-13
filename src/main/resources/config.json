@@ -1,5 +1,5 @@
 {
-  "mongoAddress": "mongodb://billz:billz@billzcluster.t8xqb.mongodb.net/billzDB?retryWrites=true&w=majority",
+  "mongoAddress": "mongodb+srv://billz:billz@billzcluster.t8xqb.mongodb.net/billzDB?retryWrites=true&w=majority",
   "mongoPort": "27017",
   "mongoAppDB": "billzDB",
   "mongoAppCollection": "UsersAuth",
