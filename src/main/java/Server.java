@@ -85,7 +85,7 @@ public class Server extends Observable {
                 return "";
             }
             if (requestURI.matches("/")) {
-                return fileToString(String.format("%s/%s", "https://alonh80.github.io/", "register.html"));
+                return fileToString(String.format("%s/%s", UiPath, "register.html"));
             }
             else if (requestURI.endsWith(".png") || requestURI.endsWith(".ico") || requestURI.toLowerCase().contains("fontawesome")) {
                 returnImage(httpExchange, UiPath + requestURI);
