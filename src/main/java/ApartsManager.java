@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 public class ApartsManager {
 
     private Map<String, Apartment> apartments;
-    private final static String configPath = "target/classes/resources/config.json";
+    private final static String configPath = System.getProperty("user.dir") +"/resources/config.json";
     private Map<String, Object> configuration;
     private Logger logger;
     private MongoConnector mongoConnector;

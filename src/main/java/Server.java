@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 public class Server extends Observable {
     private HttpServer server;
     private Logger logger;
-    private static final String resourcesPath = "target/classes/resources/"; //"/Users/alonhartanu/Desktop/Java/PaymentComponent/WebResources";
+    private static final String resourcesPath = System.getProperty("user.dir") +"/resources/config.json";; //"/Users/alonhartanu/Desktop/Java/PaymentComponent/WebResources";
     private static final String UiPath = "UI/";
     private PaymentManager paymentManager;
     private UsersManager usersManager;
