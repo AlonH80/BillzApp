@@ -1,1 +1,1 @@
-server_address="http://10.100.102.8:8001";
+server_address="https://billz-app.herokuapp.com";
