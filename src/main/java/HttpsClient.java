@@ -6,7 +6,9 @@ public class HttpsClient {
 
     public static void main(String[] args) {
         try {
-            Files.list(new File(System.getProperty("user.dir")).toPath()).forEach(System.out::println);
+            Files.list(new File(System.getProperty("user.dir") + "/resources").toPath()).forEach(System.out::println);
+            Files.list(new File(System.getProperty("user.dir") + "/target").toPath()).forEach(System.out::println);
+            Files.list(new File(System.getProperty("user.dir") + "/target/classes").toPath()).forEach(System.out::println);
             new Server();
             System.out.println(Utils.generateDateTimeStamp());
         }
