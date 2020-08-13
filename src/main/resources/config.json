@@ -1,9 +1,8 @@
 {
-  "mongoAddress": "localhost",
+  "mongoAddress": "mongodb+srv://billz:billz@billzcluster.t8xqb.mongodb.net/<dbname>?retryWrites=true&w=majority",
   "mongoPort": "27017",
   "mongoAppDB": "billzDB",
   "mongoAppCollection": "UsersAuth",
   "UsersAuthServerPort": "8003"
 }
 
-mongodb+srv://billz:billz@billzcluster.t8xqb.mongodb.net/<dbname>?retryWrites=true&w=majority

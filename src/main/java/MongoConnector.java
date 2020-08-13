@@ -41,7 +41,6 @@ public class MongoConnector {
         logger = Utils.getLogger();
         initConfig();
         this.address = componentConfig.get("mongoAddress");
-        this.port = Integer.parseInt(componentConfig.get("mongoPort"));
         initClient();
     }
 
@@ -52,9 +51,8 @@ public class MongoConnector {
     }
 
     private void initClient() {
-        String serverAddress = "mongodb+srv://billz:billz@billzcluster.t8xqb.mongodb.net/billzDB?retryWrites=true&w=majority";
         // client = MongoClients.create(String.format("mongodb://%s:%d", address, port));
-        client = MongoClients.create(serverAddress);
+        client = MongoClients.create(address);
     }
 
     public void setLogger(Logger logger) {
