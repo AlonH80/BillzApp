@@ -21,7 +21,7 @@ public class Apartment {
         mongoConnector = MongoConnector.getInstance();
         this.apartmentId = id;
         this.ownerId = ownerId;
-        userIds = new ArrayList<>();
+        userIds = mongoConnector.getRoommates(id);
         userIds.add(ownerId);
     }
 

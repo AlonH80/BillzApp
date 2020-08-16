@@ -1,5 +1,3 @@
-
-//import com.billz.PaymentServer.PaymentServer;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
@@ -22,7 +20,7 @@ public class PaymentManager {
     private HashMap<String, String> componentConfig;
     private HashMap<String, HashMap<String, Object>> recordPending;
     private HashMap<String, HashMap<String, String>> waitingApproved;
-    private final static String confPath = "resources/config.json";
+    private final static String confPath = Utils.confPath;
     private final static String logsPath = "logs/";
 
     public PaymentManager(Server server) throws Exception {

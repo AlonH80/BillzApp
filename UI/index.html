@@ -28,6 +28,7 @@
 		<ul class="links">
 			<li><a href="javascript:redirectToPage('index.html')">Home</a></li>
 			<li><a href="javascript:redirectToPage('messages.html')">Messages</a></li>
+			<li><a href="javascript:redirectToPage('invite.html')">Add Roommate</a></li>
 			<li><a href="javascript:redirectToPage('suppliers.html')">Suppliers</a></li>
 			<li><a href="javascript:redirectToPage('addBill.html')">Add Bill</a></li>
 			<li><a href="javascript:redirectToPage('addSupplier.html')">Add Supplier</a></li>
@@ -43,14 +44,16 @@
 	<!-- Main -->
 	<h1 id="welcome-header" style="text-align: left;">Welcome back!</h1>
 	<br>
+	<div id="apt-action-nd"></div>
 	<br>
 	<br>
 	<div class="table-wrapper">
+		<!--button class="create-apt">Create an apartment</button-->
 		<table class="alt">
 			<thead>
 				<tr id="balanceRow">
 					<th>
-						<!--h3>Yuval owes you:</h3>
+						<h3>Yuval owes you:</h3>
 						<div class="col chart small-font-size">
 							<div class="bar yellow">
 								<div class="face side-0">
@@ -97,7 +100,7 @@
 							</div>
 						</div>
 						<h3>200 $</h3>
-					</th-->
+					</th>
 
 				</tr>
 			</thead>
@@ -127,8 +130,7 @@
 		<script src="assets/js/main.js"></script>
 		<script src="assets/js/variables.js"></script>
 		<script src="assets/js/serverCalls.js"></script>
-		<script>getBalance();</script>
-		<script>setHelloLabel();</script>
+		<script>generateUserHome();</script>
 </body>
 
 </html>

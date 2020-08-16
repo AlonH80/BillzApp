@@ -10,7 +10,7 @@ public class UsersManager {
     private MongoConnector mongoConnector;
     private Encryptor encryptor;
     private HashMap<String, String> componentConfig;
-    private final static String confPath = "resources/config.json";
+    private final static String confPath = Utils.confPath;
     private final static String logsPath = "logs/";
     private final static int MINIMUM_PWD_LEN = 6;
     private Server server;
@@ -98,9 +98,10 @@ public class UsersManager {
         } else if (!verifyPassword(userId, password)) {
             resMap.put("status", "fail");
             resMap.put("error", "Authentication failed");
-            // TODO: in case of exception, put that message in error
         } else {
             resMap.put("status", "success");
+            resMap.put("userId", userId);
+            resMap.put("apartmentId", mongoConnector.getAptId(userId));
         }
 
 

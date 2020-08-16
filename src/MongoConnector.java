@@ -21,7 +21,7 @@ public class MongoConnector {
     private String defaultCollection = "UsersAuth";
     private static MongoConnector instance = null;
     private static HashMap<String, String> componentConfig;
-    private final static String confPath = "resources/config.json";
+    private final static String confPath = Utils.confPath;
 
     public static MongoConnector getInstance() throws Exception {
         if (instance == null) {
@@ -37,6 +37,7 @@ public class MongoConnector {
         logger = Utils.getLogger();
         initConfig();
         this.address = componentConfig.get("mongoAddress");
+        this.address = "mongodb://localhost:27017";
         this.port = Integer.parseInt(componentConfig.get("mongoPort"));
         initClient();
     }
@@ -48,7 +49,7 @@ public class MongoConnector {
     }
 
     private void initClient() {
-        client = MongoClients.create(String.format("mongodb://%s:%d", address, port));
+        client = MongoClients.create(address);
     }
 
     public void setLogger(Logger logger) {
@@ -292,6 +293,14 @@ public class MongoConnector {
         update("billzDB", "apartments", queryMap, updateMap);
     }
 
+    public void updateApartmentForUsersId(String apartId, String user) {
+        LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
+        queryMap.put("userID", user);
+        Map<String, Object> updateMap = find("billzDB", "UsersAuth", queryMap).get(0);
+        updateMap.replace("apartmentId", apartId);
+        update("billzDB", "UsersAuth", queryMap, updateMap);
+    }
+
     public void updateApartmentSuppliers(String apartId, List<String> suppliers) {
         LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
         queryMap.put("id", apartId);
@@ -379,6 +388,23 @@ public class MongoConnector {
         Map<String, Object> resMap = find("billzDB", "suppliers", supplierMap).get(0);
         logger.info(String.format("apartment map: %s", (new Gson()).toJson(resMap)));
         return resMap;
+    }
+
+    public String getAptId(String userId) {
+        LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
+        queryMap.put("userID", userId);
+        Map<String, Object> resMap = find("billzDB", "UsersAuth", queryMap).get(0);
+        return resMap.get("apartmentId").toString();
+    }
+
+    public List<String> getRoommates(String apartmentId) {
+        LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
+        queryMap.put("apartmentId", apartmentId);
+        ArrayList<Map<String, Object>> resMap = find("billzDB", "apartments", queryMap);
+        if(resMap.isEmpty())
+            return new ArrayList<>();
+        else
+            return (List<String>) resMap.get(0).get("usersIds");
     }
 }
 

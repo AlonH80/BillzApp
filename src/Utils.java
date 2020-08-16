@@ -10,7 +10,13 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+
 public class Utils {
+
+//    public static String confPath = System.getProperty("user.dir") +"/target/classes/config.json";
+    public static String confPath = "resources/config.json";
+
+
     private final static String logsPath = "logs/";
     private static Logger logger = null;
 
