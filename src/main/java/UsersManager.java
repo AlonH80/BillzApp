@@ -98,9 +98,10 @@ public class UsersManager {
         } else if (!verifyPassword(userId, password)) {
             resMap.put("status", "fail");
             resMap.put("error", "Authentication failed");
-            // TODO: in case of exception, put that message in error
         } else {
             resMap.put("status", "success");
+            resMap.put("userId", userId);
+            resMap.put("apartmentId", mongoConnector.getAptId(userId));
         }
 
 
@@ -113,10 +114,7 @@ public class UsersManager {
         String password = requestMap.get("password").toString();
         String paypal = requestMap.get("paypal").toString();
         String email = requestMap.get("email").toString();
-        String apartmentId = "0";
-        if (requestMap.containsKey("apartmentId")) {
-            apartmentId = requestMap.get("apartmentId").toString();
-        }
+        String apartmentId = requestMap.get("apartmentId").toString();
         if (mongoConnector.isUserIdExist(userId)) {
             resMap.put("status", "fail");
             resMap.put("error", "user id already exist");

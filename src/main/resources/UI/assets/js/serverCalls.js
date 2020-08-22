@@ -1,10 +1,9 @@
-
 function sendRequest(serverURL, jsonData, onResponse) {
-  $.ajax({
+    $.ajax({
         method: "POST",
         url: serverURL,
         data: JSON.stringify(jsonData),
-        success: function(dataRec){
+        success: function (dataRec) {
             onResponse(dataRec);
             console.log(dataRec);
         },
@@ -18,7 +17,7 @@ function sendGetRequest(serverURL, onResponse) {
     $.ajax({
         method: "GET",
         url: serverURL,
-        success: function(dataRec){
+        success: function (dataRec) {
             onResponse(dataRec);
             //console.log(dataRec);
         },
@@ -33,23 +32,24 @@ function setRegisterForm() {
     $("form#signupForm").submit(function (e) {
         e.preventDefault();
         inps = $(".form-control");
-        map_inps = { };
-        for (i=0;i<inps.length; i++) {
+        map_inps = {};
+        for (i = 0; i < inps.length; i++) {
             map_inps[inps[i].name] = inps[i].value;
         }
         map_inps["type"] = "set";
         map_inps["userId"] = map_inps["user_name"];
+        map_inps["apartmentId"] = "0";
         //map_inps["confirm_password"]="none";
         sendRequest(server_address, map_inps, onRegisterConfirmed);
-   });
+    });
 }
 
 function setLoginForm() {
     $("form#loginForm").submit(function (e) {
         e.preventDefault();
         inps = $(".form-control");
-        map_inps = { };
-        for (i=0;i<inps.length; i++) {
+        map_inps = {};
+        for (i = 0; i < inps.length; i++) {
             map_inps[inps[i].name] = inps[i].value;
         }
         map_inps["type"] = "login";
@@ -64,8 +64,8 @@ function setChangePassForm() {
     $("form#changePassForm").submit(function (e) {
         e.preventDefault();
         inps = $(".form-control");
-        map_inps = { };
-        for (i=0;i<inps.length; i++) {
+        map_inps = {};
+        for (i = 0; i < inps.length; i++) {
             map_inps[inps[i].name] = inps[i].value;
         }
         map_inps["type"] = "change_password";
@@ -77,27 +77,27 @@ function setChangePassForm() {
 }
 
 function onRegisterConfirmed(jsonData) {
-  console.log(jsonData);
-  if (jsonData["status"] === "success") {
-      sessionStorage.setItem("user_name", jsonData["userId"]);
-      setToken("jimbo");
-      //window.location.href = server_address + "/index.html";
-      onPageApproved(server_address + "/index.html");
-  }
-  else {
-      unsuccessNode = $("#unsuccess-reg")[0];
-      unsuccessNode.textContent = "Error: " + jsonData["error"];
-  }
+    console.log(jsonData);
+    if (jsonData["status"] === "success") {
+        sessionStorage.setItem("user_name", jsonData["userId"]);
+        sessionStorage.setItem("apartmentId", jsonData["apartmentId"]);
+        setToken("jimbo");
+        //window.location.href = server_address + "/index.html";
+        onPageApproved(server_address + "/index.html");
+    } else {
+        unsuccessNode = $("#unsuccess-reg")[0];
+        unsuccessNode.textContent = "Error: " + jsonData["error"];
+    }
 }
 
 function onLoginConfirmed(jsonData) {
     console.log(jsonData);
     if (jsonData["status"] === "success") {
         setToken("jimbo");
+        sessionStorage.setItem("apartmentId", jsonData["apartmentId"]);
         //window.location.href = server_address + "/index.html";
         onPageApproved(server_address + "/index.html");
-    }
-    else {
+    } else {
         sessionStorage.removeItem("user_name");
         unsuccessNode = $("#unsuccess-log")[0];
         unsuccessNode.textContent = "Error: " + jsonData["error"];
@@ -105,8 +105,14 @@ function onLoginConfirmed(jsonData) {
 }
 
 function requestForPage(pageURL) {
-    jsonInfo = {"page": pageURL, "token": sessionStorage.getItem("user_token"), "userId": sessionStorage.getItem("user_name")};
-    sendRequest(server_address, jsonInfo, data => { onPageApproved(data["page"]); });
+    jsonInfo = {
+        "page": pageURL,
+        "token": sessionStorage.getItem("user_token"),
+        "userId": sessionStorage.getItem("user_name")
+    };
+    sendRequest(server_address, jsonInfo, data => {
+        onPageApproved(data["page"]);
+    });
 }
 
 function onPageApproved(pageURL) {
@@ -120,51 +126,51 @@ function setToken(token) {
 
 function setHelloLabel() {
     helloNode = $("#welcome-header")[0];
-    if (sessionStorage.getItem("user_name") != null){
-        helloNode.textContent = "Welcome " + sessionStorage.getItem("user_name") +"!";
+    if (sessionStorage.getItem("user_name") != null) {
+        helloNode.textContent = "Welcome " + sessionStorage.getItem("user_name") + "!";
     }
 }
 
 function setHeyLabel() {
     helloNode = $("#hey-header")[0];
-    if (sessionStorage.getItem("user_name") != null){
-        helloNode.textContent = "Hey " + sessionStorage.getItem("user_name") +"!";
+    if (sessionStorage.getItem("user_name") != null) {
+        helloNode.textContent = "Hey " + sessionStorage.getItem("user_name") + "!";
     }
 }
 
 function setSendBillFile() {
-  $("form#uploadFile").submit(function (e) {
-      e.preventDefault();
-      var map_inps = { };
-      var formDat = new FormData();
-      formDat.append("billFile",$("#pdfFile").prop("files")[0]);
-      formDat.append("cycle_billing", $("#isCycle")[0].checked);
-      formDat.append("bill_type", $(".selectpicker")[0].value);
-      $.ajax({
+    $("form#uploadFile").submit(function (e) {
+        e.preventDefault();
+        var map_inps = {};
+        var formDat = new FormData();
+        formDat.append("billFile", $("#pdfFile").prop("files")[0]);
+        formDat.append("cycle_billing", $("#isCycle")[0].checked);
+        formDat.append("bill_type", $(".selectpicker")[0].value);
+        $.ajax({
             data: formDat,
             method: "POST",
-            url: server_address+"/uploadFile",
+            url: server_address + "/uploadFile",
             processData: false,
             contentType: false,
-            success: function(dataRec){
+            success: function (dataRec) {
                 console.log(dataRec);
             },
             error: function (e) {
                 console.log("status code: " + e.status.toString());
             }
         });
-  });
+    });
 }
 
 function getAndPutParticipants() {
     rows = $("tr").slice(1);
-    pay_map = { };
-    for (i=0;i<rows.length;i++) {
-      row=rows[i];
-      tds = $("td", row);
-      pay_map[tds[0].textContent] = $("input", tds[1])[0].value;
+    pay_map = {};
+    for (i = 0; i < rows.length; i++) {
+        row = rows[i];
+        tds = $("td", row);
+        pay_map[tds[0].textContent] = $("input", tds[1])[0].value;
     }
-    supplier_map = {"pay_map": pay_map};
+    supplier_map = {"partsMap": pay_map};
     supplier_map["supplier"] = $("#supplierType")[0].value;
     supplier_map["billOwner"] = $("#billOwner")[0].value;
     supplier_map["type"] = "addSupplier";
@@ -183,36 +189,36 @@ function getAndPutParticipants() {
 // }
 
 function setOnAddRoomateRequest() {
-  $("form#addRoomate").submit(function (e) {
-      e.preventDefault();
-      inps = $("input", $("#addRoomate")[0]);
-      map_inps = { };
-      for (i=0;i<inps.length;i++){
-        map_inps[inps[i].name]=inps[i].value;
-      }
-      sendRequest(server_address+"/regForm", map_inps, console.log);
- });
+    $("form#addRoomate").submit(function (e) {
+        e.preventDefault();
+        inps = $("input", $("#addRoomate")[0]);
+        map_inps = {};
+        for (i = 0; i < inps.length; i++) {
+            map_inps[inps[i].name] = inps[i].value;
+        }
+        sendRequest(server_address + "/regForm", map_inps, console.log);
+    });
 }
 
 function setOnSendPayment() {
-  $("form#payRoomateForm").submit(function (e) {
-      e.preventDefault();
-      inps = $(".payFormProp");
-      map_inps = { };
-      for (i=0;i<inps.length; i++) {
-          map_inps[inps[i].name] = inps[i].value;
-      }
-      //map_inps["confirm_password"]="none";
-      sendRequest(server_address, map_inps, onRegisterConfirmed);
-      sendRequest(server_address, map_inps, onRegisterConfirmed);
- });
+    $("form#payRoomateForm").submit(function (e) {
+        e.preventDefault();
+        inps = $(".payFormProp");
+        map_inps = {};
+        for (i = 0; i < inps.length; i++) {
+            map_inps[inps[i].name] = inps[i].value;
+        }
+        //map_inps["confirm_password"]="none";
+        sendRequest(server_address, map_inps, onRegisterConfirmed);
+        sendRequest(server_address, map_inps, onRegisterConfirmed);
+    });
 }
 
 function getMessages() {
     server_url = server_address;
     jsonInfo = {"type": "messages", "token": "aaaa", "userId": sessionStorage.getItem("user_name")};
     onResp = dat => {
-        dat.map(msgJson=>{
+        dat.map(msgJson => {
             createMsgRow($("#msgsContainer"), msgJson);
         });
     };
@@ -220,13 +226,13 @@ function getMessages() {
 }
 
 function getRoomates() {
-    server_url = server_address + "/getInfo";
-    jsonInfo = {"type": "roomates", "token": "aaaa"};
+    server_url = server_address;
+    jsonInfo = {"type": "roommates", "token": "aaaa", "apartmentId": sessionStorage.getItem("apartmentId"), "userId": sessionStorage.getItem("user_name")};
     onResp = dat => {
-        partPerRoomate = calculatePartPerRoomate(dat["roomates"].length);
-        dat["roomates"].map(roomate=>{
+        partPerRoomate = calculatePartPerRoomate(dat.length);
+        dat.map(roomate => {
             addOptionToSelectPicker($("#billOwner"), roomate);
-            addRoomateToSplit($("#roomatesSplit"), roomate, partPerRoomate[dat["roomates"].indexOf(roomate)]);
+            addRoomateToSplit($("#roomatesSplit"), roomate, partPerRoomate[dat.indexOf(roomate)]);
         });
     };
     sendRequest(server_url, jsonInfo, onResp);
@@ -236,7 +242,7 @@ function getBillSummary() {
     server_url = server_address + "/getInfo";
     jsonInfo = {"type": "billSummary", "token": "aaaa"};
     onResp = dat => {
-        dat["billSummary"].map(rowJson=>{
+        dat["billSummary"].map(rowJson => {
             addRowToBillSummary($("#summaryRows"), rowJson);
         });
     };
@@ -244,10 +250,10 @@ function getBillSummary() {
 }
 
 function addOptionToSelectPicker(selectPickerNode, optionContent) {
-     optionNode = document.createElement("option");
-     optionNode.textContent = optionContent;
-     selectPickerNode.append(optionNode);
-     selectPickerNode.selectpicker("refresh");
+    optionNode = document.createElement("option");
+    optionNode.textContent = optionContent;
+    selectPickerNode.append(optionNode);
+    selectPickerNode.selectpicker("refresh");
 }
 
 function addRoomateToSplit(splitPartNode, roomateName, partPercentage) {
@@ -257,7 +263,7 @@ function addRoomateToSplit(splitPartNode, roomateName, partPercentage) {
     inputPart = document.createElement("input");
     nameTd.textContent = roomateName;
     inputPart.type = "text";
-    inputPart.value = partPercentage +"%";
+    inputPart.value = partPercentage + "%";
     partTd.append(inputPart);
     newRow.append(nameTd);
     newRow.append(partTd);
@@ -265,14 +271,14 @@ function addRoomateToSplit(splitPartNode, roomateName, partPercentage) {
 }
 
 function calculatePartPerRoomate(numOfRoomates) {
-    partPerRoomate = (new Array(numOfRoomates)).fill(Math.floor(100/numOfRoomates));
-    partPerRoomate[0] += 100 - partPerRoomate.reduce((x, y)=>x+y);
+    partPerRoomate = (new Array(numOfRoomates)).fill(Math.floor(100 / numOfRoomates));
+    partPerRoomate[0] += 100 - partPerRoomate.reduce((x, y) => x + y);
     return partPerRoomate;
 }
 
 function addRowToBillSummary(summaryRowsNode, rowJson) {
     newRow = document.createElement("tr");
-    tds =  { };
+    tds = {};
     for (info in rowJson) {
         newTd = document.createElement("td");
         newTd.textContent = rowJson[info];
@@ -292,7 +298,7 @@ function getGeneralSummary() {
     server_url = server_address + "/getInfo";
     jsonInfo = {"type": "generalSummary", "token": "aaaa"};
     onResp = dat => {
-        dat["generalSummary"].map(rowJson=>{
+        dat["generalSummary"].map(rowJson => {
             addRowToGeneralSummary($("#generalSummaryRows"), rowJson);
         });
     };
@@ -301,7 +307,7 @@ function getGeneralSummary() {
 
 function addRowToGeneralSummary(generalSummaryRowsNode, rowJson) {
     newRow = document.createElement("tr");
-    tds =  { };
+    tds = {};
     for (info in rowJson) {
         newTd = document.createElement("td");
         newTd.textContent = rowJson[info];
@@ -312,13 +318,12 @@ function addRowToGeneralSummary(generalSummaryRowsNode, rowJson) {
     action_ref.classList.add("special");
     if (rowJson["status"].toLowerCase() === "paid") {
         action_ref.textContent = "Details";
-        action_ref.href="#";
-        newRow.style.backgroundColor="greenyellow"
-    }
-    else if (rowJson["status"].toLowerCase() === "need to pay") {
+        action_ref.href = "#";
+        newRow.style.backgroundColor = "greenyellow"
+    } else if (rowJson["status"].toLowerCase() === "need to pay") {
         action_ref.textContent = "Pay";
-        action_ref.href="#";
-        newRow.style.backgroundColor="#cc0000"
+        action_ref.href = "#";
+        newRow.style.backgroundColor = "#cc0000"
     }
     tds["action"] = document.createElement("td");
     tds["action"].append(action_ref);
@@ -334,13 +339,13 @@ function getBalance() {
     server_url = server_address + "/getInfo";
     jsonInfo = {"type": "balance", "token": "aaaa"};
     onResp = dat => {
-        max_balance = dat["balance"].map(r=>Math.abs(parseInt(r.balance))).reduce((x,y)=>x>y?x:y);
+        max_balance = dat["balance"].map(r => Math.abs(parseInt(r.balance))).reduce((x, y) => x > y ? x : y);
         power = 2;
-        while(max_balance >= Math.pow(10,power)) {
+        while (max_balance >= Math.pow(10, power)) {
             power++;
         }
         max_balance = Math.pow(10, power);
-        dat["balance"].map(rowJson=>{
+        dat["balance"].map(rowJson => {
             addRoomateToBalance($("#balanceRow"), rowJson, max_balance);
         });
     };
@@ -353,11 +358,10 @@ function addRoomateToBalance(balanceRowNode, rowJson, max_balance) {
     newTh = document.createElement("th");
     header0 = document.createElement("h3");
     header1 = document.createElement("h3");
-    barNode = createBarNode(intBalance , max_balance);
-    if (parseInt(rowJson["balance"]) >= 0 ) {
+    barNode = createBarNode(intBalance, max_balance);
+    if (parseInt(rowJson["balance"]) >= 0) {
         header0.textContent = "You owe " + rowJson["roomate"] + ":";
-    }
-    else {
+    } else {
         header0.textContent = rowJson["roomate"] + " owe you:";
     }
     header1.textContent = intAbsBalance.toString() + " $";
@@ -374,16 +378,14 @@ function createBarNode(balance, maxBalance) {
     divMainBar.classList.add("small-font-size");
 
     divSecBar = document.createElement("div");
-    translateYPerc = parseInt((Math.abs(balance)/maxBalance)*100);
+    translateYPerc = parseInt((Math.abs(balance) / maxBalance) * 100);
     divSecBar.classList.add("bar");
-    divSecBar.classList.add("bar-"+translateYPerc.toString());
-    if (balance>0) {
+    divSecBar.classList.add("bar-" + translateYPerc.toString());
+    if (balance > 0) {
         divSecBar.classList.add("yellow");
-    }
-    else if (balance<0) {
+    } else if (balance < 0) {
         divSecBar.classList.add("red");
-    }
-    else{
+    } else {
         divSecBar.classList.add("lime");
     }
 
@@ -489,10 +491,10 @@ function createMsgRow(msgsNode, msgJson) {
 function createImgNode(msgType) {
     type_json = {
         "debt": "pay.png",
-        "roomate_joined" : "add-friend.png",
-        "payment_approved" : "list.png",
-        "pay_reminder" : "bell.png",
-        "user_joined" : "home-run.png"
+        "roomate_joined": "add-friend.png",
+        "payment_approved": "list.png",
+        "pay_reminder": "bell.png",
+        "user_joined": "home-run.png"
     };
     imgNode = document.createElement("img");
     imgNode.src = server_address + "/images/" + type_json[msgType];
@@ -502,6 +504,7 @@ function createImgNode(msgType) {
 }
 
 function redirectToPage(page) {
+
     window.location.href = server_address + "/" + page;
 }
 
@@ -516,7 +519,7 @@ function getSuppliers() {
     server_url = server_address;
     jsonInfo = {"type": "suppliers", "token": "aaaa"};
     onResp = dat => {
-        dat["suppliers"].map(jsonData=>{
+        dat["suppliers"].map(jsonData => {
             createHouseBox(jsonData);
         });
     };
@@ -537,8 +540,8 @@ function createHouseBox(jsonData) {
     supplier_header.style.setProperty("margin-top", "3px");
     supplier_header.style.setProperty("padding", "0px");
     supplier_header_label = document.createElement("label");
-    supplier_header_label.style.setProperty("font-weight" ,"bold");
-    supplier_header_label.style.setProperty("font-size" ,"100%");
+    supplier_header_label.style.setProperty("font-weight", "bold");
+    supplier_header_label.style.setProperty("font-size", "100%");
     supplier_header_label.textContent = "Supplier";
     supplier_header.appendChild(supplier_header_label);
     houseboxNode.appendChild(supplier_header);
@@ -546,8 +549,8 @@ function createHouseBox(jsonData) {
     supplier_info.style.setProperty("margin-top", "3px");
     supplier_info.style.setProperty("padding", "0px");
     supplier_info_label = document.createElement("label");
-    supplier_info_label.style.setProperty("font-weight" ,"bold");
-    supplier_info_label.style.setProperty("font-size" ,"100%");
+    supplier_info_label.style.setProperty("font-weight", "bold");
+    supplier_info_label.style.setProperty("font-size", "100%");
     supplier_info_label.textContent = supplier;
     supplier_info.appendChild(supplier_info_label);
     houseboxNode.appendChild(supplier_info);
@@ -555,8 +558,8 @@ function createHouseBox(jsonData) {
     owner_header.style.setProperty("margin-top", "2px");
     owner_header.style.setProperty("padding", "0px");
     owner_header_label = document.createElement("label");
-    owner_header_label.style.setProperty("font-weight" ,"bold");
-    owner_header_label.style.setProperty("font-size" ,"100%");
+    owner_header_label.style.setProperty("font-weight", "bold");
+    owner_header_label.style.setProperty("font-size", "100%");
     owner_header_label.textContent = "Owner";
     owner_header.appendChild(owner_header_label);
     houseboxNode.appendChild(owner_header);
@@ -564,8 +567,8 @@ function createHouseBox(jsonData) {
     owner_info.style.setProperty("margin-top", "2px");
     owner_info.style.setProperty("padding", "0px");
     owner_info_label = document.createElement("label");
-    owner_info_label.style.setProperty("font-weight" ,"bold");
-    owner_info_label.style.setProperty("font-size" ,"100%");
+    owner_info_label.style.setProperty("font-weight", "bold");
+    owner_info_label.style.setProperty("font-size", "100%");
     owner_info_label.textContent = owner;
     owner_info.appendChild(owner_info_label);
     houseboxNode.appendChild(owner_info);
@@ -595,14 +598,13 @@ function createHouseBox(jsonData) {
 }
 
 function changeSetting(setting_id) {
-    input_nd = $("#"+setting_id)[0];
+    input_nd = $("#" + setting_id)[0];
     input_value = input_nd.value;
     requestJson = {"type": "changeSetting", "setting": setting_id, "value": input_value};
     onChangeDone = jsonData => {
         if (jsonData["status"] === "success") {
             redirectToPage("settings.html");
-        }
-        else {
+        } else {
             $("#change-err")[0].textContent = jsonData["error"];
         }
     };
@@ -613,5 +615,36 @@ function getResource(resource_rel_path) {
     on_response = data => {
         return data;
     };
-    sendGetRequest(server_address +"/" +resource_rel_path, on_response);
+    sendGetRequest(server_address + "/" + resource_rel_path, on_response);
+}
+
+function createCreateAptButton() {
+    let btnNode = document.createElement("button");
+    btnNode.classList.add("apt-action");
+    btnNode.textContent = "Create an apartment";
+    btnNode.onclick = () => {
+        reqMap = {"userId": sessionStorage.getItem("user_name"), "token": "aaaa", "type": "createApartment"};
+        sendRequest(server_address, reqMap, console.log);
+    };
+    //redirectToPage("createApartment.html");
+    $("#apt-action-nd")[0].appendChild(btnNode);
+}
+
+function createInviteRoomateButton() {
+    let btnNode = document.createElement("button");
+    btnNode.classList.add("apt-action");
+    btnNode.textContent = "Invite User !";
+    btnNode.onclick = () => redirectToPage("invite.html");
+    $("#apt-action-nd")[0].appendChild(btnNode);
+}
+
+function generateUserHome() {
+    setHelloLabel();
+    let userAptId = sessionStorage.getItem("apartmentId");
+    if (userAptId !== "0" && userAptId !== undefined) {
+        createInviteRoomateButton();
+        getBalance();
+    } else {
+        createCreateAptButton();
+    }
 }

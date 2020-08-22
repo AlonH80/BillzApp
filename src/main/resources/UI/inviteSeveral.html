@@ -11,7 +11,7 @@
 	<link rel="stylesheet" href="assets/css/alon.css" />
 </head>
 
-<body class="subpage">
+<div class="subpage">
 
 	<!-- Header -->
 	<header id="header">
@@ -24,11 +24,12 @@
 		</nav>
 	</header>
 
-	<!-- Menu -->
+    <!-- Menu -->
 	<nav id="menu">
 		<ul class="links">
 			<li><a href="javascript:redirectToPage('index.html')">Home</a></li>
 			<li><a href="javascript:redirectToPage('messages.html')">Messages</a></li>
+			<li><a href="javascript:redirectToPage('invite.html')">Add Roommate</a></li>
 			<li><a href="javascript:redirectToPage('suppliers.html')">Suppliers</a></li>
 			<li><a href="javascript:redirectToPage('addBill.html')">Add Bill</a></li>
 			<li><a href="javascript:redirectToPage('addSupplier.html')">Add Supplier</a></li>
@@ -37,12 +38,28 @@
 			<li><a href="javascript:redirectToPage('settings.html')">Settings</a></li>
 		</ul>
 		<ul class="actions vertical">
-			<li><a href="#" class="button fit">Login</a></li>
+			<li><a href="javascript:logUserOut()" class="button fit">Log out</a></li>
 		</ul>
 	</nav>
 
     <!-- Main -->
-    <div class="signup-form">
+	<div class="invite-roommates-block">
+		<h2>Roomates</h2>
+		<table id="invites-table" class="invites-tab">
+			<tr>
+				<td><input type="text" placeholder="User Name"></td>
+				<td><input type="text" placeholder="E-mail"></td>
+			</tr>
+			<tr>
+				<td><input type="text" placeholder="User Name"></td>
+				<td><input type="text" placeholder="E-mail"></td>
+			</tr>
+			<tr>
+				<td colspan="2"><img src="images/plus_icon.png" class="add-invite-row"></td>
+			</tr>
+		</table>
+	</div>
+    <!--div class="signup-form">
         <form id="addRoomate" rendered="console.log(this)">
             <h2>New Roomate</h2>
             <div class="form-group">
@@ -58,7 +75,7 @@
                 <button type="submit" class="btn btn-success btn-lg btn-block">Invite !</button>
             </div>
         </form>
-    </div>
+    </div-->
 
 	<!-- Footer -->
 	<footer id="footer">

@@ -46,6 +46,7 @@ public class Server extends Observable {
 
     private void sendDefaultResponse(HttpExchange httpExchange, String response) throws IOException {
         byte[] bs = response.getBytes("UTF-8");
+        httpExchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
         httpExchange.sendResponseHeaders(200, bs.length);
         OutputStream os = httpExchange.getResponseBody();
         os.write(bs);
@@ -81,7 +82,7 @@ public class Server extends Observable {
 
         private String handleGetRequest(HttpExchange httpExchange) throws IOException {
             String requestURI = httpExchange.getRequestURI().toString();
-            if (requestURI.contains("favicon")||requestURI.contains("compass")) {
+            if (requestURI.contains("favicon") || requestURI.contains("compass")) {
                 return "";
             }
             if (requestURI.matches("/")) {
@@ -95,11 +96,9 @@ public class Server extends Observable {
         }
 
 
-
-
         public void returnImage(HttpExchange httpExchange, String imgPath) throws IOException {
             File imgFile = new File(imgPath);
-            if(imgFile.exists()) {
+            if (imgFile.exists()) {
                 httpExchange.getResponseHeaders().set("Content-Type", "application/octet-stream");
                 OutputStream out = httpExchange.getResponseBody();
                 FileInputStream in = new FileInputStream(imgFile);
@@ -110,11 +109,10 @@ public class Server extends Observable {
                 out.flush();
                 out.close();
                 in.close();
-            }else {
+            } else {
                 throw new FileNotFoundException();
             }
         }
-
 
 
         private HashMap<String, Object> handlePostRequest(HttpExchange httpExchange) throws IOException {
@@ -147,10 +145,18 @@ public class Server extends Observable {
                     break;
                 case "messages":
                     List res = messageManager.getMessages(requestParamValue.get("userId").toString());
-                    sendDefaultResponse(httpExchange,Utils.listToJson(res));
+                    sendDefaultResponse(httpExchange, Utils.listToJson(res));
                     break;
                 case "addSupplier":
-                    apartsManager.addSupplierToApartment(requestParamValue.get("apartmentId").toString(),requestParamValue.get("billOwner").toString(),Enum.valueOf(Supplier.TYPE.class,requestParamValue.get("supplier").toString().toUpperCase()));
+                    apartsManager.addSupplierToApartment(requestParamValue.get("apartmentId").toString(), requestParamValue.get("billOwner").toString(), Enum.valueOf(Supplier.TYPE.class, requestParamValue.get("supplier").toString().toUpperCase()), (Map<String, Object>) requestParamValue.get(("partsMap")));
+                    break;
+                case "createApartment":
+                    String r = apartsManager.createApartment(requestParamValue.get("userId").toString());
+                    sendDefaultResponse(httpExchange, r);
+                    break;
+                case "roommates":
+                    List roommates = apartsManager.getRoommates(requestParamValue.get("apartmentId").toString(), requestParamValue.get("userId").toString());
+                    sendDefaultResponse(httpExchange, Utils.listToJson(roommates));
                     break;
             }
         }

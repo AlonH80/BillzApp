@@ -1,14 +1,12 @@
-import com.google.gson.Gson;
-
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 public class ApartsManager {
 
     private Map<String, Apartment> apartments;
-    private final static String configPath = Utils.confPath;
+    private final static String configPath = "resources/config.json";
     private Map<String, Object> configuration;
     private Logger logger;
     private MongoConnector mongoConnector;
@@ -25,14 +23,16 @@ public class ApartsManager {
         Apartment newApart = new Apartment(apartId, creatorId);
         apartments.put(apartId, newApart);
         mongoConnector.insertApartment(apartId, newApart.getUsers(), newApart.getOwnerId());
+        addUserToApartment(apartId,creatorId);
         return apartId;
     }
 
-    public String addSupplierToApartment(String apartmentId, String ownerId, Supplier.TYPE type) throws Exception {
+    public String addSupplierToApartment(String apartmentId, String ownerId, Supplier.TYPE type, Map<String,Object> partsMap) throws Exception {
         String supplierId = mongoConnector.generateIdForSupplier();
         Apartment currApart = getApartment(apartmentId);
         currApart.addSupplier(type, supplierId, ownerId);
         mongoConnector.insertSupplier(apartmentId, type.toString(), ownerId);
+        mongoConnector.insertSupplierParts(apartmentId, type.toString(), partsMap);
 //        mongoConnector.insertSupplierBalances(supplierId, currSupplier.getBalances());
         return supplierId;
     }
@@ -47,6 +47,7 @@ public class ApartsManager {
         Apartment currApartment = apartments.get(apartmentId);
         currApartment.addUser(userId);
         mongoConnector.updateApartmentUsers(apartmentId, currApartment.getUsers());
+        mongoConnector.updateApartmentForUsersId(apartmentId, userId);
     }
 
     public void addUserToBill(String apartmentId, String userId, String supplierId) throws Exception {
@@ -60,5 +61,10 @@ public class ApartsManager {
         Supplier currSupplier = currApart.getSupplier(Supplier.TYPE.valueOf(supplierId));
         currSupplier.addBill(amount);
 //        mongoConnector.updateSupplierBalances(apartmentId, currSupplier.getBalances());
+    }
+
+    public List<String> getRoommates(String apartmentId, String userId) throws Exception {
+        Apartment currApart = getApartment(apartmentId);
+        return currApart.getUsers();
     }
 }

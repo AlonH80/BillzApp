@@ -10,6 +10,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+
 public class Utils {
     private final static String logsPath = "logs/";
     private static Logger logger = null;

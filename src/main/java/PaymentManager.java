@@ -1,5 +1,3 @@
-
-//import com.billz.PaymentServer.PaymentServer;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.stream.JsonReader;
@@ -65,7 +63,7 @@ public class PaymentManager {
                 // Initialise the keystore
         char[] password = "PaymentServer".toCharArray();
         KeyStore ks = KeyStore.getInstance("JKS");
-        FileInputStream fis = new FileInputStream(System.getProperty("user.dir") +"/target/classes/ps.keystore"); //TODO: add to config file
+        FileInputStream fis = new FileInputStream("resources/ps.keystore"); //TODO: add to config file
         ks.load(fis, password);
 
         // Set up the key manager factory
