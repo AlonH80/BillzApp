@@ -663,16 +663,21 @@ function createLeaveAptButton() {
     let btnNode = document.createElement("button");
     btnNode.classList.add("apt-action");
     btnNode.textContent = "Leave Apartment";
-    onAptCreated = jsonData => {
+    onLeaveApt = jsonData => {
         if (jsonData.status === "success") {
             console.log(jsonData);
-            sessionStorage.setItem("apartmentId", jsonData.apartmentId);
+            if (keys(jsonData).includes("apartmentId")){
+                sessionStorage.setItem("apartmentId", jsonData.apartmentId);
+            }
+            else {
+                sessionStorage.setItem("apartmentId", "0");
+            }
             redirectToPage("index.html");
         }
     };
     btnNode.onclick = () => {
-        reqMap = {"userId": sessionStorage.getItem("user_name"), "token": "aaaa", "type": "createApartment"};
-        sendRequest(server_address, reqMap, onAptCreated);
+        reqMap = {"userId": sessionStorage.getItem("user_name"), "token": "aaaa", "type": "leaveApartment"};
+        sendRequest(server_address, reqMap, onLeaveApt);
     };
     //redirectToPage("createApartment.html");
     $("#apt-action-nd")[0].appendChild(btnNode);
