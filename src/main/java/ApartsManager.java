@@ -6,13 +6,12 @@ import java.util.logging.Logger;
 public class ApartsManager {
 
     private Map<String, Apartment> apartments;
-    private final static String configPath = "resources/config.json";
     private Map<String, Object> configuration;
     private Logger logger;
     private MongoConnector mongoConnector;
 
     public ApartsManager() throws Exception {
-        configuration = Utils.jsonFileToMap(configPath);
+        configuration = Utils.jsonFileToMap(Utils.confPath);
         logger = Utils.getLogger();
         apartments = new LinkedHashMap<>();
         mongoConnector = MongoConnector.getInstance();

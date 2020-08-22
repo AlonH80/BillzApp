@@ -14,6 +14,7 @@ import java.util.logging.SimpleFormatter;
 public class Utils {
     private final static String logsPath = "logs/";
     private static Logger logger = null;
+    public static String resourcesPath = System.getProperty("user.dir") +"/target/classes";
     public static String confPath = System.getProperty("user.dir") +"/target/classes/config.json";
 
     public static Logger getLogger() throws Exception {
