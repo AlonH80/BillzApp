@@ -63,7 +63,7 @@ public class PaymentManager {
                 // Initialise the keystore
         char[] password = "PaymentServer".toCharArray();
         KeyStore ks = KeyStore.getInstance("JKS");
-        FileInputStream fis = new FileInputStream("resources/ps.keystore"); //TODO: add to config file
+        FileInputStream fis = new FileInputStream(Utils.resourcesPath +"/ps.keystore"); //TODO: add to config file
         ks.load(fis, password);
 
         // Set up the key manager factory
