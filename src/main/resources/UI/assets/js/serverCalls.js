@@ -196,7 +196,19 @@ function setOnAddRoomateRequest() {
         for (i = 0; i < inps.length; i++) {
             map_inps[inps[i].name] = inps[i].value;
         }
-        sendRequest(server_address + "/regForm", map_inps, console.log);
+        map_inps["type"] = "addRoomate";
+        map_inps["userId"] = sessionStorage.getItem("user_name");
+        map_inps["apartmentId"] = sessionStorage.getItem("apartmentId");
+        onRoomateAdded = jsonData => {
+            console.log(jsonData);
+            if (jsonData.status === "success") {
+                redirectToPage("index.html");
+            }
+            else {
+                $("#invite-error")[0].textContent = jsonData.error;
+            }
+        };
+        sendRequest(server_address, map_inps, console.log);
     });
 }
 
@@ -209,7 +221,6 @@ function setOnSendPayment() {
             map_inps[inps[i].name] = inps[i].value;
         }
         //map_inps["confirm_password"]="none";
-        sendRequest(server_address, map_inps, onRegisterConfirmed);
         sendRequest(server_address, map_inps, onRegisterConfirmed);
     });
 }
@@ -228,9 +239,9 @@ function getMessages() {
 function getRoomates() {
     server_url = server_address;
     jsonInfo = {"type": "roommates", "token": "aaaa", "apartmentId": sessionStorage.getItem("apartmentId"), "userId": sessionStorage.getItem("user_name")};
-    onResp = dat => {
+    onResp = function (dat) {
         partPerRoomate = calculatePartPerRoomate(dat.length);
-        dat.map(roomate => {
+        dat.map(function (roomate) {
             addOptionToSelectPicker($("#billOwner"), roomate);
             addRoomateToSplit($("#roomatesSplit"), roomate, partPerRoomate[dat.indexOf(roomate)]);
         });
@@ -336,8 +347,8 @@ function addRowToGeneralSummary(generalSummaryRowsNode, rowJson) {
 }
 
 function getBalance() {
-    server_url = server_address + "/getInfo";
-    jsonInfo = {"type": "balance", "token": "aaaa"};
+    server_url = server_address;
+    jsonInfo = {"type": "balance", "token": "aaaa", "userId": sessionStorage.getItem("user_name")};
     onResp = dat => {
         max_balance = dat["balance"].map(r => Math.abs(parseInt(r.balance))).reduce((x, y) => x > y ? x : y);
         power = 2;
@@ -622,9 +633,19 @@ function createCreateAptButton() {
     let btnNode = document.createElement("button");
     btnNode.classList.add("apt-action");
     btnNode.textContent = "Create an apartment";
+    onAptCreated = jsonData => {
+        console.log(jsonData);
+        if (jsonData.status === "success") {
+            sessionStorage.setItem("apartmentId", jsonData.apartmentId);
+            redirectToPage("index.html");
+        }
+        else {
+            $("#apt-action-nd")[0].textContent = jsonData.error;
+        }
+    };
     btnNode.onclick = () => {
         reqMap = {"userId": sessionStorage.getItem("user_name"), "token": "aaaa", "type": "createApartment"};
-        sendRequest(server_address, reqMap, console.log);
+        sendRequest(server_address, reqMap, onAptCreated);
     };
     //redirectToPage("createApartment.html");
     $("#apt-action-nd")[0].appendChild(btnNode);
@@ -638,11 +659,31 @@ function createInviteRoomateButton() {
     $("#apt-action-nd")[0].appendChild(btnNode);
 }
 
+function createLeaveAptButton() {
+    let btnNode = document.createElement("button");
+    btnNode.classList.add("apt-action");
+    btnNode.textContent = "Leave Apartment";
+    onAptCreated = jsonData => {
+        if (jsonData.status === "success") {
+            console.log(jsonData);
+            sessionStorage.setItem("apartmentId", jsonData.apartmentId);
+            redirectToPage("index.html");
+        }
+    };
+    btnNode.onclick = () => {
+        reqMap = {"userId": sessionStorage.getItem("user_name"), "token": "aaaa", "type": "createApartment"};
+        sendRequest(server_address, reqMap, onAptCreated);
+    };
+    //redirectToPage("createApartment.html");
+    $("#apt-action-nd")[0].appendChild(btnNode);
+}
+
 function generateUserHome() {
     setHelloLabel();
     let userAptId = sessionStorage.getItem("apartmentId");
     if (userAptId !== "0" && userAptId !== undefined) {
         createInviteRoomateButton();
+        createLeaveAptButton();
         getBalance();
     } else {
         createCreateAptButton();

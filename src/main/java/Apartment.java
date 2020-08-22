@@ -22,7 +22,7 @@ public class Apartment {
         this.apartmentId = id;
         this.ownerId = ownerId;
         userIds = mongoConnector.getRoommates(id);
-        userIds.add(ownerId);
+        //userIds.add(ownerId);
     }
 
     public void setLogger(Logger logger) {
