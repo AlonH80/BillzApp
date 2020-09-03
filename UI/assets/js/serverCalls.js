@@ -220,10 +220,10 @@ function getMessages() {
 
 function getRoomates() {
     server_url = server_address + "/getInfo";
-    jsonInfo = {"requestType": "roomates", "token": "aaaa"};
+    jsonInfo = {"requestType": "roommates", "token": "aaaa"};
     onResp = dat => {
         partPerRoomate = calculatePartPerRoomate(dat["roomates"].length);
-        dat["roomates"].map(roomate=>{
+        dat["roommates"].map(roomate=>{
             addOptionToSelectPicker($("#billOwner"), roomate);
             addRoomateToSplit($("#roomatesSplit"), roomate, partPerRoomate[dat["roomates"].indexOf(roomate)]);
         });
