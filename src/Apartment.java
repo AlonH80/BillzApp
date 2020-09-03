@@ -1,9 +1,7 @@
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class Apartment {
 
@@ -29,7 +27,7 @@ public class Apartment {
         this.logger = logger;
     }
 
-    public void addSupplier(Supplier.TYPE type, String supplierId, String openerId) throws Exception {
+    public void addSupplier(Supplier.TYPE type,String openerId) throws Exception {
         mongoConnector.insertSupplier(apartmentId, type.toString(), ownerId);
     }
 
@@ -80,5 +78,13 @@ public class Apartment {
     public Supplier getSupplier(Supplier.TYPE type) throws Exception {
         Map<String, Object> resMap = mongoConnector.getSupplier(apartmentId,type.toString());
         return new Supplier(Supplier.TYPE.valueOf(resMap.get("type").toString().toUpperCase()),resMap.get("apartmentId").toString(),resMap.get("ownerId").toString());
+    }
+
+    public List<Map<String, Object>> getSuppliers(String apartmentId) {
+        return mongoConnector.getSuppliers(apartmentId);
+    }
+
+    public void addBill(String dDay, String amount, String billType, String userId) {
+        mongoConnector.addBill(apartmentId, dDay, amount, billType, userId);
     }
 }

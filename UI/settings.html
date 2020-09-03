@@ -53,11 +53,11 @@
     <div class="container">
         <div class="settings-row">
             <label>PayPal Account</label>
-            <input type="text" id="pay_pal_account" name="pay_pal_account"/>
-            <button onclick="changeSetting('pay_pal_account')">Change</button>
+            <input type="text" id="paypal" name="paypal"/>
+            <button onclick="changeSetting('paypal')">Change</button>
         </div>
         <div class="settings-row">
-            <label>Email</label><input type="text" id="email">
+            <label>Email</label><input type="text" id="email" name="email">
             <button onclick="changeSetting('email')">Change</button>
         </div>
         <span id="change-err" style="color: red;"></span>
@@ -128,7 +128,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 <script src="assets/js/variables.js"></script>
 <script src="assets/js/serverCalls.js"></script>
-<script>getCurrentSettings();</script>
 
 
 </body>

@@ -28,13 +28,12 @@ public class ApartsManager {
     }
 
     public String addSupplierToApartment(String apartmentId, String ownerId, Supplier.TYPE type, Map<String,Object> partsMap) throws Exception {
-        String supplierId = mongoConnector.generateIdForSupplier();
+//        String supplierId = mongoConnector.generateIdForSupplier();
         Apartment currApart = getApartment(apartmentId);
-        currApart.addSupplier(type, supplierId, ownerId);
-        mongoConnector.insertSupplier(apartmentId, type.toString(), ownerId);
+        currApart.addSupplier(type, ownerId);
         mongoConnector.insertSupplierParts(apartmentId, type.toString(), partsMap);
 //        mongoConnector.insertSupplierBalances(supplierId, currSupplier.getBalances());
-        return supplierId;
+        return ownerId;
     }
 
     private Apartment getApartment(String apartmentId) throws Exception {
@@ -66,5 +65,20 @@ public class ApartsManager {
     public List<String> getRoommates(String apartmentId, String userId) throws Exception {
         Apartment currApart = getApartment(apartmentId);
         return currApart.getUsers();
+    }
+
+    public List<Map<String, Object>> getSuppliers(String apartmentId) throws Exception {
+        Apartment currApart = getApartment(apartmentId);
+        return currApart.getSuppliers(apartmentId);
+
+    }
+
+    public void addBill(String apartmentId, String dDay, String amount, String billType, String userId) throws Exception {
+        Apartment currApart = getApartment(apartmentId);
+        currApart.addBill(dDay,amount, billType, userId);
+    }
+
+    public List getBills(String apartmentId) {
+        return mongoConnector.getBills(apartmentId);
     }
 }

@@ -151,5 +151,8 @@ public class UsersManager {
 
         return resMap;
     }
+
+    public void updateSetting(String userId, String setting, String value) {
+        mongoConnector.updateSetting(userId, setting, value);
+    }
 }
-//
