@@ -530,9 +530,9 @@ function getSuppliers() {
         dat.map(jsonData => {
             createHouseBox(jsonData);
         });
+        createAddSupplierBox();
     };
     sendRequest(server_url, jsonInfo, onResp);
-    createAddSupplierBox();
 }
 
 function createHouseBox(jsonData) {
@@ -693,7 +693,7 @@ function createAddSupplierBox() {
     link_nd = document.createElement("a");
     link_nd.href = "javascript:redirectToPage('addSupplier.html')";
     link_container_nd.appendChild(link_nd);
-    link_container_nd.textContent = "Add new supllier";
+    link_nd.textContent = "Add new supplier";
     box_nd.appendChild(link_container_nd);
     $("#suppliers-container")[0].appendChild(box_nd);
 }
