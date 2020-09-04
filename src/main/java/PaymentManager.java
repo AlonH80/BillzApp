@@ -56,8 +56,8 @@ public class PaymentManager {
 //        paymentServer.setLogger(logger);
         webConnector = new WebConnector();
         webConnector.setLogger(logger);
-        //verifyAccessToken();//////////////////////
-        mongoConnector = new MongoConnector(componentConfig.get("mongoAddress"), Integer.parseInt(componentConfig.get("mongoPort")));
+        //verifyAccessToken();
+        mongoConnector = new MongoConnector();
         mongoConnector.setLogger(logger);
 
                 // Initialise the keystore
