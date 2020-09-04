@@ -121,7 +121,7 @@ public class MongoConnector {
             } else {
                 newUserMap.put("apartmentId", apartmentId);
             }
-            insert(defaultDB, defaultCollection, newUserMap);
+            insert(defaultDB, "UsersAuth", newUserMap);
             userInserted = true;
         } else {
             logger.warning(String.format("User id %s already exist", userID));
@@ -132,7 +132,7 @@ public class MongoConnector {
     public boolean checkPasswordMatch(String userID, String hashedPassword) {
         HashMap<String, String> queryMap = new HashMap<>(1);
         queryMap.put("userID", userID);
-        String passwordInDB = find(defaultDB, defaultCollection, queryMap).get(0).get("password").toString();
+        String passwordInDB = find(defaultDB, "UsersAuth", queryMap).get(0).get("password").toString();
         boolean passwordMatch = passwordInDB.equals(hashedPassword);
         if (!passwordMatch) {
             logger.warning(String.format("User %s entered incorrect password", userID));
@@ -143,7 +143,7 @@ public class MongoConnector {
     public String getUserSalt(String userID) {
         HashMap<String, String> queryMap = new HashMap<>(1);
         queryMap.put("userID", userID);
-        String userSalt = find(defaultDB, defaultCollection, queryMap).get(0).get("salt").toString();
+        String userSalt = find(defaultDB, "UsersAuth", queryMap).get(0).get("salt").toString();
 
         return userSalt;
     }
@@ -156,7 +156,7 @@ public class MongoConnector {
             updateMap.put("userID", userID);
             updateMap.put("salt", salt);
             updateMap.put("password", hashedPassword);
-            update(defaultDB, defaultCollection, queryMap, updateMap);
+            update(defaultDB, "UsersAuth", queryMap, updateMap);
             return true;
         } catch (Exception e) {
             return false;
