@@ -40,7 +40,7 @@
             <li><a href="javascript:redirectToPage('settings.html')">Settings</a></li>
         </ul>
         <ul class="actions vertical">
-            <li><a href="." class="button fit">Login</a></li>
+            <li><a href="/" class="button fit">Login</a></li>
         </ul>
     </nav>
 
@@ -52,7 +52,7 @@
                 <div class="col-md-2">
                     <span>Bill Type:</span>
                 </div>
-                <select class="selectpicker">
+                <select class="selectpicker selector">
                     <option>Electricity</option>
                     <option>Water</option>
                     <option>Property Tax</option>
@@ -63,10 +63,11 @@
             <h2>Upload bill</h2>
             <div class="row">
                 <div class="col-md-2">
-                    <span>Upload a new bill</span>
+
                 </div>
                 <label class="btn btn-default">
                   <form id="uploadFile" method='POST' enctype="multipart/form-data">
+                    <span>Upload a new bill</span>
                     <input type="file" name="billFile" id="pdfFile">
                     <button type="submit">Submit</button>
                   </form>
