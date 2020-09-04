@@ -31,14 +31,6 @@
     <!-- Menu -->
     <nav id="menu">
         <ul class="links">
-            <li><a href="javascript:redirectToPage('index.html')">Home</a></li>
-            <li><a href="javascript:redirectToPage('messages.html')">Messages</a></li>
-            <li><a href="javascript:redirectToPage('suppliers.html')">Suppliers</a></li>
-            <li><a href="javascript:redirectToPage('addBill.html')">Add Bill</a></li>
-            <li><a href="javascript:redirectToPage('addSupplier.html')">Add Supplier</a></li>
-            <li><a href="javascript:redirectToPage('billSummary.html')">Bill History</a></li>
-            <li><a href="javascript:redirectToPage('generalSummary.html')">History</a></li>
-            <li><a href="javascript:redirectToPage('settings.html')">Settings</a></li>
         </ul>
         <ul class="actions vertical">
             <li><a href="/" class="button fit">Login</a></li>
@@ -116,7 +108,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
     <script src="assets/js/variables.js"></script>
     <script src="assets/js/serverCalls.js"></script>
-    <script>setSendBillFile();</script>
+    <script>setSendBillFile(); createSideMenu();</script>
 
 </body>
 
