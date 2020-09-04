@@ -1,1 +1,0 @@
-server_address="https://billz-app.herokuapp.com";
