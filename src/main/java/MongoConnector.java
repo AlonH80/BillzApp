@@ -165,7 +165,7 @@ public class MongoConnector {
     }
 
     private HashSet<String> getAllUsersIds() {
-        ArrayList<Map<String, Object>> usersAuthMap = find(defaultDB, defaultCollection, new HashMap<>());
+        ArrayList<Map<String, Object>> usersAuthMap = find(defaultDB, "UsersAuth", new HashMap<>());
         HashSet<String> usersIds = new HashSet<>(usersAuthMap.size());
         usersAuthMap.forEach(m -> usersIds.add(m.get("userID").toString()));
 
