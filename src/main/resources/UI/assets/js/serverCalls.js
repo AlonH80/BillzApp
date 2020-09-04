@@ -535,7 +535,7 @@ function getSuppliers() {
 }
 
 function createHouseBox(jsonData) {
-    let supplier = jsonData["type"];
+    let supplier = jsonData["type"].replace("_", " ").toLowerCase();
     let owner = jsonData["ownerId"];
     let roomates = jsonData["roomates"]; // type: json {roomate, part}
     let suppliers_container = $("#suppliers-container")[0];
@@ -557,7 +557,7 @@ function createHouseBox(jsonData) {
     supplier_info.style.setProperty("margin-top", "3px");
     supplier_info.style.setProperty("padding", "0px");
     supplier_info_label = document.createElement("label");
-    supplier_info_label.style.setProperty("font-weight", "bold");
+    supplier_info_label.style.setProperty("font-weight", "normal");
     supplier_info_label.style.setProperty("font-size", "100%");
     supplier_info_label.textContent = supplier;
     supplier_info.appendChild(supplier_info_label);
@@ -575,7 +575,7 @@ function createHouseBox(jsonData) {
     owner_info.style.setProperty("margin-top", "2px");
     owner_info.style.setProperty("padding", "0px");
     owner_info_label = document.createElement("label");
-    owner_info_label.style.setProperty("font-weight", "bold");
+    owner_info_label.style.setProperty("font-weight", "normal");
     owner_info_label.style.setProperty("font-size", "100%");
     owner_info_label.textContent = owner;
     owner_info.appendChild(owner_info_label);
@@ -601,7 +601,7 @@ function createHouseBox(jsonData) {
     }
     houseboxNode.appendChild(roomatesBox);
     houseboxNode.appendChild(emptySpan);
-
+    houseboxNode.classList.add("house_box");
     suppliers_container.appendChild(houseboxNode);
 }
 

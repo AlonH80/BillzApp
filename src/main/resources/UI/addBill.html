@@ -60,6 +60,7 @@
                     <option>Other</option>
                 </select>
             </div>
+            <h2>Upload bill</h2>
             <div class="row">
                 <div class="col-md-2">
                     <span>Upload a new bill</span>
@@ -71,12 +72,13 @@
                   </form>
                 </label>
             </div>
+            <input type="checkbox" id="isCycle" name="isCycle" checked>
+            <label for="isCycle">Cycle Billing?</label>
+            <h2 style="margin-top: 20px">Add Bill Manually</h2>
             <div id="manualBill">
                 <label>Amount</label><input type="text" name="amount"><button type="submit" onclick="sendManualBilling()" style="row-span: 2; margin-left: 10px;">Submit</button>
                 <label>Due Date</label><input type="text" name="dDay">
             </div>
-            <input type="checkbox" id="isCycle" name="isCycle" checked>
-            <label for="isCycle">Cycle Billing?</label>
             <br>
             <div id="res_div" style="color: green"></div>
             <!--a href="./billSummary.html" class="button special">SUBMIT</a-->
