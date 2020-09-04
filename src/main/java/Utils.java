@@ -13,7 +13,7 @@ import java.util.logging.SimpleFormatter;
 
 public class Utils {
 
-    public static String confPath = System.getProperty("user.dir") +"/target/classes/config.json";;
+    public static String confPath = System.getProperty("user.dir") +"/target/classes/config.json";
     private final static String logsPath = "logs/";
     private static HashMap<String, String> componentConfig = null;
     private static Logger logger = null;
