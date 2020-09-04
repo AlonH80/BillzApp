@@ -97,12 +97,12 @@ public class Server extends Observable {
                 return "";
             }
             if (requestURI.matches("/")) {
-                return fileToString(String.format("%s/%s", "UI", "login.html"));
+                return fileToString(String.format("%s/%s", UiPath, "login.html"));
             } else if (requestURI.endsWith(".png") || requestURI.endsWith(".ico") || requestURI.toLowerCase().contains("fontawesome")) {
                 returnImage(httpExchange, UiPath + requestURI);
                 return "";
             }
-            return fileToString(String.format("%s%s", "UI", requestURI).split("\\?")[0]);
+            return fileToString(String.format("%s%s", UiPath, requestURI).split("\\?")[0]);
         }
 
 
