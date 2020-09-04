@@ -177,7 +177,7 @@ public class MongoConnector {
     }
 
     private HashSet<String> getAllSalts() {
-        ArrayList<Map<String, Object>> usersAuthMap = find(defaultDB, defaultCollection, new HashMap<>());
+        ArrayList<Map<String, Object>> usersAuthMap = find(defaultDB, "UsersAuth", new HashMap<>());
         HashSet<String> salts = new HashSet<>(usersAuthMap.size());
         usersAuthMap.forEach(m -> salts.add(m.get("salt").toString()));
 
@@ -221,7 +221,7 @@ public class MongoConnector {
         newUserMap.put("userID", userID);
         newUserMap.put("salt", salt);
         newUserMap.put("password", hashedPassword);
-        insert(defaultDB, defaultCollection, newUserMap);
+        insert(defaultDB, "UsersAuth", newUserMap);
     }
 
     public String generateIdForApartment() {
