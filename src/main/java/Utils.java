@@ -96,11 +96,16 @@ public class Utils {
         return res;
     }
 
-    public static HashMap<String, String> loadConfigs() throws Exception{
+    public static HashMap<String, String> loadConfigs() {
         if (componentConfig == null) {
             componentConfig = new HashMap<>();
-            HashMap<String, Object> tmpConfig = Utils.jsonFileToMap(confPath);
-            tmpConfig.forEach((k, v) -> componentConfig.put(k, v.toString()));
+            try {
+                HashMap<String, Object> tmpConfig = Utils.jsonFileToMap(confPath);
+                tmpConfig.forEach((k, v) -> componentConfig.put(k, v.toString()));
+            }
+            catch (Exception e) {
+                logger.warning("Unable to load conf file");
+            }
             logger.info(String.format("ComponentConfig: %s", componentConfig.toString()));
         }
         return componentConfig;
