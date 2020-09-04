@@ -3,6 +3,6 @@
   "mongoAppDB": "billzDB",
   "resourcesPath": "/target/classes",
   "UiPath": "/target/classes/UI",
-  "port": "port"
+  "port": "PORT"
 }
 
