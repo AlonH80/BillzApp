@@ -691,3 +691,35 @@ function createAddSupplierBox() {
     box_nd.appendChild(link_container_nd);
     $("#suppliers-container")[0].appendChild(box_nd);
 }
+
+function createSideMenu() {
+    // <li><a href="javascript:redirectToPage('index.html')">Home</a></li>
+    // <li><a href="javascript:redirectToPage('messages.html')">Messages</a></li>
+    // <li><a href="javascript:redirectToPage('invite.html')">Add Roommate</a></li>
+    // <li><a href="javascript:redirectToPage('suppliers.html')">Suppliers</a></li>
+    // <li><a href="javascript:redirectToPage('addBill.html')">Add Bill</a></li>
+    // <li><a href="javascript:redirectToPage('addSupplier.html')">Add Supplier</a></li>
+    // <li><a href="javascript:redirectToPage('billSummary.html')">Bill History</a></li>
+    // <li><a href="javascript:redirectToPage('generalSummary.html')">History</a></li>
+    // <li><a href="javascript:redirectToPage('settings.html')">Settings</a></li>
+    links_nd = $(".links")[0];
+    links = {
+        "Home": "javascript:redirectToPage('index.html')",
+        "Messages": "javascript:redirectToPage('messages.html')",
+        "Add Roommate": "javascript:redirectToPage('invite.html')",
+        "Suppliers": "javascript:redirectToPage('suppliers.html')",
+        "Add Bill": "javascript:redirectToPage('addBill.html')",
+        "Add Supplier": "javascript:redirectToPage('addSupplier.html')",
+        "Bill History": "javascript:redirectToPage('billSummary.html')",
+        "History": "javascript:redirectToPage('generalSummary.html')",
+        "Settings": "javascript:redirectToPage('settings.html')"
+    };
+    for (link in links) {
+        new_li = document.createElement("li");
+        new_a = document.createElement("a");
+        new_a.href=links[link];
+        new_a.textContent=link;
+        new_li.appendChild(new_a);
+        links_nd.appendChild(new_li);
+    }
+}
