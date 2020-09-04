@@ -674,22 +674,16 @@ function sendManualBilling() {
 }
 
 function createAddSupplierBox() {
-    // <div class="house_box">
-    //     <img style="grid-row: 1/2;min-height: 150px; min-width: 150px;" src="images/plus_icon.ico">
-    //         <div style="grid-row: 3/5; text-align: center; vertical-align: middle; margin-top: 80px"><a href="javascript:redirectToPage('addSupplier.html')">Add new supllier</a></div>
     box_nd = document.createElement("div");
-    box_nd.classList.add("house_box");
+    box_nd.classList.add("add_supplier_box");
+
     plus_img_nd = document.createElement("img");
-    plus_img_nd.style.setProperty("grid-row", "1/2");
-    plus_img_nd.style.setProperty("min-height", "150px");
-    plus_img_nd.style.setProperty("min-width", "150px");
     plus_img_nd.src = "images/plus_icon.png";
+    plus_img_nd.onclick = () => redirectToPage('addSupplier.html');
+    plus_img_nd.onmouseover = ()=>{plus_img_nd.style.setProperty("opacity", "50%");plus_img_nd.style.setProperty("cursor","pointer");};
+    plus_img_nd.onmouseleave = ()=>{plus_img_nd.style.setProperty("opacity", "100%");plus_img_nd.style.setProperty("cursor","default");};
     box_nd.appendChild(plus_img_nd);
     link_container_nd = document.createElement("div");
-    link_container_nd.style.setProperty("grid-row", "3/5");
-    link_container_nd.style.setProperty("text-align", "center");
-    link_container_nd.style.setProperty("vertical-align", "middle");
-    link_container_nd.style.setProperty("margin-top","80px");
     link_nd = document.createElement("a");
     link_nd.href = "javascript:redirectToPage('addSupplier.html')";
     link_container_nd.appendChild(link_nd);
