@@ -102,6 +102,7 @@ public class Utils {
             try {
                 HashMap<String, Object> tmpConfig = Utils.jsonFileToMap(confPath);
                 tmpConfig.forEach((k, v) -> componentConfig.put(k, v.toString()));
+
             }
             catch (Exception e) {
                 logger.warning("Unable to load conf file");

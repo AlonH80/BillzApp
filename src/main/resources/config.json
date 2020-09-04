@@ -1,8 +1,8 @@
 {
   "mongoAddress": "mongodb+srv://billz:billz@billzcluster.t8xqb.mongodb.net/billzDB?retryWrites=true&w=majority",
   "mongoAppDB": "billzDB",
-  "resourcesPath": "/target/classes",
-  "UiPath": "/target/classes/UI",
+  "resourcesPath": "$PWD/target/classes",
+  "UiPath": "$PWD/target/classes/UI",
   "port": "port"
 }
 
