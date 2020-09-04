@@ -100,9 +100,11 @@ public class Utils {
         if (componentConfig == null) {
             componentConfig = new HashMap<>();
             try {
+                String user_dir = System.getProperty("user.dir");
                 HashMap<String, Object> tmpConfig = Utils.jsonFileToMap(confPath);
                 tmpConfig.forEach((k, v) -> componentConfig.put(k, v.toString()));
-
+                componentConfig.put("resourcesPath", user_dir + componentConfig.get("resourcesPath"));
+                componentConfig.put("UiPath", user_dir + componentConfig.get("UiPath"));
             }
             catch (Exception e) {
                 logger.warning("Unable to load conf file");
