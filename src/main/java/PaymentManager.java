@@ -63,7 +63,7 @@ public class PaymentManager {
                 // Initialise the keystore
         char[] password = "PaymentServer".toCharArray();
         KeyStore ks = KeyStore.getInstance("JKS");
-        FileInputStream fis = new FileInputStream(Utils.resourcesPath +"/ps.keystore"); //TODO: add to config file
+        FileInputStream fis = new FileInputStream("resources/ps.keystore"); //TODO: add to config file
         ks.load(fis, password);
 
         // Set up the key manager factory
@@ -77,10 +77,7 @@ public class PaymentManager {
     }
 
     private void initConfigFile() throws Exception {
-        HashMap<String, Object> tmpComponentConfig = (new Gson()).fromJson(new JsonReader(new FileReader(confPath)), HashMap.class);
-        tmpComponentConfig.forEach((k,v)->componentConfig.put(k, v.toString()));
-        logger.info(String.format("ComponentConfig: %s", componentConfig.toString()));
-//        checkFileExist(componentConfig.get("orderTemplatePath"));///////////////////////
+        componentConfig = Utils.loadConfigs();
     }
 
     public String transferMoney(String userIdFrom, String userIdTo, Double amount) throws Exception {

@@ -12,10 +12,11 @@ import java.util.logging.SimpleFormatter;
 
 
 public class Utils {
+
+    public static String confPath = System.getProperty("user.dir") +"/target/classes/config.json";;
     private final static String logsPath = "logs/";
+    private static HashMap<String, String> componentConfig = null;
     private static Logger logger = null;
-    public static String resourcesPath = System.getProperty("user.dir") +"/target/classes";
-    public static String confPath = System.getProperty("user.dir") +"/target/classes/config.json";
 
     public static Logger getLogger() throws Exception {
         if(logger == null){
@@ -93,5 +94,15 @@ public class Utils {
         }
 
         return res;
+    }
+
+    public static HashMap<String, String> loadConfigs() throws Exception{
+        if (componentConfig == null) {
+            componentConfig = new HashMap<>();
+            HashMap<String, Object> tmpConfig = Utils.jsonFileToMap(confPath);
+            tmpConfig.forEach((k, v) -> componentConfig.put(k, v.toString()));
+            logger.info(String.format("ComponentConfig: %s", componentConfig.toString()));
+        }
+        return componentConfig;
     }
 }

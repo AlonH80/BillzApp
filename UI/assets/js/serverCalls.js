@@ -167,6 +167,7 @@ function getAndPutParticipants() {
     supplier_map = {"pay_map": pay_map};
     supplier_map["supplier"] = $("#supplierType")[0].value;
     supplier_map["billOwner"] = $("#billOwner")[0].value;
+    supplier_map["apartmentId"] = sessionStorage.getItem("apartmentId");
     sendRequest(server_address+"/regForm", supplier_map, console.log);
 }
 
@@ -222,10 +223,10 @@ function getRoomates() {
     server_url = server_address + "/getInfo";
     jsonInfo = {"requestType": "roommates", "token": "aaaa"};
     onResp = dat => {
-        partPerRoomate = calculatePartPerRoomate(dat["roomates"].length);
-        dat["roommates"].map(roomate=>{
+        partPerRoomate = calculatePartPerRoomate(dat.length);
+        dat.map(roomate=>{
             addOptionToSelectPicker($("#billOwner"), roomate);
-            addRoomateToSplit($("#roomatesSplit"), roomate, partPerRoomate[dat["roomates"].indexOf(roomate)]);
+            addRoomateToSplit($("#roomatesSplit"), roomate, partPerRoomate[dat.indexOf(roomate)]);
         });
     };
     sendRequest(server_url, jsonInfo, onResp);
@@ -233,9 +234,9 @@ function getRoomates() {
 
 function getBillSummary() {
     server_url = server_address + "/getInfo";
-    jsonInfo = {"requestType": "billSummary", "token": "aaaa"};
+    jsonInfo = {"type": "getBills", "token": "aaaa", "apartmentId": sessionStorage.getItem("apartmentId")};
     onResp = dat => {
-        dat["billSummary"].map(rowJson=>{
+        dat.map(rowJson=>{
             addRowToBillSummary($("#summaryRows"), rowJson);
         });
     };
@@ -277,13 +278,13 @@ function addRowToBillSummary(summaryRowsNode, rowJson) {
         newTd.textContent = rowJson[info];
         tds[info.toLowerCase()] = newTd;
     }
-    newRow.append(tds["supplier"]);
-    newRow.append(tds["payer"]);
-    newRow.append(tds["address"]);
-    newRow.append(tds["bill_number"]);
-    newRow.append(tds["account_number"]);
+    newRow.append(tds["billType"]);
+    newRow.append(tds["owner"]);
+    //newRow.append(tds["address"]);
+    //newRow.append(tds["bill_number"]);
+    //newRow.append(tds["account_number"]);
     newRow.append(tds["amount"]);
-    newRow.append(tds["paying_date"]);
+    newRow.append(tds["dDay"]);
     summaryRowsNode.append(newRow);
 }
 
@@ -513,9 +514,9 @@ function logUserOut() {
 
 function getSuppliers() {
     server_url = server_address;
-    jsonInfo = {"requestType": "suppliers", "token": "aaaa"};
+    jsonInfo = {"requestType": "getSuppliers", "token": "aaaa", "apartmentId": sessionStorage.getItem("apartmentId")};
     onResp = dat => {
-        dat["suppliers"].map(jsonData=>{
+        dat.map(jsonData=>{
             createHouseBox(jsonData);
         });
     };
@@ -523,8 +524,8 @@ function getSuppliers() {
 }
 
 function createHouseBox(jsonData) {
-    let supplier = jsonData["supplier"];
-    let owner = jsonData["owner"];
+    let supplier = jsonData["type"];
+    let owner = jsonData["ownerId"];
     let roomates = jsonData["roomates"]; // type: json {roomate, part}
     let suppliers_container = $("#suppliers-container")[0];
     let houseboxNode = document.createElement("div");
@@ -606,4 +607,19 @@ function changeSetting(setting_id) {
         }
     };
     sendRequest(server_url, requestJson, onChangeDone);
+}
+
+function sendManualBilling() {
+    inputNd = $("#manualBill")[0];
+    inps = $("input" ,inputNd);
+    map_inps = { };
+    for (i=0;i<inps.length; i++) {
+        map_inps[inps[i].name] = inps[i].value;
+    }
+    map_inps["apartmentId"] = sessionStorage.getItem("apartmentId");
+    map_inps["userId"] = sessionStorage.getItem("user_name");
+    map_inps["billType"] = $(".selectpicker")[0].value;
+    map_inps["type"] = "addBill";
+    onResp = $("#res_div")[0].textContent = "Check for new bill";
+    sendRequest(ser)
 }

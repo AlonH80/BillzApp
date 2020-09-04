@@ -37,8 +37,6 @@ public class MongoConnector {
         logger = Utils.getLogger();
         initConfig();
         this.address = componentConfig.get("mongoAddress");
-        //this.address = "mongodb://localhost:27017";
-        this.port = Integer.parseInt(componentConfig.get("mongoPort"));
         initClient();
     }
 
@@ -189,7 +187,7 @@ public class MongoConnector {
     public Map<String, Object> getUser(String userId) {
         HashMap<String, String> userMap = new HashMap<>(1);
         userMap.put("id", userId);
-        Map<String, Object> resMap = find(defaultDB, "users", userMap).get(0);
+        Map<String, Object> resMap = find("billzDB", "users", userMap).get(0);
         logger.info(String.format("user map: %s", (new Gson()).toJson(resMap)));
         return resMap;
     }
@@ -199,7 +197,7 @@ public class MongoConnector {
         recordMap.put("userIdFrom", userIdFrom);
         recordMap.put("userIdTo", userIdTo);
         recordMap.put("amount", amount);
-        insert(defaultDB, "transactions", recordMap);
+        insert("billzDB", "transactions", recordMap);
     }
 
     public boolean isSaltExist(String salt) {
@@ -207,16 +205,13 @@ public class MongoConnector {
     }
 
     private void initConfig() throws Exception {
-        componentConfig = new HashMap<>();
-        HashMap<String, Object> tmpConfig = Utils.jsonFileToMap(confPath);
-        tmpConfig.forEach((k, v) -> componentConfig.put(k, v.toString()));
-        logger.info(String.format("ComponentConfig: %s", componentConfig.toString()));
+        componentConfig = Utils.loadConfigs();
     }
 
     public ArrayList<Map<String, Object>> getMessages(String userId) {
         HashMap<String, String> userMap = new HashMap<>(1);
         userMap.put("id", userId);
-        ArrayList<Map<String, Object>> resMap = find(defaultDB, "messages", userMap);
+        ArrayList<Map<String, Object>> resMap = find("billzDB", "messages", userMap);
         logger.info(String.format("user map: %s", (new Gson()).toJson(resMap)));
         return resMap;
     }
@@ -230,11 +225,11 @@ public class MongoConnector {
     }
 
     public String generateIdForApartment() {
-        return generateId(defaultDB, "apartments");
+        return generateId("billzDB", "apartments");
     }
 
     public String generateIdForSupplier() {
-        return generateId(defaultDB, "suppliers");
+        return generateId("billzDB", "suppliers");
     }
 
     public String generateId(String database, String collection) {
@@ -282,31 +277,31 @@ public class MongoConnector {
         insertMap.put("id", apartmentId);
         insertMap.put("usersIds", usersIds);
         insertMap.put("ownerId", openerId);
-        insert(defaultDB, "apartments", insertMap);
+        insert("billzDB", "apartments", insertMap);
     }
 
     public void updateApartmentUsers(String apartId, List<String> users) {
         LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
         queryMap.put("id", apartId);
-        Map<String, Object> updateMap = find(defaultDB, "apartments", queryMap).get(0);
+        Map<String, Object> updateMap = find("billzDB", "apartments", queryMap).get(0);
         updateMap.replace("usersIds", users);
-        update(defaultDB, "apartments", queryMap, updateMap);
+        update("billzDB", "apartments", queryMap, updateMap);
     }
 
     public void updateApartmentForUsersId(String apartId, String user) {
         LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
         queryMap.put("userID", user);
-        Map<String, Object> updateMap = find(defaultDB, "UsersAuth", queryMap).get(0);
+        Map<String, Object> updateMap = find("billzDB", "UsersAuth", queryMap).get(0);
         updateMap.replace("apartmentId", apartId);
-        update(defaultDB, "UsersAuth", queryMap, updateMap);
+        update("billzDB", "UsersAuth", queryMap, updateMap);
     }
 
     public void updateApartmentSuppliers(String apartId, List<String> suppliers) {
         LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
         queryMap.put("id", apartId);
-        Map<String, Object> updateMap = find(defaultDB, "apartments", queryMap).get(0);
+        Map<String, Object> updateMap = find("billzDB", "apartments", queryMap).get(0);
         updateMap.replace("suppliersIds", suppliers);
-        update(defaultDB, "apartments", queryMap, updateMap);
+        update("billzDB", "apartments", queryMap, updateMap);
     }
 
     public void insertSupplier(String belongToApartmentId, String type, String ownerId) {
@@ -315,7 +310,7 @@ public class MongoConnector {
         insertMap.put("type", type);
         insertMap.put("ownerId", ownerId);
         insertMap.put("balance", "0");
-        insert(defaultDB, "suppliers", insertMap);
+        insert("billzDB", "suppliers", insertMap);
     }
 
     public void insertSupplierParts(String belongToApartmentId, String type, Map<String, Object> parts) {
@@ -325,7 +320,7 @@ public class MongoConnector {
             insertMap.put("type", type);
             insertMap.put("userId", k);
             insertMap.put("part", v);
-            insert(defaultDB, "suppliersPart", insertMap);
+            insert("billzDB", "suppliersPart", insertMap);
         });
     }
 
@@ -333,7 +328,7 @@ public class MongoConnector {
         LinkedHashMap<String, String> findMap = new LinkedHashMap<>();
         findMap.put("apartmentId", belongToApartmentId);
         findMap.put("type", type);
-        return find(defaultDB, "suppliersPart", findMap);
+        return find("billzDB", "suppliersPart", findMap);
     }
 
     public void insertSupplierBalance(String belongToApartmentId, String type, Map<String, Object> balance) {
@@ -343,7 +338,7 @@ public class MongoConnector {
             insertMap.put("type", type);
             insertMap.put("userId", k);
             insertMap.put("balance", v);
-            insert(defaultDB, "suppliersBalance", insertMap);
+            insert("billzDB", "suppliersBalance", insertMap);
         });
     }
 
@@ -352,31 +347,31 @@ public class MongoConnector {
         insertMap.put("type", type);
         insertMap.put("apartmentId", apartmentId);
         insertMap.put("balances", usersBalances);
-        insert(defaultDB, "suppliersBalance", insertMap);
+        insert("billzDB", "suppliersBalance", insertMap);
     }
 
     public void updateSupplierBalances(String apartmentId, String type, String newSupplierBalance) {
         LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
         queryMap.put("apartmentId", apartmentId);
         queryMap.put("type", type);
-        Map<String, Object> updateMap = find(defaultDB, "supplier", queryMap).get(0);
+        Map<String, Object> updateMap = find("billzDB", "supplier", queryMap).get(0);
         updateMap.replace("balances", newSupplierBalance);
-        update(defaultDB, "supplier", queryMap, updateMap);
+        update("billzDB", "supplier", queryMap, updateMap);
     }
 
     public void updateUserSupplierBalance(String apartmentId, String type, String newUserBalance) {
         LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
         queryMap.put("apartmentId", apartmentId);
         queryMap.put("type", type);
-        Map<String, Object> updateMap = find(defaultDB, "suppliersBalance", queryMap).get(0);
+        Map<String, Object> updateMap = find("billzDB", "suppliersBalance", queryMap).get(0);
         updateMap.replace("balances", newUserBalance);
-        update(defaultDB, "suppliersBalance", queryMap, updateMap);
+        update("billzDB", "suppliersBalance", queryMap, updateMap);
     }
 
     public Map<String, Object> getApartment(String apartmentId) {
         HashMap<String, String> aptMap = new HashMap<>(1);
         aptMap.put("id", apartmentId);
-        Map<String, Object> resMap = find(defaultDB, "apartments", aptMap).get(0);
+        Map<String, Object> resMap = find("billzDB", "apartments", aptMap).get(0);
         logger.info(String.format("apartment map: %s", (new Gson()).toJson(resMap)));
         return resMap;
     }
@@ -385,7 +380,7 @@ public class MongoConnector {
         HashMap<String, String> supplierMap = new HashMap<>(1);
         supplierMap.put("id", apartmentId);
         supplierMap.put("type", type);
-        Map<String, Object> resMap = find(defaultDB, "suppliers", supplierMap).get(0);
+        Map<String, Object> resMap = find("billzDB", "suppliers", supplierMap).get(0);
         logger.info(String.format("apartment map: %s", (new Gson()).toJson(resMap)));
         return resMap;
     }
@@ -393,20 +388,52 @@ public class MongoConnector {
     public String getAptId(String userId) {
         LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
         queryMap.put("userID", userId);
-        Map<String, Object> resMap = find(defaultDB, "UsersAuth", queryMap).get(0);
+        Map<String, Object> resMap = find("billzDB", "UsersAuth", queryMap).get(0);
         return resMap.get("apartmentId").toString();
     }
 
     public List<String> getRoommates(String apartmentId) {
         LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
         queryMap.put("apartmentId", apartmentId);
-        ArrayList<Map<String, Object>> resMap = find(defaultDB, "apartments", queryMap);
+        ArrayList<Map<String, Object>> resMap = find("billzDB", "apartments", queryMap);
         if(resMap.isEmpty())
             return new ArrayList<>();
         else
             return (List<String>) resMap.get(0).get("usersIds");
     }
+
+    public List<Map<String, Object>> getSuppliers(String apartmentId) {
+        HashMap<String, String> supplierMap = new HashMap<>(1);
+        supplierMap.put("apartmentId", apartmentId);
+        List<Map<String, Object>> resLst = find("billzDB", "suppliers", supplierMap);
+        logger.info(String.format("apartment map: %s", (new Gson()).toJson(resLst)));
+        return resLst;
+    }
+
+    public void addBill(String apartmentId, String dDay, String amount, String billType, String userId) {
+        LinkedHashMap<String, Object> insertMap = new LinkedHashMap<>();
+        insertMap.put("apartmentId", apartmentId);
+        insertMap.put("dDay", dDay);
+        insertMap.put("amount", amount);
+        insertMap.put("billType", billType);
+        insertMap.put("owner", userId);
+        insertMap.put("status", "UNPAID");
+        insert("billzDB", "bills", insertMap);
+    }
+
+    public List getBills(String apartmentId) {
+        HashMap<String, String> billsMap = new HashMap<>(1);
+        billsMap.put("apartmentId", apartmentId);
+        List<Map<String, Object>> resLst = find("billzDB", "bills", billsMap);
+        logger.info(String.format("apartment map: %s", (new Gson()).toJson(resLst)));
+        return resLst;
+    }
+
+    public void updateSetting(String userId, String setting, String value) {
+        LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
+        queryMap.put("userID", userId);
+        Map<String, Object> updateMap = find("billzDB", "UsersAuth", queryMap).get(0);
+        updateMap.replace(setting, value);
+        update("billzDB", "UsersAuth", queryMap, updateMap);
+    }
 }
-
-
-

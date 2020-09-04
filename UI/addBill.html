@@ -70,10 +70,15 @@
                   </form>
                 </label>
             </div>
-
+            <div id="manualBill">
+                Amount: <input type="text" name="amount">
+                Due date: <input type="text" name="dDay">
+                <button type="submit" onclick="sendManualBilling()">Submit</button>
+            </div>
             <input type="checkbox" id="isCycle" name="isCycle" checked>
             <label for="isCycle">Cycle Billing?</label>
             <br>
+            <div id="res_div" style="color: green"></div>
             <!--a href="./billSummary.html" class="button special">SUBMIT</a-->
         </div>
     </section>

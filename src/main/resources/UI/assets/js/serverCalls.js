@@ -171,9 +171,11 @@ function getAndPutParticipants() {
         pay_map[tds[0].textContent] = $("input", tds[1])[0].value;
     }
     supplier_map = {"partsMap": pay_map};
-    supplier_map["supplier"] = $("#supplierType")[0].value;
+    supplier_map["supplier"] = $("#supplierType")[0].value.split(' ').join('_');
+    ;
     supplier_map["billOwner"] = $("#billOwner")[0].value;
     supplier_map["type"] = "addSupplier";
+    supplier_map["apartmentId"] = sessionStorage.getItem("apartmentId");
     sendRequest(server_address, supplier_map, console.log);
 }
 
@@ -196,19 +198,7 @@ function setOnAddRoomateRequest() {
         for (i = 0; i < inps.length; i++) {
             map_inps[inps[i].name] = inps[i].value;
         }
-        map_inps["type"] = "addRoomate";
-        map_inps["userId"] = sessionStorage.getItem("user_name");
-        map_inps["apartmentId"] = sessionStorage.getItem("apartmentId");
-        onRoomateAdded = jsonData => {
-            console.log(jsonData);
-            if (jsonData.status === "success") {
-                redirectToPage("index.html");
-            }
-            else {
-                $("#invite-error")[0].textContent = jsonData.error;
-            }
-        };
-        sendRequest(server_address, map_inps, console.log);
+        sendRequest(server_address + "/regForm", map_inps, console.log);
     });
 }
 
@@ -221,6 +211,7 @@ function setOnSendPayment() {
             map_inps[inps[i].name] = inps[i].value;
         }
         //map_inps["confirm_password"]="none";
+        sendRequest(server_address, map_inps, onRegisterConfirmed);
         sendRequest(server_address, map_inps, onRegisterConfirmed);
     });
 }
@@ -238,10 +229,15 @@ function getMessages() {
 
 function getRoomates() {
     server_url = server_address;
-    jsonInfo = {"type": "roommates", "token": "aaaa", "apartmentId": sessionStorage.getItem("apartmentId"), "userId": sessionStorage.getItem("user_name")};
-    onResp = function (dat) {
+    jsonInfo = {
+        "type": "roommates",
+        "token": "aaaa",
+        "apartmentId": sessionStorage.getItem("apartmentId"),
+        "userId": sessionStorage.getItem("user_name")
+    };
+    onResp = dat => {
         partPerRoomate = calculatePartPerRoomate(dat.length);
-        dat.map(function (roomate) {
+        dat.map(roomate => {
             addOptionToSelectPicker($("#billOwner"), roomate);
             addRoomateToSplit($("#roomatesSplit"), roomate, partPerRoomate[dat.indexOf(roomate)]);
         });
@@ -250,10 +246,10 @@ function getRoomates() {
 }
 
 function getBillSummary() {
-    server_url = server_address + "/getInfo";
-    jsonInfo = {"type": "billSummary", "token": "aaaa"};
+    server_url = server_address;
+    jsonInfo = {"type": "getBills", "token": "aaaa", "apartmentId": sessionStorage.getItem("apartmentId")};
     onResp = dat => {
-        dat["billSummary"].map(rowJson => {
+        dat.map(rowJson => {
             addRowToBillSummary($("#summaryRows"), rowJson);
         });
     };
@@ -293,15 +289,16 @@ function addRowToBillSummary(summaryRowsNode, rowJson) {
     for (info in rowJson) {
         newTd = document.createElement("td");
         newTd.textContent = rowJson[info];
-        tds[info.toLowerCase()] = newTd;
+        tds[info] = newTd;
     }
-    newRow.append(tds["supplier"]);
-    newRow.append(tds["payer"]);
-    newRow.append(tds["address"]);
-    newRow.append(tds["bill_number"]);
-    newRow.append(tds["account_number"]);
+    newRow.append(tds["billType"]);
+    newRow.append(tds["owner"]);
+    // newRow.append(tds["address"]);
+    // newRow.append(tds["bill_number"]);
+    // newRow.append(tds["account_number"]);
     newRow.append(tds["amount"]);
-    newRow.append(tds["paying_date"]);
+    newRow.append(tds["dDay"]);
+    newRow.append(tds["status"]);
     summaryRowsNode.append(newRow);
 }
 
@@ -347,8 +344,8 @@ function addRowToGeneralSummary(generalSummaryRowsNode, rowJson) {
 }
 
 function getBalance() {
-    server_url = server_address;
-    jsonInfo = {"type": "balance", "token": "aaaa", "userId": sessionStorage.getItem("user_name")};
+    server_url = server_address + "/getInfo";
+    jsonInfo = {"type": "balance", "token": "aaaa"};
     onResp = dat => {
         max_balance = dat["balance"].map(r => Math.abs(parseInt(r.balance))).reduce((x, y) => x > y ? x : y);
         power = 2;
@@ -528,9 +525,9 @@ function logUserOut() {
 
 function getSuppliers() {
     server_url = server_address;
-    jsonInfo = {"type": "suppliers", "token": "aaaa"};
+    jsonInfo = {"type": "getSuppliers", "token": "aaaa", "apartmentId": sessionStorage.getItem("apartmentId")};
     onResp = dat => {
-        dat["suppliers"].map(jsonData => {
+        dat.map(jsonData => {
             createHouseBox(jsonData);
         });
     };
@@ -538,8 +535,8 @@ function getSuppliers() {
 }
 
 function createHouseBox(jsonData) {
-    let supplier = jsonData["supplier"];
-    let owner = jsonData["owner"];
+    let supplier = jsonData["type"];
+    let owner = jsonData["ownerId"];
     let roomates = jsonData["roomates"]; // type: json {roomate, part}
     let suppliers_container = $("#suppliers-container")[0];
     let houseboxNode = document.createElement("div");
@@ -611,7 +608,7 @@ function createHouseBox(jsonData) {
 function changeSetting(setting_id) {
     input_nd = $("#" + setting_id)[0];
     input_value = input_nd.value;
-    requestJson = {"type": "changeSetting", "setting": setting_id, "value": input_value};
+    requestJson = {"type": "changeSetting", "setting": setting_id, "value": input_value, "userId": sessionStorage.getItem("user_name")};
     onChangeDone = jsonData => {
         if (jsonData["status"] === "success") {
             redirectToPage("settings.html");
@@ -619,7 +616,7 @@ function changeSetting(setting_id) {
             $("#change-err")[0].textContent = jsonData["error"];
         }
     };
-    sendRequest(server_url, requestJson, onChangeDone);
+    sendRequest(server_address, requestJson, onChangeDone);
 }
 
 function getResource(resource_rel_path) {
@@ -633,19 +630,9 @@ function createCreateAptButton() {
     let btnNode = document.createElement("button");
     btnNode.classList.add("apt-action");
     btnNode.textContent = "Create an apartment";
-    onAptCreated = jsonData => {
-        console.log(jsonData);
-        if (jsonData.status === "success") {
-            sessionStorage.setItem("apartmentId", jsonData.apartmentId);
-            redirectToPage("index.html");
-        }
-        else {
-            $("#apt-action-nd")[0].textContent = jsonData.error;
-        }
-    };
     btnNode.onclick = () => {
         reqMap = {"userId": sessionStorage.getItem("user_name"), "token": "aaaa", "type": "createApartment"};
-        sendRequest(server_address, reqMap, onAptCreated);
+        sendRequest(server_address, reqMap, console.log);
     };
     //redirectToPage("createApartment.html");
     $("#apt-action-nd")[0].appendChild(btnNode);
@@ -659,38 +646,28 @@ function createInviteRoomateButton() {
     $("#apt-action-nd")[0].appendChild(btnNode);
 }
 
-function createLeaveAptButton() {
-    let btnNode = document.createElement("button");
-    btnNode.classList.add("apt-action");
-    btnNode.textContent = "Leave Apartment";
-    onLeaveApt = jsonData => {
-        if (jsonData.status === "success") {
-            console.log(jsonData);
-            if (keys(jsonData).includes("apartmentId")){
-                sessionStorage.setItem("apartmentId", jsonData.apartmentId);
-            }
-            else {
-                sessionStorage.setItem("apartmentId", "0");
-            }
-            redirectToPage("index.html");
-        }
-    };
-    btnNode.onclick = () => {
-        reqMap = {"userId": sessionStorage.getItem("user_name"), "token": "aaaa", "type": "leaveApartment"};
-        sendRequest(server_address, reqMap, onLeaveApt);
-    };
-    //redirectToPage("createApartment.html");
-    $("#apt-action-nd")[0].appendChild(btnNode);
-}
-
 function generateUserHome() {
     setHelloLabel();
     let userAptId = sessionStorage.getItem("apartmentId");
     if (userAptId !== "0" && userAptId !== undefined) {
         createInviteRoomateButton();
-        createLeaveAptButton();
         getBalance();
     } else {
         createCreateAptButton();
     }
+}
+
+function sendManualBilling() {
+    inputNd = $("#manualBill")[0];
+    inps = $("input", inputNd);
+    map_inps = {};
+    for (i = 0; i < inps.length; i++) {
+        map_inps[inps[i].name] = inps[i].value;
+    }
+    map_inps["apartmentId"] = sessionStorage.getItem("apartmentId");
+    map_inps["userId"] = sessionStorage.getItem("user_name");
+    map_inps["billType"] = $(".selectpicker")[0].value;
+    map_inps["type"] = "addBill";
+    onResp = $("#res_div")[0].textContent = "Check for new bill";
+    sendRequest(server_address, map_inps, onResp);
 }

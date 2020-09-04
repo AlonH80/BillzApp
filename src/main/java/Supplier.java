@@ -11,7 +11,9 @@ public class Supplier {
     public enum TYPE {
         ELECTRICITY,
         WATER,
-        ARNONA
+        PROPERTY_TAX,
+        RENT,
+        OTHER
     }
 
     private String supplierId;

@@ -10,7 +10,6 @@ public class UsersManager {
     private MongoConnector mongoConnector;
     private Encryptor encryptor;
     private HashMap<String, String> componentConfig;
-    private final static String confPath = Utils.confPath;
     private final static String logsPath = "logs/";
     private final static int MINIMUM_PWD_LEN = 6;
     private Server server;
@@ -28,10 +27,7 @@ public class UsersManager {
     }
 
     private void initConfig() throws Exception {
-        componentConfig = new HashMap<>();
-        HashMap<String, Object> tmpConfig = Utils.jsonFileToMap(confPath);
-        tmpConfig.forEach((k, v) -> componentConfig.put(k, v.toString()));
-        logger.info(String.format("ComponentConfig: %s", componentConfig.toString()));
+        componentConfig = Utils.loadConfigs();
     }
 
     private boolean addUser(String userId, String inputPassword, String paypal, String email, String apartmentId) {
@@ -151,5 +147,8 @@ public class UsersManager {
 
         return resMap;
     }
+
+    public void updateSetting(String userId, String setting, String value) {
+        mongoConnector.updateSetting(userId, setting, value);
+    }
 }
-//
