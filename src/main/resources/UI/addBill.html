@@ -72,9 +72,8 @@
                 </label>
             </div>
             <div id="manualBill">
-                Amount: <input type="text" name="amount">
-                Due date: <input type="text" name="dDay">
-                <button type="submit" onclick="sendManualBilling()">Submit</button>
+                <label>Amount</label><input type="text" name="amount"><button type="submit" onclick="sendManualBilling()" style="row-span: 2; margin-left: 10px;">Submit</button>
+                <label>Due Date</label><input type="text" name="dDay">
             </div>
             <input type="checkbox" id="isCycle" name="isCycle" checked>
             <label for="isCycle">Cycle Billing?</label>

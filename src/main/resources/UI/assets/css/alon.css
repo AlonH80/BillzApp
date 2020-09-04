@@ -150,3 +150,15 @@
 .links li a:hover {
 	font-weight: bold;
 }
+
+#manualBill {
+	display: grid;
+	grid-template-columns: 100px 100px 200px;
+	grid-template-rows: 30px 30px;
+	grid-row-gap: 3px;
+	margin: 5px;
+}
+
+#manualBill input {
+	height: 25px;
+}
