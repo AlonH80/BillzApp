@@ -394,7 +394,7 @@ public class MongoConnector {
 
     public List<String> getRoommates(String apartmentId) {
         LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
-        queryMap.put("apartmentId", apartmentId);
+        queryMap.put("id", apartmentId);
         ArrayList<Map<String, Object>> resMap = find("billzDB", "apartments", queryMap);
         if(resMap.isEmpty())
             return new ArrayList<>();

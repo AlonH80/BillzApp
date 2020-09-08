@@ -218,7 +218,7 @@ function setOnAddRoomateRequest() {
         map_inps["type"] = "addRoommate";
         map_inps["userId"] = sessionStorage.getItem("user_name");
         map_inps["apartmentId"] = sessionStorage.getItem("apartmentId");
-        whats_text =  map_inps["userId"] +" invited you to his apartment" + ".\nLink: ";
+        whats_text =  map_inps["userId"] +" invited you to his apartment" + "%0A";
         link_to_join_apartment = server_address + "/?joinApart?" + map_inps["apartmentId"] + "?" + map_inps["userId_join"];
         whats_text += link_to_join_apartment
         if (!map_inps["phone_number"].contains("+972")){

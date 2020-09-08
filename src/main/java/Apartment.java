@@ -56,7 +56,7 @@ public class Apartment {
     }
 
     public List<String> getUsers() {
-        return userIds;
+        return mongoConnector.getRoommates(apartmentId);
     }
 
 //    public List<String> getSuppliersIds() {
