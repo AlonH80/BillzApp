@@ -246,7 +246,7 @@ function setOnSendPayment() {
 
 function getMessages() {
     server_url = server_address;
-    jsonInfo = {"type": "messages", "token": "aaaa", "userId": sessionStorage.getItem("user_name")};
+    jsonInfo = {"type": "messages", "token": "aaaa", "userId": sessionStorage.getItem("user_name"), "apartmentId": sessionStorage.getItem("apartmentId")};
     onResp = dat => {
         dat.map(msgJson => {
             createMsgRow($("#msgsContainer"), msgJson);
