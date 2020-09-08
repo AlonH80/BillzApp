@@ -291,7 +291,7 @@ public class MongoConnector {
     public void updateApartmentForUsersId(String apartId, String user) {
         LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
         queryMap.put("userID", user);
-        Map<String, Object> updateMap = find("billzDB", "UsersAuth", queryMap).get(0);
+        Map<String, Object> updateMap = find("billzDB", "apartments", queryMap).get(0);
         updateMap.replace("apartmentId", apartId);
         update("billzDB", "UsersAuth", queryMap, updateMap);
     }
