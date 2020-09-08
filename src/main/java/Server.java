@@ -98,8 +98,8 @@ public class Server extends Observable {
                 logger.info(String.format("user id: %s", userId));
                 logger.info(String.format("Apartment id: %s", apartId));
                 apartsManager.addUserToApartment(apartId, userId);
-                sendDefaultResponse(httpExchange, "");
-                return "";
+//                sendDefaultResponse(httpExchange, "");
+//                return "";
             }
             else if (requestURI.contains("favicon") || requestURI.contains("compass")) {
                 sendDefaultResponse(httpExchange, "");

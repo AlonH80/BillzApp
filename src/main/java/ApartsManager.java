@@ -50,6 +50,7 @@ public class ApartsManager {
             mongoConnector.updateApartmentForUsersId(apartmentId, userId);
         }
         catch (Exception e) {
+            logger.warning("Unable to add " + userId + " to " + apartmentId);
             e.printStackTrace();
         }
     }
