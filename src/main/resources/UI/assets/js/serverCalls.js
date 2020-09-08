@@ -221,6 +221,9 @@ function setOnAddRoomateRequest() {
         whats_text =  map_inps["userId"] +" invited you to his apartment" + ".\nLink: ";
         link_to_join_apartment = server_address + "/?joinApart?" + map_inps["apartmentId"] + "?" + map_inps["userId_join"];
         whats_text += link_to_join_apartment
+        if (!map_inps["phone_number"].contains("+972")){
+            map_inps["phone_number"] = "+972" + map_inps["phone_number"]
+        }
         whatsaap_add = "https://wa.me/" + map_inps["phone_number"] + "?text=" + whats_text;
         window.open(whatsaap_add);
     });

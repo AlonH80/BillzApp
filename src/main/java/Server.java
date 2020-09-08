@@ -93,7 +93,11 @@ public class Server extends Observable {
         private String handleGetRequest(HttpExchange httpExchange) throws IOException {
             String requestURI = httpExchange.getRequestURI().toString();
             if (requestURI.contains("joinApart")) {
-                apartsManager.addUserToApartment(requestURI.split("\\?")[2], requestURI.split("\\?")[3]);
+                String userId = requestURI.split("\\?")[2];
+                String apartId = requestURI.split("\\?")[3];
+                logger.info(String.format("user id: %s", userId));
+                logger.info(String.format("Apartment id: %s", apartId));
+                apartsManager.addUserToApartment(apartId, userId);
                 sendDefaultResponse(httpExchange, "");
                 return "";
             }

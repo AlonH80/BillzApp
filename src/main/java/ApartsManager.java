@@ -43,10 +43,15 @@ public class ApartsManager {
 
 
     public void addUserToApartment(String apartmentId, String userId) {
-        Apartment currApartment = apartments.get(apartmentId);
-        currApartment.addUser(userId);
-        mongoConnector.updateApartmentUsers(apartmentId, currApartment.getUsers());
-        mongoConnector.updateApartmentForUsersId(apartmentId, userId);
+        try {
+            Apartment currApartment = getApartment(apartmentId);
+            currApartment.addUser(userId);
+            mongoConnector.updateApartmentUsers(apartmentId, currApartment.getUsers());
+            mongoConnector.updateApartmentForUsersId(apartmentId, userId);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void addUserToBill(String apartmentId, String userId, String supplierId) throws Exception {
