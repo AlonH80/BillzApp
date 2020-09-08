@@ -18,7 +18,6 @@ public class MongoConnector {
     private MongoClient client;
     private Logger logger;
     private String defaultDB = "billzDB";
-    private String defaultCollection = "UsersAuth";
     private static MongoConnector instance = null;
     private static HashMap<String, String> componentConfig;
     private final static String confPath = Utils.confPath;
@@ -27,7 +26,6 @@ public class MongoConnector {
         if (instance == null) {
             instance = new MongoConnector();
             instance.setDefaultDB(componentConfig.get("mongoAppDB"));
-            instance.setDefaultCollection(componentConfig.get("mongoAppCollection"));
         }
         return instance;
     }
@@ -58,10 +56,6 @@ public class MongoConnector {
 
     public void setDefaultDB(String db) {
         defaultDB = db;
-    }
-
-    public void setDefaultCollection(String collection) {
-        defaultCollection = collection;
     }
 
     private void insert(String database, String collection, Map<String, Object> insertMap) {
@@ -123,7 +117,7 @@ public class MongoConnector {
             } else {
                 newUserMap.put("apartmentId", apartmentId);
             }
-            insert(defaultDB, defaultCollection, newUserMap);
+            insert(defaultDB, "UsersAuth", newUserMap);
             userInserted = true;
         } else {
             logger.warning(String.format("User id %s already exist", userID));
@@ -134,7 +128,7 @@ public class MongoConnector {
     public boolean checkPasswordMatch(String userID, String hashedPassword) {
         HashMap<String, String> queryMap = new HashMap<>(1);
         queryMap.put("userID", userID);
-        String passwordInDB = find(defaultDB, defaultCollection, queryMap).get(0).get("password").toString();
+        String passwordInDB = find(defaultDB, "UsersAuth", queryMap).get(0).get("password").toString();
         boolean passwordMatch = passwordInDB.equals(hashedPassword);
         if (!passwordMatch) {
             logger.warning(String.format("User %s entered incorrect password", userID));
@@ -145,7 +139,7 @@ public class MongoConnector {
     public String getUserSalt(String userID) {
         HashMap<String, String> queryMap = new HashMap<>(1);
         queryMap.put("userID", userID);
-        String userSalt = find(defaultDB, defaultCollection, queryMap).get(0).get("salt").toString();
+        String userSalt = find(defaultDB, "UsersAuth", queryMap).get(0).get("salt").toString();
 
         return userSalt;
     }
@@ -158,7 +152,7 @@ public class MongoConnector {
             updateMap.put("userID", userID);
             updateMap.put("salt", salt);
             updateMap.put("password", hashedPassword);
-            update(defaultDB, defaultCollection, queryMap, updateMap);
+            update(defaultDB, "UsersAuth", queryMap, updateMap);
             return true;
         } catch (Exception e) {
             return false;
@@ -167,7 +161,7 @@ public class MongoConnector {
     }
 
     private HashSet<String> getAllUsersIds() {
-        ArrayList<Map<String, Object>> usersAuthMap = find(defaultDB, defaultCollection, new HashMap<>());
+        ArrayList<Map<String, Object>> usersAuthMap = find(defaultDB, "UsersAuth", new HashMap<>());
         HashSet<String> usersIds = new HashSet<>(usersAuthMap.size());
         usersAuthMap.forEach(m -> usersIds.add(m.get("userID").toString()));
 
@@ -179,7 +173,7 @@ public class MongoConnector {
     }
 
     private HashSet<String> getAllSalts() {
-        ArrayList<Map<String, Object>> usersAuthMap = find(defaultDB, defaultCollection, new HashMap<>());
+        ArrayList<Map<String, Object>> usersAuthMap = find(defaultDB, "UsersAuth", new HashMap<>());
         HashSet<String> salts = new HashSet<>(usersAuthMap.size());
         usersAuthMap.forEach(m -> salts.add(m.get("salt").toString()));
 
@@ -213,20 +207,20 @@ public class MongoConnector {
         logger.info(String.format("ComponentConfig: %s", componentConfig.toString()));
     }
 
-    public ArrayList<Map<String, Object>> getMessages(String userId) {
+    public ArrayList<Map<String, Object>> getMessages(String apartmentId) {
         HashMap<String, String> userMap = new HashMap<>(1);
-        userMap.put("id", userId);
+        userMap.put("apartmentId", apartmentId);
         ArrayList<Map<String, Object>> resMap = find("billzDB", "messages", userMap);
         logger.info(String.format("user map: %s", (new Gson()).toJson(resMap)));
         return resMap;
     }
 
-    public void insertMessage(String userID, String salt, String hashedPassword) {
-        LinkedTreeMap<String, Object> newUserMap = new LinkedTreeMap<>();
-        newUserMap.put("userID", userID);
-        newUserMap.put("salt", salt);
-        newUserMap.put("password", hashedPassword);
-        insert(defaultDB, defaultCollection, newUserMap);
+    public void insertMessage(String userID, String apartmentId, String message) {
+        LinkedTreeMap<String, Object> messageMap = new LinkedTreeMap<>();
+        messageMap.put("userID", userID);
+        messageMap.put("apartmentId", apartmentId);
+        messageMap.put("message", message);
+        insert(defaultDB, "messages", messageMap);
     }
 
     public String generateIdForApartment() {
@@ -399,7 +393,7 @@ public class MongoConnector {
 
     public List<String> getRoommates(String apartmentId) {
         LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
-        queryMap.put("apartmentId", apartmentId);
+        queryMap.put("id", apartmentId);
         ArrayList<Map<String, Object>> resMap = find("billzDB", "apartments", queryMap);
         if(resMap.isEmpty())
             return new ArrayList<>();

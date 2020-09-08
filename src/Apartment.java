@@ -27,15 +27,15 @@ public class Apartment {
         this.logger = logger;
     }
 
-    public void addSupplier(Supplier.TYPE type,String openerId) throws Exception {
+    public void addSupplier(Supplier.TYPE type, String openerId) throws Exception {
         mongoConnector.insertSupplier(apartmentId, type.toString(), ownerId);
     }
 
     public void removeSupplier(Supplier.TYPE type) {
         Map<String, Object> removeMap = new HashMap<>();
-        removeMap.put("apartmentId",apartmentId);
+        removeMap.put("apartmentId", apartmentId);
         removeMap.put("type", type);
-        mongoConnector.remove("billzDB","suppliers",removeMap);
+        mongoConnector.remove("billzDB", "suppliers", removeMap);
 
     }
 
@@ -56,7 +56,7 @@ public class Apartment {
     }
 
     public List<String> getUsers() {
-        return userIds;
+        return mongoConnector.getRoommates(apartmentId);
     }
 
 //    public List<String> getSuppliersIds() {
@@ -76,12 +76,16 @@ public class Apartment {
     }
 
     public Supplier getSupplier(Supplier.TYPE type) throws Exception {
-        Map<String, Object> resMap = mongoConnector.getSupplier(apartmentId,type.toString());
-        return new Supplier(Supplier.TYPE.valueOf(resMap.get("type").toString().toUpperCase()),resMap.get("apartmentId").toString(),resMap.get("ownerId").toString());
+        Map<String, Object> resMap = mongoConnector.getSupplier(apartmentId, type.toString());
+        return new Supplier(Supplier.TYPE.valueOf(resMap.get("type").toString().toUpperCase()), resMap.get("apartmentId").toString(), resMap.get("ownerId").toString());
     }
 
     public List<Map<String, Object>> getSuppliers(String apartmentId) {
-        return mongoConnector.getSuppliers(apartmentId);
+        List<Map<String, Object>> suppliers = mongoConnector.getSuppliers(apartmentId);
+        suppliers.forEach(m -> {
+            m.put("roommates", mongoConnector.getSupplierParts(apartmentId, m.get("type").toString()));
+        });
+        return suppliers;
     }
 
     public void addBill(String dDay, String amount, String billType, String userId) {

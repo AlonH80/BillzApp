@@ -42,8 +42,8 @@ public class ApartsManager {
     }
 
 
-    public void addUserToApartment(String apartmentId, String userId) {
-        Apartment currApartment = apartments.get(apartmentId);
+    public void addUserToApartment(String apartmentId, String userId) throws Exception {
+        Apartment currApartment = getApartment(apartmentId);
         currApartment.addUser(userId);
         mongoConnector.updateApartmentUsers(apartmentId, currApartment.getUsers());
         mongoConnector.updateApartmentForUsersId(apartmentId, userId);
@@ -80,5 +80,9 @@ public class ApartsManager {
 
     public List getBills(String apartmentId) {
         return mongoConnector.getBills(apartmentId);
+    }
+
+    public void addRoommate(String apartmentId, String userId) throws Exception {
+        addUserToApartment(apartmentId, userId);
     }
 }

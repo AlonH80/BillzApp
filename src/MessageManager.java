@@ -29,7 +29,11 @@ public class MessageManager {
         this.logger = logger;
     }
 
-    public ArrayList<Map<String, Object>> getMessages(String userID){
-        return mongoConnector.getMessages(userID);
+    public ArrayList<Map<String, Object>> getMessages(String apartmentId){
+        return mongoConnector.getMessages(apartmentId);
+    }
+
+    public void addMessage(String userId, String apartmentId, String message){
+        mongoConnector.insertMessage(userId,apartmentId,userId + " " + message);
     }
 }

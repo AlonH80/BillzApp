@@ -1,4 +1,6 @@
 function sendRequest(serverURL, jsonData, onResponse) {
+    jsonData["apartmentId"] = sessionStorage.getItem("apartmentId") || "0";
+    jsonData["userId"] = sessionStorage.getItem("user_name");
     $.ajax({
         method: "POST",
         url: serverURL,
@@ -176,6 +178,7 @@ function getAndPutParticipants() {
     supplier_map["billOwner"] = $("#billOwner")[0].value;
     supplier_map["type"] = "addSupplier";
     supplier_map["apartmentId"] = sessionStorage.getItem("apartmentId");
+    supplier_map["userId"] = sessionStorage.getItem("user_name");
     sendRequest(server_address, supplier_map, console.log);
 }
 
@@ -218,7 +221,7 @@ function setOnSendPayment() {
 
 function getMessages() {
     server_url = server_address;
-    jsonInfo = {"type": "messages", "token": "aaaa", "userId": sessionStorage.getItem("user_name")};
+    jsonInfo = {"type": "messages", "token": "aaaa", "userId": sessionStorage.getItem("user_name"), "apartmentId": sessionStorage.getItem("apartmentId")};
     onResp = dat => {
         dat.map(msgJson => {
             createMsgRow($("#msgsContainer"), msgJson);
@@ -537,7 +540,7 @@ function getSuppliers() {
 function createHouseBox(jsonData) {
     let supplier = jsonData["type"];
     let owner = jsonData["ownerId"];
-    let roomates = jsonData["roomates"]; // type: json {roomate, part}
+    let roomates = jsonData["roommates"]; // type: json {roomate, part}
     let suppliers_container = $("#suppliers-container")[0];
     let houseboxNode = document.createElement("div");
     let supplier_header = document.createElement("div");
@@ -596,7 +599,7 @@ function createHouseBox(jsonData) {
     roomatesBox.classList.add("roomates");
     for (i in roomates) {
         let roomateRow = document.createElement("li");
-        let rooomates_str = roomates[i]["roomate"].padEnd(20) + roomates[i]["part"];
+       // let rooomates_str = roomates[i]["roomate"].padEnd(20) + roomates[i]["part"];
         roomatesBox.appendChild(roomateRow);
     }
     houseboxNode.appendChild(roomatesBox);
