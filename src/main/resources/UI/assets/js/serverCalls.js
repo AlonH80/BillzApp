@@ -198,9 +198,33 @@ function setOnAddRoomateRequest() {
         for (i = 0; i < inps.length; i++) {
             map_inps[inps[i].name] = inps[i].value;
         }
-        sendRequest(server_address + "/regForm", map_inps, console.log);
+        map_inps["type"] = "addRoommate";
+        map_inps["userId"] = sessionStorage.getItem("user_name");
+        map_inps["apartmentId"] = sessionStorage.getItem("apartmentId");
+
+        onResp = dat => {redirectToPage("index.html");};
+        sendRequest(server_address, map_inps, onResp);
     });
 }
+
+function setOnAddRoomateRequest() {
+    $("form#addRoomate").submit(function (e) {
+        e.preventDefault();
+        inps = $("input", $("#addRoomate")[0]);
+        map_inps = {};
+        for (i = 0; i < inps.length; i++) {
+            map_inps[inps[i].name] = inps[i].value;
+        }
+        map_inps["type"] = "addRoommate";
+        map_inps["userId"] = sessionStorage.getItem("user_name");
+        map_inps["apartmentId"] = sessionStorage.getItem("apartmentId");
+        whats_text = "You're invited to apartment with " + map_inps["userId"];
+        link_to_join_apartment = server_address + "/?joinApart?" + map_inps["apartmentId"] + "?" + map_inps["userId_join"];
+        whatsaap_add = "https://wa.me/" + map_inps["phone_number"] + "?text=" + "You're invited to apartment with " + map_inps["userId"];
+        window.open(whatsaap_add);
+    });
+}
+
 
 function setOnSendPayment() {
     $("form#payRoomateForm").submit(function (e) {

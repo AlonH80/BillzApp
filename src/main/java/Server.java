@@ -92,11 +92,16 @@ public class Server extends Observable {
 
         private String handleGetRequest(HttpExchange httpExchange) throws IOException {
             String requestURI = httpExchange.getRequestURI().toString();
-            if (requestURI.contains("favicon") || requestURI.contains("compass")) {
+            if (requestURI.contains("joinApart")) {
+                apartsManager.addUserToApartment(requestURI.split("\\?")[2], requestURI.split("\\?")[3]);
                 sendDefaultResponse(httpExchange, "");
                 return "";
             }
-            if (requestURI.matches("/")) {
+            else if (requestURI.contains("favicon") || requestURI.contains("compass")) {
+                sendDefaultResponse(httpExchange, "");
+                return "";
+            }
+            else if (requestURI.matches("/")) {
                 return fileToString(String.format("%s/%s", UiPath, "login.html"));
             } else if (requestURI.endsWith(".png") || requestURI.endsWith(".ico") || requestURI.toLowerCase().contains("fontawesome")) {
                 returnImage(httpExchange, UiPath + requestURI);
