@@ -218,9 +218,10 @@ function setOnAddRoomateRequest() {
         map_inps["type"] = "addRoommate";
         map_inps["userId"] = sessionStorage.getItem("user_name");
         map_inps["apartmentId"] = sessionStorage.getItem("apartmentId");
-        whats_text = "You're invited to apartment with " + map_inps["userId"];
+        whats_text =  map_inps["userId"] +" invited you to his apartment" + ".\nLink: ";
         link_to_join_apartment = server_address + "/?joinApart?" + map_inps["apartmentId"] + "?" + map_inps["userId_join"];
-        whatsaap_add = "https://wa.me/" + map_inps["phone_number"] + "?text=" + "You're invited to apartment with " + map_inps["userId"];
+        whats_text += link_to_join_apartment
+        whatsaap_add = "https://wa.me/" + map_inps["phone_number"] + "?text=" + whats_text;
         window.open(whatsaap_add);
     });
 }
