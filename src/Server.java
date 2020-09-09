@@ -138,6 +138,7 @@ public class Server extends Observable {
 
         synchronized private void handlePostResponse(HttpExchange httpExchange, HashMap<String, Object> requestParamValue) throws Exception {
             List resLst;
+            Map resMap;
             String resStr;
             httpExchange.getResponseHeaders().set("Content-Type", "application/json");
             Integer pendSize = pendingManagerResponse.size();
@@ -151,6 +152,9 @@ public class Server extends Observable {
                 case "set":
                 case "change":
                     usersManager.update(requestParamValue);
+                    break;
+                case "leaveApartment":
+                    apartsManager.leaveApartment(userId);
                     break;
                 case "execute":
                     paymentManager.update(requestParamValue);
@@ -188,6 +192,10 @@ public class Server extends Observable {
                     break;
                 case "addRoommate":
                     apartsManager.addRoommate(apartmentId,userId);
+                    break;
+                case "balance":
+                    resMap = apartsManager.getApartmentBalances(apartmentId);
+                    sendDefaultResponse(httpExchange, Utils.mapToJson(resMap));
                     break;
             }
         }

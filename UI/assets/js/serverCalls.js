@@ -39,8 +39,8 @@ function setRegisterForm() {
             map_inps[inps[i].name] = inps[i].value;
         }
         map_inps["type"] = "set";
-        map_inps["userId"] = map_inps["user_name"];
-        map_inps["apartmentId"] = "0";
+        sessionStorage.setItem("user_name", map_inps["user_name"]);
+        sessionStorage.setItem("apartmentId", "0");
         //map_inps["confirm_password"]="none";
         sendRequest(server_address, map_inps, onRegisterConfirmed);
     });
@@ -347,33 +347,40 @@ function addRowToGeneralSummary(generalSummaryRowsNode, rowJson) {
 }
 
 function getBalance() {
-    server_url = server_address + "/getInfo";
+    server_url = server_address;
     jsonInfo = {"type": "balance", "token": "aaaa"};
     onResp = dat => {
-        max_balance = dat["balance"].map(r => Math.abs(parseInt(r.balance))).reduce((x, y) => x > y ? x : y);
+        max_balance = 0;
+        for (d in dat) {
+            currVal = parseFloat(dat[d]);
+            if (currVal > max_balance ) {
+                max_balance = currVal;
+            }
+        }
+        //max_balance = dat.map(r => Math.abs(parseInt(r.balance))).reduce((x, y) => x > y ? x : y);
         power = 2;
         while (max_balance >= Math.pow(10, power)) {
             power++;
         }
         max_balance = Math.pow(10, power);
-        dat["balance"].map(rowJson => {
-            addRoomateToBalance($("#balanceRow"), rowJson, max_balance);
-        });
+        for (uid in dat) {
+            addRoomateToBalance($("#balanceRow"), uid, dat[uid], max_balance);
+        }
     };
     sendRequest(server_url, jsonInfo, onResp);
 }
 
-function addRoomateToBalance(balanceRowNode, rowJson, max_balance) {
-    intBalance = parseInt(rowJson["balance"]);
+function addRoomateToBalance(balanceRowNode, roomate, balance, max_balance) {
+    intBalance = parseInt(balance);
     intAbsBalance = Math.abs(intBalance);
     newTh = document.createElement("th");
     header0 = document.createElement("h3");
     header1 = document.createElement("h3");
     barNode = createBarNode(intBalance, max_balance);
-    if (parseInt(rowJson["balance"]) >= 0) {
-        header0.textContent = "You owe " + rowJson["roomate"] + ":";
+    if (intBalance >= 0) {
+        header0.textContent = "You owe " + roomate + ":";
     } else {
-        header0.textContent = rowJson["roomate"] + " owe you:";
+        header0.textContent = roomate + " owe you:";
     }
     header1.textContent = intAbsBalance.toString() + " $";
     newTh.append(header0);
@@ -641,6 +648,19 @@ function createCreateAptButton() {
     $("#apt-action-nd")[0].appendChild(btnNode);
 }
 
+function createLeaveAptButton() {
+    let btnNode = document.createElement("button");
+    btnNode.classList.add("apt-action");
+    btnNode.textContent = "Leave the apartment";
+    btnNode.onclick = () => {
+        reqMap = {"userId": sessionStorage.getItem("user_name"), "token": "aaaa", "type": "leaveApartment"};
+        sendRequest(server_address, reqMap, console.log);
+        sessionStorage.setItem("apartmentId", "0");
+    };
+    //redirectToPage("createApartment.html");
+    $("#apt-action-nd")[0].appendChild(btnNode);
+}
+
 function createInviteRoomateButton() {
     let btnNode = document.createElement("button");
     btnNode.classList.add("apt-action");
@@ -654,6 +674,7 @@ function generateUserHome() {
     let userAptId = sessionStorage.getItem("apartmentId");
     if (userAptId !== "0" && userAptId !== undefined) {
         createInviteRoomateButton();
+        createLeaveAptButton();
         getBalance();
     } else {
         createCreateAptButton();

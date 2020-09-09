@@ -1,6 +1,4 @@
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class ApartsManager {
@@ -23,7 +21,8 @@ public class ApartsManager {
         Apartment newApart = new Apartment(apartId, creatorId);
         apartments.put(apartId, newApart);
         mongoConnector.insertApartment(apartId, newApart.getUsers(), newApart.getOwnerId());
-        addUserToApartment(apartId,creatorId);
+        //addUserToApartment(apartId,creatorId);
+        mongoConnector.updateApartmentForUsersId(apartId, creatorId);
         return apartId;
     }
 
@@ -32,13 +31,16 @@ public class ApartsManager {
         Apartment currApart = getApartment(apartmentId);
         currApart.addSupplier(type, ownerId);
         mongoConnector.insertSupplierParts(apartmentId, type.toString(), partsMap);
-//        mongoConnector.insertSupplierBalances(supplierId, currSupplier.getBalances());
         return ownerId;
     }
 
     private Apartment getApartment(String apartmentId) throws Exception {
         Map<String, Object> apartment = mongoConnector.getApartment(apartmentId);
         return new Apartment(apartment.get("id").toString(), apartment.get("ownerId").toString());
+    }
+
+    public void leaveApartment(String userId){
+        mongoConnector.leaveApartment(userId);
     }
 
 
@@ -59,7 +61,8 @@ public class ApartsManager {
         Apartment currApart = getApartment(apartmentId);
         Supplier currSupplier = currApart.getSupplier(Supplier.TYPE.valueOf(supplierId));
         currSupplier.addBill(amount);
-//        mongoConnector.updateSupplierBalances(apartmentId, currSupplier.getBalances());
+        currSupplier.updateBalances(amount.toString());
+        //currSupplier.getBalances().forEach((userId, newUserBalance) -> mongoConnector.updateUserSupplierBalance(userId, apartmentId,supplierId, newUserBalance.toString()));
     }
 
     public List<String> getRoommates(String apartmentId, String userId) throws Exception {
@@ -84,5 +87,18 @@ public class ApartsManager {
 
     public void addRoommate(String apartmentId, String userId) throws Exception {
         addUserToApartment(apartmentId, userId);
+    }
+
+    public Map<String, String> getApartmentBalances(String apartmentId) {
+        List<Map<String, Object>> apartBalancesRaw = mongoConnector.getApartmentBalances(apartmentId);
+        HashMap<String, String> usersBalances = new HashMap<>();
+        apartBalancesRaw.forEach(bal-> {
+            if (!usersBalances.containsKey(bal.get("userId").toString())) {
+                usersBalances.put(bal.get("userId").toString(), "0");
+            }
+            String uid = bal.get("userId").toString();
+            usersBalances.put(uid, String.valueOf(Double.parseDouble(usersBalances.get(uid)) + Double.parseDouble(bal.get("balance").toString())));
+        });
+        return usersBalances;
     }
 }
