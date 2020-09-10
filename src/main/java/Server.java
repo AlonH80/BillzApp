@@ -90,16 +90,15 @@ public class Server extends Observable {
             sendDefaultResponse(httpExchange, htmlContent);
         }
 
-        private String handleGetRequest(HttpExchange httpExchange) throws IOException {
+        private String handleGetRequest(HttpExchange httpExchange) throws Exception {
             String requestURI = httpExchange.getRequestURI().toString();
-            if (requestURI.contains("joinApart")) {
+            if(requestURI.contains("joinApart")){
+                String apartmentId = requestURI.split("\\?")[2];
                 String userId = requestURI.split("\\?")[3];
-                String apartId = requestURI.split("\\?")[2];
-                logger.info(String.format("user id: %s", userId));
-                logger.info(String.format("Apartment id: %s", apartId));
-                apartsManager.addUserToApartment(apartId, userId);
-//                sendDefaultResponse(httpExchange, "");
-//                return "";
+                apartsManager.addUserToApartment(apartmentId,userId);
+                sendDefaultResponse(httpExchange,"");
+                messageManager.addMessage(userId,apartmentId,"had joined the apartment!");
+                return "";
             }
             else if (requestURI.contains("favicon") || requestURI.contains("compass")) {
                 sendDefaultResponse(httpExchange, "");
@@ -149,49 +148,64 @@ public class Server extends Observable {
 
         synchronized private void handlePostResponse(HttpExchange httpExchange, HashMap<String, Object> requestParamValue) throws Exception {
             List resLst;
+            Map resMap;
             String resStr;
             httpExchange.getResponseHeaders().set("Content-Type", "application/json");
             Integer pendSize = pendingManagerResponse.size();
             requestParamValue.put("pendQueueId", pendSize.toString());
             pendingManagerResponse.put(pendSize.toString(), httpExchange);
             String reqType = requestParamValue.get("type").toString();
+            String userId = requestParamValue.get("userId").toString();
+            String apartmentId = requestParamValue.get("apartmentId").toString();
             switch (reqType) {
                 case "login":
                 case "set":
                 case "change":
                     usersManager.update(requestParamValue);
                     break;
+                case "leaveApartment":
+                    apartsManager.leaveApartment(userId);
+                    break;
                 case "execute":
                     paymentManager.update(requestParamValue);
                     break;
                 case "messages":
-                    resLst = messageManager.getMessages(requestParamValue.get("userId").toString());
+                    resLst = messageManager.getMessages(apartmentId);
                     sendDefaultResponse(httpExchange, Utils.listToJson(resLst));
                     break;
                 case "addBill":
-                    apartsManager.addBill(requestParamValue.get("apartmentId").toString(), requestParamValue.get("dDay").toString(), requestParamValue.get("amount").toString(), requestParamValue.get("billType").toString(), requestParamValue.get("userId").toString());
+                    apartsManager.addBill(apartmentId, requestParamValue.get("dDay").toString(), requestParamValue.get("amount").toString(), requestParamValue.get("billType").toString(), userId);
+                    messageManager.addMessage(userId,apartmentId,"had added bill!");
                     break;
                 case "getBills":
-                    resLst = apartsManager.getBills(requestParamValue.get("apartmentId").toString());
+                    resLst = apartsManager.getBills(apartmentId);
                     sendDefaultResponse(httpExchange, Utils.listToJson(resLst));
                     break;
                 case "addSupplier":
-                    apartsManager.addSupplierToApartment(requestParamValue.get("apartmentId").toString(), requestParamValue.get("billOwner").toString(), Enum.valueOf(Supplier.TYPE.class, requestParamValue.get("supplier").toString().toUpperCase()), (Map<String, Object>) requestParamValue.get(("partsMap")));
+                    apartsManager.addSupplierToApartment(apartmentId, requestParamValue.get("billOwner").toString(), Enum.valueOf(Supplier.TYPE.class, requestParamValue.get("supplier").toString().toUpperCase()), (Map<String, Object>) requestParamValue.get(("partsMap")));
+                    messageManager.addMessage(userId,apartmentId,"has added supplier!");
                     break;
                 case "getSuppliers":
-                    resLst = apartsManager.getSuppliers(requestParamValue.get("apartmentId").toString());
+                    resLst = apartsManager.getSuppliers(apartmentId);
                     sendDefaultResponse(httpExchange, Utils.listToJson(resLst));
                     break;
                 case "changeSetting":
-                    usersManager.updateSetting(requestParamValue.get("userId").toString(), requestParamValue.get("setting").toString(), requestParamValue.get("value").toString());
+                    usersManager.updateSetting(userId, requestParamValue.get("setting").toString(), requestParamValue.get("value").toString());
                     break;
                 case "createApartment":
-                    resStr = apartsManager.createApartment(requestParamValue.get("userId").toString());
+                    resStr = apartsManager.createApartment(userId);
                     sendDefaultResponse(httpExchange, resStr);
                     break;
                 case "roommates":
-                    resLst = apartsManager.getRoommates(requestParamValue.get("apartmentId").toString(), requestParamValue.get("userId").toString());
+                    resLst = apartsManager.getRoommates(apartmentId, userId);
                     sendDefaultResponse(httpExchange, Utils.listToJson(resLst));
+                    break;
+                case "addRoommate":
+                    apartsManager.addRoommate(apartmentId,userId);
+                    break;
+                case "balance":
+                    resMap = apartsManager.getApartmentBalances(apartmentId);
+                    sendDefaultResponse(httpExchange, Utils.mapToJson(resMap));
                     break;
             }
         }

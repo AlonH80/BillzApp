@@ -1,9 +1,7 @@
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.text.DecimalFormat;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class Supplier {
@@ -22,14 +20,16 @@ public class Supplier {
     private String ownerId;
     private Map<String, Double> balances;
     private Logger logger;
+    private MongoConnector mongoConnector;
 
 
     public Supplier(TYPE type, String apartmentId, String openerId) throws Exception {
+        mongoConnector = MongoConnector.getInstance();
         logger = Utils.getLogger();
         this.supplierType = type;
         this.belongToApartmentId = apartmentId;
         ownerId = openerId;
-        balances = new LinkedHashMap<>();
+        //balances = mongoConnector.getSupplierB;
     }
 
     public void addPayer(String payerId) {
@@ -56,6 +56,43 @@ public class Supplier {
 
     public String getSupplierId() {
         return supplierId;
+    }
+
+//    public Map<String, Double> getBalances() {
+//        Set<String> balancesKeys = balances.keySet();
+//        balancesKeys.forEach(k -> {
+//            Double currVal = balances.get(k);
+//            DecimalFormat newFormat = new DecimalFormat("#.##");
+//            balances.replace(k, Double.valueOf(newFormat.format(currVal)));
+//        });
+//        return balances;
+//    }
+
+    public ArrayList<Map<String, Object>> updateBalances(String newAmount) {
+        Double amount = Double.parseDouble(newAmount);
+        ArrayList<Map<String, Object>> parts = mongoConnector.getSupplierParts(belongToApartmentId, supplierType.toString());
+        HashMap<String, Double> partsMap = new HashMap<>(parts.size());
+        parts.stream().forEach(pa -> partsMap.put(pa.get("userId").toString(), Double.parseDouble(pa.get("part").toString().replace("%", ""))/100));
+        ArrayList<Map<String, Object>> currBalances = mongoConnector.getSupplierBalances(belongToApartmentId, supplierType.toString());
+        if (!currBalances.isEmpty()) {
+            currBalances.forEach(bal -> {
+                String uid = bal.get("userId").toString();
+                bal.put("balance", (Double.parseDouble(bal.get("balance").toString()) + (partsMap.get(uid) * amount)));
+                mongoConnector.updateUserSupplierBalance(bal.get("userId").toString(), belongToApartmentId, supplierType.toString(), bal.get("balance").toString());
+            });
+        }
+        else {
+            partsMap.forEach((uid, part) -> {
+                HashMap<String, Object> bal = new HashMap<>();
+                bal.put("apartmentId", belongToApartmentId);
+                bal.put("type", supplierType.toString());
+                bal.put("userId", uid);
+                bal.put("balance", String.valueOf(part*amount));
+                currBalances.add(bal);
+                mongoConnector.updateUserSupplierBalance(uid, belongToApartmentId, supplierType.toString(), String.valueOf(part*amount));
+            });
+        }
+        return currBalances;
     }
 
     public Map<String, Double> getBalances() {
