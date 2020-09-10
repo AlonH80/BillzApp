@@ -330,6 +330,12 @@ function addRowToBillSummary(summaryRowsNode, rowJson) {
     newRow.append(tds["amount"]);
     newRow.append(tds["dDay"]);
     newRow.append(tds["status"]);
+    if (rowJson["status"].toUpperCase() === "UNPAID") {
+        statusBtn = document.createElement("button");
+        statusBtn.classList.add("apt-action");
+        statusBtn.textContent = rowJson["status"];
+        tds["status"].appendChild(statusBtn);
+    }
     summaryRowsNode.append(newRow);
 }
 
@@ -764,7 +770,8 @@ function createSideMenu() {
         "Add Supplier": "javascript:redirectToPage('addSupplier.html')",
         "Bill History": "javascript:redirectToPage('billSummary.html')",
         "History": "javascript:redirectToPage('generalSummary.html')",
-        "Settings": "javascript:redirectToPage('settings.html')"
+        "Settings": "javascript:redirectToPage('settings.html')",
+        "About Us": "javascript:redirectToPage('aboutUs.html')"
     };
     for (link in links) {
         new_li = document.createElement("li");
