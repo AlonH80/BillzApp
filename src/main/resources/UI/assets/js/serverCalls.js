@@ -178,6 +178,7 @@ function getAndPutParticipants() {
     supplier_map["billOwner"] = $("#billOwner")[0].value;
     supplier_map["type"] = "addSupplier";
     supplier_map["apartmentId"] = sessionStorage.getItem("apartmentId");
+    supplier_map["userId"] = sessionStorage.getItem("user_name");
     sendRequest(server_address, supplier_map, console.log);
 }
 
@@ -634,7 +635,7 @@ function createHouseBox(jsonData) {
     roomatesBox.classList.add("roommates");
     for (i in roomates) {
         let roomateRow = document.createElement("li");
-        let rooomates_str = roomates[i]["roomate"].padEnd(20) + roomates[i]["part"];
+        //let rooomates_str = roomates[i]["roomate"].padEnd(20) + roomates[i]["part"];
         roomatesBox.appendChild(roomateRow);
     }
     houseboxNode.appendChild(roomatesBox);
@@ -772,5 +773,14 @@ function createSideMenu() {
         new_a.textContent=link;
         new_li.appendChild(new_a);
         links_nd.appendChild(new_li);
+    }
+}
+
+function logoRedirect() {
+    if (!sessionStorage.getItem("user_name")) {
+        redirectToPage("login.html");
+    }
+    else {
+        redirectToPage("index.html");
     }
 }
