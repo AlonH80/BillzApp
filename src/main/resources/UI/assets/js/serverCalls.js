@@ -332,8 +332,9 @@ function addRowToBillSummary(summaryRowsNode, rowJson) {
     newRow.append(tds["status"]);
     if (rowJson["status"].toUpperCase() === "UNPAID") {
         statusBtn = document.createElement("button");
-        statusBtn.classList.add("apt-action");
-        statusBtn.textContent = rowJson["status"];
+        statusBtn.classList.add("not_paid");
+        statusBtn.textContent = "PAY";
+        statusBtn.onclick = redirectToPage("paymentOptions.html");
         tds["status"].appendChild(statusBtn);
     }
     summaryRowsNode.append(newRow);

@@ -146,9 +146,10 @@
 	border-radius: 5px;
 	text-align: center;
 	padding: 0px;
+	margin-left: 20px;
 	margin-bottom: 0px;
 	overflow: hidden;
-	background-color: red;
+	background-color: #f6755e;
 	color: white;
 }
 
