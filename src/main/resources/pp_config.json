@@ -1,9 +1,9 @@
 {
   "access_token":"A21AAK01MqykB5hoPzc4Tl6MvrgYCK2Ep30Dr4JzrJdBV6NaNiPBARqu8SnU7Vwh1JlajAUkXGo87IGvknXXjr3k7uqohaOZw",
-  "lastInvoice":"7",
+  "lastInvoice":"10",
   "orderTemplatePath": "/target/classes/example_order.json",
   "sendTemplatePath": "/target/classes/sendpay_template.json",
   "expires_in":"32400.0",
   "nonce":"2020-09-12T13:29:14Zr81PVyuugDNpJrJUnAnBPSGRUsSyjclAW69Vefl9gQ4",
-  "lastSendBatch":"28"
+  "lastSendBatch":"100"
 }
