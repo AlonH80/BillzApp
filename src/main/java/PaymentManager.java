@@ -68,6 +68,9 @@ public class PaymentManager {
     }
 
     public Map<String, String> transferMoney(String userIdFrom, String userIdTo, Double amount) throws Exception {
+        logger.info(String.format("userIdFrom: %s", userIdFrom));
+        logger.info(String.format("userIdTo: %s", userIdTo));
+        logger.info(String.format("amount: %.2f", amount));
         HashMap<String, String> waitMap = new HashMap<>();
         Object queryUserMailTo = mongoConnector.getUser(userIdTo).get("paypal");
         Object queryUserMailFrom = mongoConnector.getUser(userIdFrom).get("paypal");

@@ -678,7 +678,8 @@ function changeSetting(setting_id) {
     requestJson = {"type": "changeSetting", "setting": setting_id, "value": input_value, "userId": sessionStorage.getItem("user_name")};
     onChangeDone = jsonData => {
         if (jsonData["status"] === "success") {
-            redirectToPage("settings.html");
+            $("#change-err")[0].textContent = "successfully changed " + requestJson.setting;
+            $("#change-err")[0].style.setProperty("color", "green");
         } else {
             $("#change-err")[0].textContent = jsonData["error"];
         }
