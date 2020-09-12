@@ -334,7 +334,7 @@ function addRowToBillSummary(summaryRowsNode, rowJson) {
         statusBtn = document.createElement("button");
         statusBtn.classList.add("not_paid");
         statusBtn.textContent = "PAY";
-        statusBtn.onclick = redirectToPage("paymentOptions.html");
+        statusBtn.onclick = () => redirectToPage("paymentOptions.html");
         tds["status"].appendChild(statusBtn);
     }
     summaryRowsNode.append(newRow);
@@ -385,22 +385,29 @@ function getBalance() {
     server_url = server_address;
     jsonInfo = {"type": "balance", "token": "aaaa"};
     onResp = dat => {
-        max_balance = 0;
+        list_dat = [];
         for (d in dat) {
-            currVal = parseFloat(dat[d]);
-            if (currVal > max_balance ) {
-                max_balance = currVal;
-            }
+            list_dat.push({"user": d, "balance": parseFloat(dat[d])})
         }
+        list_dat.filter(rm=>rm.user !== sessionStorage.getItem("user_name"));
+        max_balance = list_dat.map(r => Math.abs(r.balance)).reduce((x, y) => x > y ? x : y);
+        // max_balance = 0;
+        // for (d in dat) {
+        //     currVal = parseFloat(dat[d]);
+        //     if (currVal > max_balance ) {
+        //         max_balance = currVal;
+        //     }
+        // }
         //max_balance = dat.map(r => Math.abs(parseInt(r.balance))).reduce((x, y) => x > y ? x : y);
         power = 2;
         while (max_balance >= Math.pow(10, power)) {
             power++;
         }
         max_balance = Math.pow(10, power);
-        for (uid in dat) {
-            addRoomateToBalance($("#balanceRow"), uid, dat[uid], max_balance);
-        }
+        placeholder = list_dat.map(rm=>addRoomateToBalance($("#balanceRow"), rm.user, rm.balance, max_balance));
+        // for (uid in dat) {
+        //     addRoomateToBalance($("#balanceRow"), uid, dat[uid], max_balance);
+        // }
     };
     sendRequest(server_url, jsonInfo, onResp);
 }
@@ -791,4 +798,22 @@ function logoRedirect() {
     else {
         redirectToPage("index.html");
     }
+}
+
+
+function getRoomatesPayOption() {
+    server_url = server_address;
+    jsonInfo = {
+        "type": "roommates",
+        "token": "aaaa",
+        "apartmentId": sessionStorage.getItem("apartmentId"),
+        "userId": sessionStorage.getItem("user_name")
+    };
+    onResp = dat => {
+        dat = dat.filter(rm=>rm!==sessionStorage.getItem("user_name"));
+        dat.map(roomate => {
+            addOptionToSelectPicker($("#payTo"), roomate);
+    });
+    };
+    sendRequest(server_url, jsonInfo, onResp);
 }

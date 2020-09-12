@@ -40,26 +40,28 @@
     <!-- Main -->
     <h1 style="text-align: center;">Payment Options</h1>
     <section id="main" class="wrapper">
-        <h2>Hey, Guy!</h2>
         <form id="payRoomateForm">
-          <span>Who do you want to pay back?</span>
-          <select name="payTo" class="selectpicker, payFormProp">
-              <option>Alon</option>
-              <option>Ofir</option>
-              <option>Yuval</option>
-          </select>
-          <span>How much do you want to pay?</span>
-          <br>
-          <input type="text" placeholder="Enter the desired payment amount" class="payFormProp" name="amount">
-          <br>
-          <span>How do you want to pay?</span>
-          <select class="selectpicker, payFormProp" name="payMethod">
-              <option>Paypal</option>
-              <option>Bank Transfer</option>
-              <option>Check</option>
-              <option>Cash</option>
-              <option>Other</option>
-          </select>
+            <span>Who do you want to pay back?</span>
+            <select id="payTo" name="payTo" class="selectpicker payFormProp">
+                <!--option>Alon</option>
+                <option>Ofir</option>
+                <option>Yuval</option-->
+            </select>
+            <span>How much do you want to pay?</span>
+            <br>
+            <input type="text" placeholder="Enter the desired payment amount" class="payFormProp" name="amount">
+            <br>
+            <span>How do you want to pay?</span>
+            <select class="selectpicker payFormProp" name="payMethod">
+                <option>Paypal</option>
+                <option>Cash</option>
+                <option>Other</option>
+            </select>
+            <div>
+                Add comment:
+                <br>
+                <input type="text" name="transfer_comment"/>
+            </div>
           <button type="submit" class="btn btn-success btn-lg btn-block">PAY!</button>
        </form>
 
