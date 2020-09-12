@@ -14,7 +14,7 @@
         "subtotal": "0.01"
       }
     },
-    "description": "This is the payment for electricity.",
+    "description": "Payment through billz",
     "custom": "BILLZ",
     "invoice_number": "000000002",
     "payment_options": {
@@ -30,7 +30,7 @@
         "currency": "USD"
       }],
       "shipping_address": {
-        "recipient_name": "Hello World",
+        "recipient_name": "Billz",
         "line1": "BILLZ",
         "city": "Tel Aviv",
         "country_code": "IL",
@@ -41,7 +41,7 @@
   }],
   "note_to_payer": "Contact us for any questions on your order.",
   "redirect_urls": {
-    "return_url": "https://localhost:8002",
-    "cancel_url": "https://example.com"
+    "return_url": "https://billz-app.herokuapp.com/index.html",
+    "cancel_url": "https://billz-app.herokuapp.com/index.html"
   }
 }

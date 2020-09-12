@@ -243,7 +243,7 @@ function setOnSendPayment() {
             map_inps[inps[i].name] = inps[i].value;
         }
         onPaymentReceived = dat => {
-            window.open(dat["approve_transaction"]);
+            window.open(dat["approval_url"]);
         }
         map_inps["type"] = "payment";
         sendRequest(server_address, map_inps, onPaymentReceived);

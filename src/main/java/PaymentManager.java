@@ -84,6 +84,7 @@ public class PaymentManager {
     }
 
     public Map<String, String> transferMoney(String userIdFrom, String userIdTo, Double amount) throws Exception {
+        verifyAccessToken();
         logger.info(String.format("userIdFrom: %s", userIdFrom));
         logger.info(String.format("userIdTo: %s", userIdTo));
         logger.info(String.format("amount: %.2f", amount));
@@ -114,8 +115,8 @@ public class PaymentManager {
         }
     }
 
-    private String processPayRequest(String userId, Double amount) throws Exception{
-        String order = createOrder(amount);
+    private String processPayRequest(String userIdTo, Double amount) throws Exception{
+        String order = createOrder(userIdTo, amount);
         logger.info(order);
         String webResp = webConnector.setOrder(order);
         HashMap<String, Object> respMap = (new Gson()).fromJson(webResp, HashMap.class);
@@ -166,22 +167,24 @@ public class PaymentManager {
         return newSendBatch;
     }
 
-    private String createOrder(Double amount) throws Exception {
+    private String createOrder(String userIdTo, Double amount) throws Exception {
         HashMap<String, Object> orderMap = (Utils.jsonFileToMap(componentConfig.get("orderTemplatePath")));
         logger.info(orderMap.toString());
         LinkedTreeMap<String, Object> transactions = (LinkedTreeMap<String, Object>)((ArrayList<Object>)orderMap.get("transactions")).get(0);
         ArrayList<LinkedTreeMap<String, Object>> newTrans = new ArrayList<>(1);
-        newTrans.add(updateTransactions(transactions, amount));
+        newTrans.add(updateTransactions(transactions, userIdTo, amount));
         orderMap.put("transactions", newTrans);
         logger.info(orderMap.toString());
         return Utils.mapToJson(orderMap);
     }
 
-    private LinkedTreeMap<String, Object> updateTransactions(LinkedTreeMap<String, Object> transactions, Double amount) throws Exception {
+    private LinkedTreeMap<String, Object> updateTransactions(LinkedTreeMap<String, Object> transactions, String userIdTo, Double amount) throws Exception {
         String amountStr = String.format("%.2f", amount);
         transactions.put("invoice_number", generateInvoice());
         LinkedTreeMap<String, Object> amountMap = (LinkedTreeMap<String, Object>)transactions.get("amount");
         LinkedTreeMap<String, Object> itemsList = (LinkedTreeMap<String, Object>)transactions.get("item_list");
+        LinkedTreeMap<String, Object> shippingAddress = (LinkedTreeMap<String, Object>)transactions.get("shipping_address");
+        shippingAddress.put("recipient_name", userIdTo);
         amountMap.put("total", amount);
         ((LinkedTreeMap<String, Object>)amountMap.get("details")).put("subtotal", amount);
         ((LinkedTreeMap<String, Object>)((ArrayList<Object>)itemsList.get("items")).get(0)).put("price", amount);
