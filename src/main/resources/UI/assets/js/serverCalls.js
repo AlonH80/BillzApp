@@ -330,14 +330,25 @@ function addRowToBillSummary(summaryRowsNode, rowJson) {
     newRow.append(tds["amount"]);
     newRow.append(tds["dDay"]);
     newRow.append(tds["status"]);
+    payButtons = 0;
     if (rowJson["status"].toUpperCase() === "UNPAID") {
         statusBtn = document.createElement("button");
         statusBtn.classList.add("not_paid");
         statusBtn.textContent = "PAY";
-        statusBtn.onclick = () => redirectToPage("paymentOptions.html");
+        statusBtn.id = "payButt" + payButtons++;
+        statusBtn.classList.add("pay_button");
+        statusBtn.onclick = () => gotoPayRoomate(event.target);
         tds["status"].appendChild(statusBtn);
     }
     summaryRowsNode.append(newRow);
+}
+
+function gotoPayRoomate(elem) {
+    owner = $("td", elem.parentElement.parentElement)[1].textContent;
+    amount = $("td", elem.parentElement.parentElement)[2].textContent;
+    sessionStorage.setItem("owner", owner);
+    sessionStorage.setItem("amount", amount);
+    redirectToPage("paymentOptions.html");
 }
 
 function getGeneralSummary() {
@@ -389,7 +400,7 @@ function getBalance() {
         for (d in dat) {
             list_dat.push({"user": d, "balance": parseFloat(dat[d])})
         }
-        list_dat.filter(rm=>rm.user !== sessionStorage.getItem("user_name"));
+        list_dat = list_dat.filter(rm=>rm.user !== sessionStorage.getItem("user_name"));
         max_balance = list_dat.map(r => Math.abs(r.balance)).reduce((x, y) => x > y ? x : y);
         // max_balance = 0;
         // for (d in dat) {
@@ -816,4 +827,16 @@ function getRoomatesPayOption() {
     });
     };
     sendRequest(server_url, jsonInfo, onResp);
+}
+
+function setDefaultValuesOnPayPage() {
+    picker = $("#payTo")[0];
+    for (op in picker .options) {
+        console.log(op);
+        if (picker .options[op].textContent == sessionStorage.getItem("owner")) {
+            picker .selectedIndex = op;
+            break;
+        }
+    }
+    $("#amountToPay")[0].textContent = sessionStorage.getItem("amount");
 }

@@ -49,7 +49,7 @@
             </select>
             <span>How much do you want to pay?</span>
             <br>
-            <input type="text" placeholder="Enter the desired payment amount" class="payFormProp" name="amount">
+            <input type="text" placeholder="Enter the desired payment amount" class="payFormProp" name="amount" id="amountToPay">
             <br>
             <span>How do you want to pay?</span>
             <select class="selectpicker payFormProp" name="payMethod">
@@ -91,7 +91,12 @@
     <script src="assets/js/main.js"></script>
     <script src="assets/js/variables.js"></script>
     <script src="assets/js/serverCalls.js"></script>
-  	<script>setOnSendPayment(); createSideMenu();</script>
+  	<script>
+        setOnSendPayment();
+        createSideMenu();
+        getRoomatesPayOption();
+        setDefaultValuesOnPayPage();
+    </script>
 </body>
 
 </html>
