@@ -207,6 +207,9 @@ public class Server extends Observable {
                     resMap = apartsManager.getApartmentBalances(apartmentId);
                     sendDefaultResponse(httpExchange, Utils.mapToJson(resMap));
                     break;
+                case "payment":
+                    logger.info(Utils.mapToJson(requestParamValue));
+                    break;
             }
         }
 

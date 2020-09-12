@@ -179,7 +179,8 @@ function getAndPutParticipants() {
     supplier_map["type"] = "addSupplier";
     supplier_map["apartmentId"] = sessionStorage.getItem("apartmentId");
     supplier_map["userId"] = sessionStorage.getItem("user_name");
-    sendRequest(server_address, supplier_map, console.log);
+    gotoSuppliers = dat=>redirectToPage("supplier.html");
+    sendRequest(server_address, supplier_map, gotoSuppliers);
 }
 
 // function setOnLoginRequest() {
@@ -241,9 +242,11 @@ function setOnSendPayment() {
         for (i = 0; i < inps.length; i++) {
             map_inps[inps[i].name] = inps[i].value;
         }
-        //map_inps["confirm_password"]="none";
-        sendRequest(server_address, map_inps, onRegisterConfirmed);
-        sendRequest(server_address, map_inps, onRegisterConfirmed);
+        onPaymentReceived = dat => {
+            window.open(dat["approve_transaction"]);
+        }
+        map_inps["type"] = "payment";
+        sendRequest(server_address, map_inps, onPaymentReceived);
     });
 }
 
@@ -696,7 +699,7 @@ function createCreateAptButton() {
     btnNode.textContent = "Create an apartment";
     btnNode.onclick = () => {
         reqMap = {"userId": sessionStorage.getItem("user_name"), "token": "aaaa", "type": "createApartment"};
-        sendRequest(server_address, reqMap, console.log);
+        sendRequest(server_address, reqMap, onPageApproved);
     };
     //redirectToPage("createApartment.html");
     $("#apt-action-nd")[0].appendChild(btnNode);
@@ -708,7 +711,7 @@ function createLeaveAptButton() {
     btnNode.textContent = "Leave the apartment";
     btnNode.onclick = () => {
         reqMap = {"userId": sessionStorage.getItem("user_name"), "token": "aaaa", "type": "leaveApartment"};
-        sendRequest(server_address, reqMap, console.log);
+        sendRequest(server_address, reqMap, onPageApproved);
         sessionStorage.setItem("apartmentId", "0");
     };
     //redirectToPage("createApartment.html");
@@ -838,5 +841,5 @@ function setDefaultValuesOnPayPage() {
             break;
         }
     }
-    $("#amountToPay")[0].textContent = sessionStorage.getItem("amount");
+    $("#amountToPay")[0].value = sessionStorage.getItem("amount");
 }

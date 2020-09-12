@@ -40,7 +40,7 @@
     <!-- Main -->
     <h1 style="text-align: center;">Payment Options</h1>
     <section id="main" class="wrapper">
-        <form id="payRoomateForm">
+        <form id="payRoomateForm" style="margin: 10px">
             <span>Who do you want to pay back?</span>
             <select id="payTo" name="payTo" class="selectpicker payFormProp">
                 <!--option>Alon</option>
@@ -57,10 +57,10 @@
                 <option>Cash</option>
                 <option>Other</option>
             </select>
-            <div>
+            <div style="margin-top: 5px;margin-bottom: 5px;">
                 Add comment:
                 <br>
-                <input type="text" name="transfer_comment"/>
+                <input type="text" name="transfer_comment" class="payFormProp"/>
             </div>
           <button type="submit" class="btn btn-success btn-lg btn-block">PAY!</button>
        </form>
