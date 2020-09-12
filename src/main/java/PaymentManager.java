@@ -183,11 +183,11 @@ public class PaymentManager {
         transactions.put("invoice_number", generateInvoice());
         LinkedTreeMap<String, Object> amountMap = (LinkedTreeMap<String, Object>)transactions.get("amount");
         LinkedTreeMap<String, Object> itemsList = (LinkedTreeMap<String, Object>)transactions.get("item_list");
-        LinkedTreeMap<String, Object> shippingAddress = (LinkedTreeMap<String, Object>)transactions.get("shipping_address");
-        shippingAddress.put("recipient_name", userIdTo);
+        LinkedTreeMap<String, Object> shippingAddress = (LinkedTreeMap<String, Object>)itemsList.get("shipping_address");
         amountMap.put("total", amount);
         ((LinkedTreeMap<String, Object>)amountMap.get("details")).put("subtotal", amount);
         ((LinkedTreeMap<String, Object>)((ArrayList<Object>)itemsList.get("items")).get(0)).put("price", amount);
+        shippingAddress.put("recipient_name", userIdTo);
         return transactions;
     }
 
