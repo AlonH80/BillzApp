@@ -186,7 +186,7 @@ public class MongoConnector {
 
     public Map<String, Object> getUser(String userId) {
         HashMap<String, String> userMap = new HashMap<>(1);
-        userMap.put("id", userId);
+        userMap.put("userID", userId);
         Map<String, Object> resMap = find("billzDB", "UsersAuth", userMap).get(0);
         logger.info(String.format("user map: %s", (new Gson()).toJson(resMap)));
         return resMap;
