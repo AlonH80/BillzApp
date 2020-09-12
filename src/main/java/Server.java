@@ -100,6 +100,18 @@ public class Server extends Observable {
                 messageManager.addMessage(userId,apartmentId,"had joined the apartment!");
                 return "";
             }
+            else if(requestURI.contains("paymentId")) {
+                String quer = requestURI.split("\\?")[1];
+                String[] querParams = quer.split("&");
+                HashMap<String, String> custMap = new HashMap<>();
+                Arrays.stream(querParams).forEach(par -> custMap.put(par.split("=")[0], par.split("=")[1]));
+                //custMap.put("type", "execute");
+                logger.info(Utils.mapToJson(custMap));
+                paymentManager.executeOrder(custMap.get("paymentId"), custMap.get("PayerID"));
+//                setChanged();
+//                notifyObservers(custMap);
+                return "";
+            }
             else if (requestURI.contains("favicon") || requestURI.contains("compass")) {
                 sendDefaultResponse(httpExchange, "");
                 return "";
@@ -166,9 +178,9 @@ public class Server extends Observable {
                 case "leaveApartment":
                     apartsManager.leaveApartment(userId);
                     break;
-                case "execute":
-                    paymentManager.update(requestParamValue);
-                    break;
+//                case "execute":
+//                    paymentManager.executeOrder(requestParamValue.get("").toString(), requestParamValue.get("").toString());
+//                    break;
                 case "messages":
                     resLst = messageManager.getMessages(apartmentId);
                     sendDefaultResponse(httpExchange, Utils.listToJson(resLst));
@@ -208,7 +220,10 @@ public class Server extends Observable {
                     sendDefaultResponse(httpExchange, Utils.mapToJson(resMap));
                     break;
                 case "payment":
-                    logger.info(Utils.mapToJson(requestParamValue));
+                    String payTo =  requestParamValue.get("payTo").toString();
+                    Double amount = Double.parseDouble(requestParamValue.get("amount").toString());
+                    Map<String, String> transferTmpResponse = paymentManager.transferMoney(userId, payTo, amount);
+                    sendDefaultResponse(httpExchange, Utils.mapToJson(transferTmpResponse));
                     break;
             }
         }

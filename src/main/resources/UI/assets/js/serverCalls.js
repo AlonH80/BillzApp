@@ -179,7 +179,7 @@ function getAndPutParticipants() {
     supplier_map["type"] = "addSupplier";
     supplier_map["apartmentId"] = sessionStorage.getItem("apartmentId");
     supplier_map["userId"] = sessionStorage.getItem("user_name");
-    gotoSuppliers = dat=>redirectToPage("supplier.html");
+    gotoSuppliers = dat=>redirectToPage("suppliers.html");
     sendRequest(server_address, supplier_map, gotoSuppliers);
 }
 
@@ -749,7 +749,8 @@ function sendManualBilling() {
     map_inps["userId"] = sessionStorage.getItem("user_name");
     map_inps["billType"] = $(".selectpicker")[0].value;
     map_inps["type"] = "addBill";
-    onResp = $("#res_div")[0].textContent = "Check for new bill";
+    //onResp = $("#res_div")[0].textContent = "Check for new bill";
+    onResp = dat => redirectToPage("billSummary.html");
     sendRequest(server_address, map_inps, onResp);
 }
 

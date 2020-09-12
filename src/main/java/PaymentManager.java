@@ -34,19 +34,7 @@ public class PaymentManager {
     }
 
     private void initLogger() throws Exception {
-        File logsDirectory = new File(logsPath);
-        if (! logsDirectory.exists()) {
-            logsDirectory.mkdir();
-        }
-
-        String logFullPath = String.format("%s/pm_%s", logsPath, (new SimpleDateFormat("yy_MM_dd___HH_mm")).format(Calendar.getInstance().getTime()));
-        System.setProperty("java.util.logging.SimpleFormatter.format",
-                "[%1$tF %1$tT] {%2$s} - %4$s -  %5$s%6$s%n");
-        logger = Logger.getLogger(PaymentManager.class.getName());
-        FileHandler fh = new FileHandler(logFullPath);
-        logger.addHandler(fh);
-        SimpleFormatter formatter = new SimpleFormatter();
-        fh.setFormatter(formatter);
+        logger = Utils.getLogger();
     }
 
     private void initConnectors() throws Exception {
@@ -57,22 +45,21 @@ public class PaymentManager {
         webConnector = new WebConnector();
         webConnector.setLogger(logger);
         //verifyAccessToken();
-        mongoConnector = new MongoConnector();
+        mongoConnector = MongoConnector.getInstance();
         mongoConnector.setLogger(logger);
-
-                // Initialise the keystore
-        char[] password = "PaymentServer".toCharArray();
-        KeyStore ks = KeyStore.getInstance("JKS");
-        FileInputStream fis = new FileInputStream(Utils.loadConfigs().get("resourcesPath") + "/ps.keystore"); //TODO: add to config file
-        ks.load(fis, password);
-
-        // Set up the key manager factory
-        KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-        kmf.init(ks, password);
-
-        // Set up the trust manager factory
-        TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
-        tmf.init(ks);
+//        // Initialise the keystore
+//        char[] password = "PaymentServer".toCharArray();
+//        KeyStore ks = KeyStore.getInstance("JKS");
+//        FileInputStream fis = new FileInputStream(Utils.loadConfigs().get("resourcesPath") + "/ps.keystore"); //TODO: add to config file
+//        ks.load(fis, password);
+//
+//        // Set up the key manager factory
+//        KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+//        kmf.init(ks, password);
+//
+//        // Set up the trust manager factory
+//        TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+//        tmf.init(ks);
 
     }
 
@@ -80,23 +67,32 @@ public class PaymentManager {
         componentConfig = Utils.loadConfigs();
     }
 
-    public String transferMoney(String userIdFrom, String userIdTo, Double amount) throws Exception {
-        String waitApprovedKey = null;
-        Object queryUserMailTo = mongoConnector.getUser(userIdTo).get("payPalMail");
-        Object queryUserMailFrom = mongoConnector.getUser(userIdFrom).get("payPalMail");
+    public Map<String, String> transferMoney(String userIdFrom, String userIdTo, Double amount) throws Exception {
+        HashMap<String, String> waitMap = new HashMap<>();
+        Object queryUserMailTo = mongoConnector.getUser(userIdTo).get("paypal");
+        Object queryUserMailFrom = mongoConnector.getUser(userIdFrom).get("paypal");
         if (queryUserMailTo!=null && queryUserMailFrom!=null){
             String userToMail = queryUserMailTo.toString();
             String userFromMail = queryUserMailFrom.toString();
-            waitApprovedKey = processPayRequest(userIdTo, amount);
+            String waitApprovedKey = processPayRequest(userIdTo, amount);
             waitingApproved.get(waitApprovedKey).put("userToMail", userToMail);
             waitingApproved.get(waitApprovedKey).put("userFromMail", userFromMail);
             waitingApproved.get(waitApprovedKey).put("amount", amount.toString());
             waitingApproved.get(waitApprovedKey).put("userIdFrom", userIdFrom);
             waitingApproved.get(waitApprovedKey).put("userIdTo", userIdTo);
-            return waitApprovedKey;
+            return waitingApproved.get(waitApprovedKey);
         }
-
-        return waitApprovedKey;
+        else {
+            waitMap.put("status", "fail");
+            waitMap.put("reason", "");
+            if (queryUserMailFrom == null) {
+                waitMap.put("reason", String.format("%s hasn't update his PayPal account", userIdFrom));
+            }
+            if (queryUserMailTo == null) {
+                waitMap.put("reason", waitMap.get("reason") + ", " +String.format("%s hasn't update his PayPal account", userIdTo));
+            }
+            return waitMap;
+        }
     }
 
     private String processPayRequest(String userId, Double amount) throws Exception{
@@ -220,47 +216,60 @@ public class PaymentManager {
         fileWriter.close();
     }
 
-    public void update(Object arg) {
-        HashMap<String, String> args = (HashMap<String, String>)arg;
-        logger.info(args.toString());
-        try {
-            if (args.get("type").equals("execute")) {
-                if (waitingApproved.keySet().contains(args.get("paymentId"))) {
-                    HashMap<String, String> paymentMap = waitingApproved.get(args.get("paymentId"));
-                    webConnector.executeOrder(paymentMap.get("execute"), args.get("PayerID"));
-                    String userMailTo = paymentMap.get("userToMail");
-                    Double amount = Double.parseDouble(paymentMap.get("amount"));
-                    processGetPayRequest(userMailTo, amount);
-                    mongoConnector.recordTransaction(paymentMap.get("userIdFrom"),
-                            paymentMap.get("userIdTo"),
-                            Double.parseDouble(paymentMap.get("amount")));
-                    waitingApproved.remove(args.get("paymentId"));
-                }
-                else{
-                    logger.warning(String.format("%s is not waiting approved", args.get("paymentId")));
-                }
-            }
-            else if (args.get("type").equals("transferMoney")) {
-                String waitApprovedKey = transferMoney(args.get("userIdFrom"),
-                              args.get("userIdTo"),
-                              Double.parseDouble(args.get("amount"))
-                );
-                if (waitApprovedKey!=null) {
-                    String responeJson = (new Gson()).toJson(waitingApproved.get(waitApprovedKey));
-                    server.sendManagerResponse(args.get("pendQueueId"), responeJson);
-                }
-                else{
-                    Map<String, String> errorMap = new HashMap<>(1);
-                    errorMap.put("error", "payPalMail not specified");
-                    server.sendManagerResponse(args.get("pendQueueId"), (new Gson()).toJson(errorMap));
-                }
-            }
-        }
-        catch (Exception e){
-            logger.warning(e.getMessage());
-            Arrays.stream(e.getStackTrace()).forEach(st->logger.warning(st.toString()));
-        }
+    public String executeOrder(String waitId, String payerId) throws Exception {
+        HashMap<String, String> paymentMap = waitingApproved.get(waitId);
+        webConnector.executeOrder(paymentMap.get("execute"), payerId);
+        String userMailTo = paymentMap.get("userToMail");
+        Double amount = Double.parseDouble(paymentMap.get("amount"));
+        processGetPayRequest(userMailTo, amount);
+        mongoConnector.recordTransaction(paymentMap.get("userIdFrom"),
+        paymentMap.get("userIdTo"),
+        Double.parseDouble(paymentMap.get("amount")));
+        waitingApproved.remove(waitId);
+        return "";
     }
+
+//    public void update(Object arg) {
+//        HashMap<String, String> args = (HashMap<String, String>)arg;
+//        logger.info(args.toString());
+//        try {
+//            if (args.get("type").equals("execute")) {
+//                if (waitingApproved.keySet().contains(args.get("paymentId"))) {
+//                    HashMap<String, String> paymentMap = waitingApproved.get(args.get("paymentId"));
+//                    webConnector.executeOrder(paymentMap.get("execute"), args.get("PayerID"));
+//                    String userMailTo = paymentMap.get("userToMail");
+//                    Double amount = Double.parseDouble(paymentMap.get("amount"));
+//                    processGetPayRequest(userMailTo, amount);
+//                    mongoConnector.recordTransaction(paymentMap.get("userIdFrom"),
+//                            paymentMap.get("userIdTo"),
+//                            Double.parseDouble(paymentMap.get("amount")));
+//                    waitingApproved.remove(args.get("paymentId"));
+//                }
+//                else{
+//                    logger.warning(String.format("%s is not waiting approved", args.get("paymentId")));
+//                }
+//            }
+//            else if (args.get("type").equals("transferMoney")) {
+//                String waitApprovedKey = transferMoney(args.get("userIdFrom"),
+//                              args.get("userIdTo"),
+//                              Double.parseDouble(args.get("amount"))
+//                );
+//                if (waitApprovedKey!=null) {
+//                    String responeJson = (new Gson()).toJson(waitingApproved.get(waitApprovedKey));
+//                    server.sendManagerResponse(args.get("pendQueueId"), responeJson);
+//                }
+//                else{
+//                    Map<String, String> errorMap = new HashMap<>(1);
+//                    errorMap.put("error", "payPalMail not specified");
+//                    server.sendManagerResponse(args.get("pendQueueId"), (new Gson()).toJson(errorMap));
+//                }
+//            }
+//        }
+//        catch (Exception e){
+//            logger.warning(e.getMessage());
+//            Arrays.stream(e.getStackTrace()).forEach(st->logger.warning(st.toString()));
+//        }
+//    }
 
     private HashMap<String, Object> getMapFromJsonFile(String jsonPath) throws Exception {
         JsonReader jsonReader = new JsonReader(new FileReader(jsonPath));
