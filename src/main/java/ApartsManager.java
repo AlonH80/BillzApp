@@ -104,4 +104,11 @@ public class ApartsManager {
         });
         return usersBalances;
     }
+
+    public void updateBillAfterTransaction(String userIdFrom, String userIdTo, String amount, String supplier) throws Exception {
+        String usersApartmentId = mongoConnector.getUser(userIdFrom).get("apartmentId").toString();
+        Apartment currApart = getApartment(usersApartmentId);
+        Supplier currSupp = currApart.getSupplier(Supplier.TYPE.valueOf(supplier));
+        currSupp.updateBalanceAfterTransaction(userIdFrom, userIdTo, Double.parseDouble(amount));
+    }
 }

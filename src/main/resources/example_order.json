@@ -41,7 +41,7 @@
   }],
   "note_to_payer": "Contact us for any questions on your order.",
   "redirect_urls": {
-    "return_url": "https://billz-app.herokuapp.com/index.html",
-    "cancel_url": "https://billz-app.herokuapp.com/index.html"
+    "return_url": "https://billz-app.herokuapp.com/paymentApproved",
+    "cancel_url": "https://billz-app.herokuapp.com/"
   }
 }

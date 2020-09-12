@@ -95,6 +95,10 @@ public class Supplier {
         return currBalances;
     }
 
+    public void updateBalanceAfterTransaction(String userIdFrom, String userIdTo, Double amount) {
+        //mongoConnector.updateUserSupplierBalance();
+    }
+
     public Map<String, Double> getBalances() {
         Set<String> balancesKeys = balances.keySet();
         balancesKeys.forEach(k -> {

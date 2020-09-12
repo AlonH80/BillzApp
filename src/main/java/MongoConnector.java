@@ -192,11 +192,12 @@ public class MongoConnector {
         return resMap;
     }
 
-    public void recordTransaction(String userIdFrom, String userIdTo, Double amount) {
+    public void recordTransaction(String userIdFrom, String userIdTo, Double amount, String supplier) {
         Map<String, Object> recordMap = new LinkedHashMap<>(3);
         recordMap.put("userIdFrom", userIdFrom);
         recordMap.put("userIdTo", userIdTo);
         recordMap.put("amount", amount);
+        recordMap.put("supplier", supplier);
         insert("billzDB", "transactions", recordMap);
     }
 
@@ -369,7 +370,6 @@ public class MongoConnector {
 
     public void updateUserSupplierBalance(String userId, String apartmentId, String type, String newUserBalance) {
         LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
-        queryMap.put("apartmentId", apartmentId);
         queryMap.put("type", type);
         queryMap.put("userId", userId);
         Map<String, Object> updateMap = find("billzDB", "suppliersBalance", queryMap).get(0);

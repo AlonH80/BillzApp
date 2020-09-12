@@ -83,7 +83,7 @@ public class PaymentManager {
         logger.info(String.format("ComponentConfig: %s", componentConfig.toString()));
     }
 
-    public Map<String, String> transferMoney(String userIdFrom, String userIdTo, Double amount) throws Exception {
+    public Map<String, String> transferMoney(String userIdFrom, String userIdTo, Double amount, String supplierType) throws Exception {
         verifyAccessToken();
         logger.info(String.format("userIdFrom: %s", userIdFrom));
         logger.info(String.format("userIdTo: %s", userIdTo));
@@ -100,6 +100,7 @@ public class PaymentManager {
             waitingApproved.get(waitApprovedKey).put("amount", amount.toString());
             waitingApproved.get(waitApprovedKey).put("userIdFrom", userIdFrom);
             waitingApproved.get(waitApprovedKey).put("userIdTo", userIdTo);
+            waitingApproved.get(waitApprovedKey).put("supplier", supplierType);
             return waitingApproved.get(waitApprovedKey);
         }
         else {
@@ -244,10 +245,6 @@ public class PaymentManager {
         String userMailTo = paymentMap.get("userToMail");
         Double amount = Double.parseDouble(paymentMap.get("amount"));
         processGetPayRequest(userMailTo, amount);
-        mongoConnector.recordTransaction(paymentMap.get("userIdFrom"),
-        paymentMap.get("userIdTo"),
-        Double.parseDouble(paymentMap.get("amount")));
-        waitingApproved.remove(waitId);
         return "";
     }
 
@@ -297,5 +294,15 @@ public class PaymentManager {
         JsonReader jsonReader = new JsonReader(new FileReader(jsonPath));
         HashMap<String, Object> jsonMap = (new Gson()).fromJson(jsonReader, HashMap.class);
         return jsonMap;
+    }
+
+    public Map<String, String> logTransaction(String paymentId) {
+        HashMap<String, String> paymentMap = waitingApproved.get(paymentId);
+        mongoConnector.recordTransaction(paymentMap.get("userIdFrom"),
+                paymentMap.get("userIdTo"),
+                Double.parseDouble(paymentMap.get("amount")),
+                        paymentMap.get("supplier"));
+        waitingApproved.remove(paymentId);
+        return paymentMap;
     }
 }

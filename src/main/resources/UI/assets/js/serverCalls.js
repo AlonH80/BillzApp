@@ -246,6 +246,7 @@ function setOnSendPayment() {
             window.open(dat["approval_url"]);
         }
         map_inps["type"] = "payment";
+        map_inps["supplier"] = sessionStorage.getItem("supplier");
         sendRequest(server_address, map_inps, onPaymentReceived);
     });
 }
@@ -347,10 +348,12 @@ function addRowToBillSummary(summaryRowsNode, rowJson) {
 }
 
 function gotoPayRoomate(elem) {
+    supplier = $("td", elem.parentElement.parentElement)[0].textContent;
     owner = $("td", elem.parentElement.parentElement)[1].textContent;
     amount = $("td", elem.parentElement.parentElement)[2].textContent;
     sessionStorage.setItem("owner", owner);
     sessionStorage.setItem("amount", amount);
+    sessionStorage.setItem("supplier", supplier.toUpperCase());
     redirectToPage("paymentOptions.html");
 }
 
