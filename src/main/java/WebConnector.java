@@ -15,8 +15,8 @@ public class WebConnector {
     private static final String httpsOrderURL= "https://api.sandbox.paypal.com/v1/payments/payment";    // TODO: create config file
     private static final String httpsSendPayURL = "https://api.sandbox.paypal.com/v1/payments/payouts";
     private static final String httpsRequestTokenURL = "https://api.sandbox.paypal.com/v1/oauth2/token";    // TODO: create config file
-    private static String clientID; // TODO: create SECURED config file
-    private static String secret; // TODO: create SECURED config file
+    private static String clientID; // TODO: put as system var
+    private static String secret; // TODO: put as system var
     private String accessToken;
     private Logger logger;
 
@@ -131,9 +131,5 @@ public class WebConnector {
         con.setRequestProperty("Authorization", "Bearer " + accessToken);
 
         return con;
-    }
-
-    private void diagnoseResponse(String resp){
-        return;
     }
 }

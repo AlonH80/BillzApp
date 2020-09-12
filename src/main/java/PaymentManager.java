@@ -20,7 +20,7 @@ public class PaymentManager {
     private HashMap<String, String> componentConfig;
     private HashMap<String, HashMap<String, Object>> recordPending;
     private HashMap<String, HashMap<String, String>> waitingApproved;
-    private final static String confPath = Utils.confPath;
+    private final static String confPath = System.getProperty("user.dir") +"/target/classes/pp_config.json";
     private final static String logsPath = "logs/";
 
     public PaymentManager(Server server) throws Exception {
@@ -65,6 +65,22 @@ public class PaymentManager {
 
     private void initConfigFile() throws Exception {
         componentConfig = Utils.loadConfigs();
+        initPayPalConfig();
+
+    }
+
+    private void initPayPalConfig() throws Exception {
+        try {
+            String user_dir = System.getProperty("user.dir");
+            HashMap<String, Object> tmpConfig = Utils.jsonFileToMap(confPath);
+            tmpConfig.forEach((k, v) -> componentConfig.put(k, v.toString()));
+            componentConfig.put("orderTemplatePath", user_dir + componentConfig.get("orderTemplatePath"));
+            componentConfig.put("sendTemplatePath", user_dir + componentConfig.get("sendTemplatePath"));
+        }
+        catch (Exception e) {
+            logger.warning("Unable to load conf file");
+        }
+        logger.info(String.format("ComponentConfig: %s", componentConfig.toString()));
     }
 
     public Map<String, String> transferMoney(String userIdFrom, String userIdTo, Double amount) throws Exception {
@@ -151,14 +167,14 @@ public class PaymentManager {
     }
 
     private String createOrder(Double amount) throws Exception {
-        HashMap<String, Object> orderMap = (new Gson()).fromJson(new JsonReader(new FileReader(componentConfig.get("orderTemplatePath"))), HashMap.class);
+        HashMap<String, Object> orderMap = (Utils.jsonFileToMap(componentConfig.get("orderTemplatePath")));
         logger.info(orderMap.toString());
         LinkedTreeMap<String, Object> transactions = (LinkedTreeMap<String, Object>)((ArrayList<Object>)orderMap.get("transactions")).get(0);
         ArrayList<LinkedTreeMap<String, Object>> newTrans = new ArrayList<>(1);
         newTrans.add(updateTransactions(transactions, amount));
         orderMap.put("transactions", newTrans);
         logger.info(orderMap.toString());
-        return (new Gson()).toJson(orderMap);
+        return Utils.mapToJson(orderMap);
     }
 
     private LinkedTreeMap<String, Object> updateTransactions(LinkedTreeMap<String, Object> transactions, Double amount) throws Exception {
@@ -214,7 +230,7 @@ public class PaymentManager {
 
     private void saveConfig() throws Exception {
         FileWriter fileWriter = new FileWriter(confPath);
-        String jsonString = (new Gson()).toJson(componentConfig);
+        String jsonString = Utils.mapToJson(componentConfig);
         fileWriter.write(jsonString);
         fileWriter.close();
     }
