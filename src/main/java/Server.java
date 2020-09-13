@@ -116,7 +116,7 @@ public class Server extends Observable {
                 Arrays.stream(querParams).forEach(par -> custMap.put(par.split("=")[0], par.split("=")[1]));
                 logger.info(Utils.mapToJson(custMap));
                 Map<String, String> transac = paymentManager.logTransaction(custMap.get("paymentId"));
-                apartsManager.updateBillAfterTransaction(transac.get("userIdFrom"), transac.get("userIdTo"), transac.get("amount"));
+                //apartsManager.updateBillAfterTransaction(transac.get("userIdFrom"), transac.get("userIdTo"), transac.get("amount"));
                 return fileToString(String.format("%s/%s", UiPath, "index.html"));
             }
             else if (requestURI.contains("favicon") || requestURI.contains("compass")) {

@@ -151,17 +151,38 @@ function setSendBillFile() {
         $.ajax({
             data: formDat,
             method: "POST",
-            url: server_address + "/uploadFile",
+            url: "https://billz-ocr-server.herokuapp.com/uploadFile",
             processData: false,
             contentType: false,
             success: function (dataRec) {
                 console.log(dataRec);
+                setOcrVerification(dataRec);
             },
             error: function (e) {
                 console.log("status code: " + e.status.toString());
             }
         });
     });
+}
+
+function setOcrVerification(ocrData) {
+    amount = ocrData["price"];
+    supplierType = ocrData["type"];
+    picker =  $(".selectpicker")[0];
+    for (op in picker.options) {
+        picker.selectedIndex = op;
+        if (picker.options[op].textContent == supplierType) {
+            break;
+        }
+    }
+    verificationNode = $("#verificationDiv")[0];
+    amountLabel = document.createElement("label");
+    amountInput = document.createElement("input");
+    dDayLabel = document.createElement("label");
+    dDayInput = document.createElement("input");
+    submitButton = document.createElement("button");
+    //<label>Amount</label><input type="text" name="amount"><button type="submit" onclick="sendManualBilling()" style="row-span: 2; margin-left: 10px;">Submit</button>
+    //                 <label>Due Date</label><input type="text" name="dDay">
 }
 
 function getAndPutParticipants() {
@@ -751,7 +772,7 @@ function sendManualBilling() {
     }
     map_inps["apartmentId"] = sessionStorage.getItem("apartmentId");
     map_inps["userId"] = sessionStorage.getItem("user_name");
-    map_inps["billType"] = $(".selectpicker")[0].value;
+    map_inps["billType"] = $(".selectpicker")[0].value.replace(" ", "_");
     map_inps["type"] = "addBill";
     //onResp = $("#res_div")[0].textContent = "Check for new bill";
     onResp = dat => redirectToPage("billSummary.html");
