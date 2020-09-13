@@ -690,7 +690,7 @@ function sendManualBilling() {
     }
     map_inps["apartmentId"] = sessionStorage.getItem("apartmentId");
     map_inps["userId"] = sessionStorage.getItem("user_name");
-    map_inps["billType"] = $(".selectpicker")[0].value;
+    map_inps["billType"] = $(".selectpicker")[0].value.replace(" ","_").toUpperCase();
     map_inps["type"] = "addBill";
     onResp = $("#res_div")[0].textContent = "Check for new bill";
     sendRequest(server_address, map_inps, onResp);

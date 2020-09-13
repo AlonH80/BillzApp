@@ -315,7 +315,6 @@ public class MongoConnector {
         insertMap.put("apartmentId", belongToApartmentId);
         insertMap.put("type", type);
         insertMap.put("ownerId", ownerId);
-        insertMap.put("balance", "0");
         insert("billzDB", "suppliers", insertMap);
     }
 
@@ -337,24 +336,26 @@ public class MongoConnector {
         return find("billzDB", "suppliersPart", findMap);
     }
 
-    public void insertSupplierBalance(String belongToApartmentId, String type, Map<String, Object> balance) {
+    public void insertSupplierBalance(String belongToApartmentId, String type, Map<String, Object> balance, String openerId) {
         balance.forEach((k, v) -> {
             LinkedHashMap<String, Object> insertMap = new LinkedHashMap<>();
             insertMap.put("apartmentId", belongToApartmentId);
             insertMap.put("type", type);
             insertMap.put("userId", k);
             insertMap.put("balance", v);
+            insertMap.put("owner", openerId);
+            insertMap.put("paid", "0");
             insert("billzDB", "suppliersBalance", insertMap);
         });
     }
 
-    public void insertSupplierBalances(String type, String apartmentId, Map<String, Double> usersBalances) {
-        LinkedHashMap<String, Object> insertMap = new LinkedHashMap<>();
-        insertMap.put("type", type);
-        insertMap.put("apartmentId", apartmentId);
-        insertMap.put("balances", usersBalances);
-        insert("billzDB", "suppliersBalance", insertMap);
-    }
+//    public void insertSupplierBalances(String type, String apartmentId, Map<String, Double> usersBalances) {
+//        LinkedHashMap<String, Object> insertMap = new LinkedHashMap<>();
+//        insertMap.put("type", type);
+//        insertMap.put("apartmentId", apartmentId);
+//        insertMap.put("balances", usersBalances);
+//        insert("billzDB", "suppliersBalance", insertMap);
+//    }
 
 //    public void updateSupplierBalances(String userId, String apartmentId, String type, String newSupplierBalance) {
 //        LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
@@ -365,13 +366,26 @@ public class MongoConnector {
 //        update("billzDB", "supplier", queryMap, updateMap);
 //    }
 
-    public void updateUserSupplierBalance(String userId, String apartmentId, String type, String newUserBalance) {
+    public void addUserSupplierBalance(String userId, String apartmentId, String type, String newUserBalance, String dDay, String owner) {
+        LinkedHashMap<String, Object> queryMap = new LinkedHashMap<>();
+        queryMap.put("apartmentId", apartmentId);
+        queryMap.put("type", type);
+        queryMap.put("owner", owner);
+        queryMap.put("balance", newUserBalance);
+        queryMap.put("paid", "0");
+        queryMap.put("dDay", dDay);
+        queryMap.put("userId", userId);
+        insert("billzDB", "suppliersBalance", queryMap);
+    }
+
+    public void updateUserSupplierBalance(String userId, String apartmentId, String type, String newUserBalance, String dDay) {
         LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
         queryMap.put("apartmentId", apartmentId);
         queryMap.put("type", type);
+        queryMap.put("dDay", dDay);
         queryMap.put("userId", userId);
         Map<String, Object> updateMap = find("billzDB", "suppliersBalance", queryMap).get(0);
-        updateMap.replace("balance", newUserBalance);
+        updateMap.replace("paid", newUserBalance);
         update("billzDB", "suppliersBalance", queryMap, updateMap);
     }
 
@@ -433,7 +447,6 @@ public class MongoConnector {
         insertMap.put("amount", amount);
         insertMap.put("billType", billType);
         insertMap.put("owner", userId);
-        insertMap.put("status", "UNPAID");
         insert("billzDB", "bills", insertMap);
     }
 

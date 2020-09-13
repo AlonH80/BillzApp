@@ -57,13 +57,13 @@ public class ApartsManager {
         mongoConnector.updateApartmentUsers(apartmentId, currApartment.getUsers());
     }
 
-    public void addNewBillToApartment(String apartmentId, String supplierId, Double amount) throws Exception {
-        Apartment currApart = getApartment(apartmentId);
-        Supplier currSupplier = currApart.getSupplier(Supplier.TYPE.valueOf(supplierId));
-        currSupplier.addBill(amount);
-        currSupplier.updateBalances(amount.toString());
-        //currSupplier.getBalances().forEach((userId, newUserBalance) -> mongoConnector.updateUserSupplierBalance(userId, apartmentId,supplierId, newUserBalance.toString()));
-    }
+//    public void addNewBillToApartment(String apartmentId, String supplierId, Double amount) throws Exception {
+//        Apartment currApart = getApartment(apartmentId);
+//        Supplier currSupplier = currApart.getSupplier(Supplier.TYPE.valueOf(supplierId));
+//        currSupplier.addBill(amount);
+//        currSupplier.updateBalances(amount.toString());
+//        //currSupplier.getBalances().forEach((userId, newUserBalance) -> mongoConnector.updateUserSupplierBalance(userId, apartmentId,supplierId, newUserBalance.toString()));
+//    }
 
     public List<String> getRoommates(String apartmentId, String userId) throws Exception {
         Apartment currApart = getApartment(apartmentId);
@@ -96,8 +96,15 @@ public class ApartsManager {
             if (!usersBalances.containsKey(bal.get("userId").toString())) {
                 usersBalances.put(bal.get("userId").toString(), "0");
             }
+            if (!usersBalances.containsKey(bal.get("owner").toString())) {
+                usersBalances.put(bal.get("owner").toString(), "0");
+            }
             String uid = bal.get("userId").toString();
-            usersBalances.put(uid, String.valueOf(Double.parseDouble(usersBalances.get(uid)) + Double.parseDouble(bal.get("balance").toString())));
+            String oid = bal.get("owner").toString();
+            double newBalance = (Double.parseDouble(bal.get("balance").toString()) - Double.parseDouble(bal.get("paid").toString()));
+            double newAmount = Double.parseDouble(usersBalances.get(uid)) - newBalance;
+            usersBalances.put(uid, String.valueOf(newAmount));
+            usersBalances.put(bal.get("owner").toString(), String.valueOf(Double.parseDouble(usersBalances.get(oid)) + newBalance));
         });
         return usersBalances;
     }

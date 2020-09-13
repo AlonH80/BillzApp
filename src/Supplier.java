@@ -68,30 +68,32 @@ public class Supplier {
 //        return balances;
 //    }
 
-    public ArrayList<Map<String, Object>> updateBalances(String newAmount) {
+    public ArrayList<Map<String, Object>> updateBalances(String newAmount, String dDay) {
         Double amount = Double.parseDouble(newAmount);
         ArrayList<Map<String, Object>> parts = mongoConnector.getSupplierParts(belongToApartmentId, supplierType.toString());
         HashMap<String, Double> partsMap = new HashMap<>(parts.size());
         parts.stream().forEach(pa -> partsMap.put(pa.get("userId").toString(), Double.parseDouble(pa.get("part").toString().replace("%", ""))/100));
         ArrayList<Map<String, Object>> currBalances = mongoConnector.getSupplierBalances(belongToApartmentId, supplierType.toString());
-        if (!currBalances.isEmpty()) {
-            currBalances.forEach(bal -> {
-                String uid = bal.get("userId").toString();
-                bal.put("balance", (Double.parseDouble(bal.get("balance").toString()) + (partsMap.get(uid) * amount)));
-                mongoConnector.updateUserSupplierBalance(bal.get("userId").toString(), belongToApartmentId, supplierType.toString(), bal.get("balance").toString());
-            });
-        }
-        else {
+//        if (!currBalances.isEmpty()) {
+//            currBalances.forEach(bal -> {
+//                String uid = bal.get("userId").toString();
+//                bal.put("balance", (Double.parseDouble(bal.get("balance").toString()) + (partsMap.get(uid) * amount)));
+//                mongoConnector.updateUserSupplierBalance(bal.get("userId").toString(), belongToApartmentId, supplierType.toString(), bal.get("balance").toString());
+//            });
+//        }
+//        else {
             partsMap.forEach((uid, part) -> {
                 HashMap<String, Object> bal = new HashMap<>();
                 bal.put("apartmentId", belongToApartmentId);
                 bal.put("type", supplierType.toString());
                 bal.put("userId", uid);
+                bal.put("dDay", dDay);
                 bal.put("balance", String.valueOf(part*amount));
                 currBalances.add(bal);
-                mongoConnector.updateUserSupplierBalance(uid, belongToApartmentId, supplierType.toString(), String.valueOf(part*amount));
+                mongoConnector.addUserSupplierBalance(uid, belongToApartmentId, supplierType.toString(), String.valueOf(part*amount), dDay, ownerId);
             });
-        }
+//        }
+        mongoConnector.updateUserSupplierBalance(ownerId, belongToApartmentId, supplierType.toString(), String.valueOf(partsMap.get(ownerId)*amount), dDay);
         return currBalances;
     }
 

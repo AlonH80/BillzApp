@@ -33,7 +33,7 @@ public class Apartment {
         mongoConnector.insertSupplier(apartmentId, type.toString(), ownerId);
         HashMap<String, Object> usersBalances = new HashMap<>();
         userIds.forEach(uid->usersBalances.put(uid, "0"));
-        mongoConnector.insertSupplierBalance(apartmentId, type.toString(), usersBalances);
+        mongoConnector.insertSupplierBalance(apartmentId, type.toString(), usersBalances,openerId);
     }
 
     public void removeSupplier(Supplier.TYPE type) {
@@ -97,6 +97,6 @@ public class Apartment {
     public void addBill(String dDay, String amount, String billType, String userId) throws Exception {
         mongoConnector.addBill(apartmentId, dDay, amount, billType, userId);
         Supplier currSupplier = getSupplier(Supplier.TYPE.valueOf(billType.toUpperCase()));
-        currSupplier.updateBalances(amount);
+        currSupplier.updateBalances(amount, dDay);
     }
 }
