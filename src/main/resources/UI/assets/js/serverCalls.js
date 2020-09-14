@@ -175,7 +175,8 @@ function setSendBillFile() {
 }
 
 function waitForParseToFinish(jsonRes) {
-    req_id = jsonRes["pendingId"]
+    parsedJson = JSON.parse(jsonRes);
+    req_id = parsedJson["pendingId"];
     res = "";
     while(res === "") {
         sleep(5000);
@@ -185,8 +186,9 @@ function waitForParseToFinish(jsonRes) {
 }
 
 function setOcrVerification(ocrData) {
-    amount = ocrData["price"];
-    supplierType = ocrData["type"];
+    parsedJson = JSON.parse(ocrData);
+    amount = parsedJson["price"];
+    supplierType = parsedJson["type"];
     picker =  $(".selectpicker")[0];
     for (op in picker.options) {
         picker.selectedIndex = op;
