@@ -33,7 +33,7 @@ public class Apartment {
         mongoConnector.insertSupplier(apartmentId, type.toString(), ownerId);
         HashMap<String, Object> usersBalances = new HashMap<>();
         userIds.forEach(uid->usersBalances.put(uid, "0"));
-        mongoConnector.insertSupplierBalance(apartmentId, type.toString(), usersBalances,openerId);
+        //mongoConnector.insertSupplierBalance(apartmentId, type.toString(), usersBalances,openerId);
     }
 
     public void removeSupplier(Supplier.TYPE type) {

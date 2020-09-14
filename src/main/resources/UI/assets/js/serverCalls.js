@@ -427,8 +427,13 @@ function getBalance() {
         for (d in dat) {
             list_dat.push({"user": d, "balance": parseFloat(dat[d])})
         }
-        //list_dat = list_dat.filter(rm=>rm.user !== sessionStorage.getItem("user_name"));
-        max_balance = list_dat.map(r => Math.abs(r.balance)).reduce((x, y) => x > y ? x : y);
+        if (list_dat.length > 0){
+            max_balance = list_dat.map(r => Math.abs(r.balance)).reduce((x, y) => x > y ? x : y);
+        }
+        else{
+            max_balance = 1;
+        }
+
         // max_balance = 0;
         // for (d in dat) {
         //     currVal = parseFloat(dat[d]);
@@ -451,19 +456,19 @@ function getBalance() {
 }
 
 function addRoomateToBalance(balanceRowNode, roomate, balance, max_balance) {
-    intBalance = parseInt(balance);
-    intAbsBalance = Math.abs(intBalance);
+    floatBalance = parseFloat(balance);
+    absBalance = Math.abs(floatBalance);
     newTh = document.createElement("th");
     header0 = document.createElement("h3");
     header1 = document.createElement("h3");
-    barNode = createBarNode(intBalance, max_balance);
-    if (intBalance >= 0) {
+    barNode = createBarNode(floatBalance, max_balance);
+    if (floatBalance >= 0) {
         //header0.textContent = "You owe " + roomate + ":";
         header0.textContent = roomate + " needs to receive :";
     } else {
         header0.textContent = roomate + " needs to pay:";
     }
-    header1.textContent = intAbsBalance.toString() + " $";
+    header1.textContent = absBalance.toFixed(2).toString() + " $";
     newTh.append(header0);
     newTh.append(barNode);
     newTh.append(header1);

@@ -472,7 +472,7 @@ public class MongoConnector {
 
     public List<Map<String, Object>> getUserSuppliersBalance(String userId) {
         LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
-        queryMap.put("userID", userId);
+        queryMap.put("userId", userId);
         List<Map<String, Object>> resLst = find("billzDB", "suppliersBalance", queryMap);
         return resLst;
 
