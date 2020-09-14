@@ -177,12 +177,20 @@ function setSendBillFile() {
 function waitForParseToFinish(jsonRes) {
     parsedJson = JSON.parse(jsonRes);
     req_id = parsedJson["pendingId"];
+    checkStatus(req_id);
+    //setOcrVerification(res);
+}
+
+function checkStatus(pendingId) {
     res = "";
-    while(res === "") {
-        sleep(5000);
-        sendGetRequest("https://billz-ocr-server.herokuapp.com/" + req_id, data => res=data);
+    sendGetRequest("https://billz-ocr-server.herokuapp.com/" + req_id, data => res=data);
+    if (res === "") {
+        setTimeout(()=>checkStatus(pendingId), 5000);
     }
-    setOcrVerification(res);
+    else {
+        setOcrVerification(res);
+    }
+    //return res;
 }
 
 function setOcrVerification(ocrData) {
