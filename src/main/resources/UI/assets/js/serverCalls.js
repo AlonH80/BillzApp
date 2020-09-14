@@ -177,12 +177,24 @@ function setOcrVerification(ocrData) {
     }
     verificationNode = $("#verificationDiv")[0];
     amountLabel = document.createElement("label");
+    amountLabel.textContent = "amount";
     amountInput = document.createElement("input");
+    amountInput.value = ocrData["price"];
+    amountInput.name = "amount";
     dDayLabel = document.createElement("label");
+    dDayLabel.textContent = "Due date";
     dDayInput = document.createElement("input");
+    dDayInput.name = "dDay";
     submitButton = document.createElement("button");
+    submitButton.onclick = () => sendBillAfterVerification();
+    submitButton.textContent = "Submit";
     //<label>Amount</label><input type="text" name="amount"><button type="submit" onclick="sendManualBilling()" style="row-span: 2; margin-left: 10px;">Submit</button>
     //                 <label>Due Date</label><input type="text" name="dDay">
+    verificationNode.appendChild(amountLabel);
+    verificationNode.appendChild(amountInput);
+    verificationNode.appendChild(dDayLabel);
+    verificationNode.appendChild(dDayInput);
+    verificationNode.appendChild(submitButton);
 }
 
 function getAndPutParticipants() {
@@ -195,7 +207,6 @@ function getAndPutParticipants() {
     }
     supplier_map = {"partsMap": pay_map};
     supplier_map["supplier"] = $("#supplierType")[0].value.split(' ').join('_');
-    ;
     supplier_map["billOwner"] = $("#billOwner")[0].value;
     supplier_map["type"] = "addSupplier";
     supplier_map["apartmentId"] = sessionStorage.getItem("apartmentId");
@@ -348,7 +359,7 @@ function addRowToBillSummary(summaryRowsNode, rowJson) {
         tds[info] = newTd;
     }
     tds["status"] = document.createElement("td");
-    newRow.append(tds["billType"]);
+    newRow.append(tds["type"]);
     newRow.append(tds["owner"]);
     // newRow.append(tds["address"]);
     // newRow.append(tds["bill_number"]);
@@ -778,6 +789,22 @@ function generateUserHome() {
 
 function sendManualBilling() {
     inputNd = $("#manualBill")[0];
+    inps = $("input", inputNd);
+    map_inps = {};
+    for (i = 0; i < inps.length; i++) {
+        map_inps[inps[i].name] = inps[i].value;
+    }
+    map_inps["apartmentId"] = sessionStorage.getItem("apartmentId");
+    map_inps["userId"] = sessionStorage.getItem("user_name");
+    map_inps["billType"] = $(".selectpicker")[0].value.replace(" ", "_");
+    map_inps["type"] = "addBill";
+    //onResp = $("#res_div")[0].textContent = "Check for new bill";
+    onResp = dat => redirectToPage("billSummary.html");
+    sendRequest(server_address, map_inps, onResp);
+}
+
+function sendBillAfterVerification() {
+    inputNd = $("#verificationDiv")[0];
     inps = $("input", inputNd);
     map_inps = {};
     for (i = 0; i < inps.length; i++) {

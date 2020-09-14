@@ -95,8 +95,9 @@ public class Apartment {
     }
 
     public void addBill(String dDay, String amount, String billType, String userId) throws Exception {
-        mongoConnector.addBill(apartmentId, dDay, amount, billType, userId);
+        String amountFixed = String.format("%.2f", Double.parseDouble(amount));
+        mongoConnector.addBill(apartmentId, dDay, amountFixed, billType, userId);
         Supplier currSupplier = getSupplier(Supplier.TYPE.valueOf(billType.toUpperCase()));
-        currSupplier.updateBalances(amount, dDay);
+        currSupplier.updateBalances(amountFixed, dDay);
     }
 }
