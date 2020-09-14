@@ -216,7 +216,7 @@ function setOcrVerification(ocrData) {
     verificationNode.style.setProperty("grid-column-gap", "3px");
 
     waitLabel = $("#waitVerify")[0];
-    verificationNode.remove(waitLabel);
+    verificationNode.removeChild(waitLabel);
     amountLabel = document.createElement("label");
     amountLabel.textContent = "amount";
     amountInput = document.createElement("input");
