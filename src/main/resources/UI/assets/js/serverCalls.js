@@ -5,6 +5,7 @@ function sendRequest(serverURL, jsonData, onResponse) {
         method: "POST",
         url: serverURL,
         data: JSON.stringify(jsonData),
+        timeout: 2*60*1000,
         success: function (dataRec) {
             onResponse(dataRec);
             console.log(dataRec);
@@ -146,7 +147,7 @@ function setSendBillFile() {
         var map_inps = {};
         var formDat = new FormData();
         formDat.append("billFile", $("#pdfFile").prop("files")[0]);
-        formDat.append("cycle_billing", $("#isCycle")[0].checked);
+        //formDat.append("cycle_billing", $("#isCycle")[0].checked);
         formDat.append("bill_type", $(".selectpicker")[0].value);
         $.ajax({
             data: formDat,

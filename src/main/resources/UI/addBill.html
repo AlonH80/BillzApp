@@ -62,15 +62,15 @@
                   <form id="uploadFile" method='POST' enctype="multipart/form-data">
                     <span>Upload a new bill</span>
                     <input type="file" name="billFile" id="pdfFile">
-                    <button type="submit">Submit</button>
+                    <button type="submit">Upload</button>
                   </form>
                 </label>
                 <div id="verificationDiv">
 
                 </div>
             </div>
-            <input type="checkbox" id="isCycle" name="isCycle" checked>
-            <label for="isCycle">Cycle Billing?</label>
+            <!--input type="checkbox" id="isCycle" name="isCycle" checked>
+            <label for="isCycle">Cycle Billing?</label-->
             <h2 style="margin-top: 20px">Add Bill Manually</h2>
             <div id="manualBill">
                 <label>Amount</label><input type="text" name="amount"><button type="submit" onclick="sendManualBilling()" style="row-span: 2; margin-left: 10px;">Submit</button>
