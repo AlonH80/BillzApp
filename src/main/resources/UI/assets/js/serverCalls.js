@@ -181,6 +181,7 @@ function waitForParseToFinish(jsonRes) {
     waitLabel.textContent = "Wait while we process the file, this might take a minute...";
     req_id = parsedJson["pendingId"];
     checkStatus(req_id);
+    verDiv.appendChild(waitLabel);
     //setOcrVerification(res);
 }
 
@@ -215,7 +216,7 @@ function setOcrVerification(ocrData) {
     verificationNode.style.setProperty("grid-column-gap", "3px");
 
     waitLabel = $("#waitVerify")[0];
-    verificationNode.removeChild(waitLabel);
+    verificationNode.remove(waitLabel);
     amountLabel = document.createElement("label");
     amountLabel.textContent = "amount";
     amountInput = document.createElement("input");
