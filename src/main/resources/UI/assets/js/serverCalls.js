@@ -157,13 +157,22 @@ function setSendBillFile() {
             timeout: 2*60*1000,
             success: function (dataRec) {
                 console.log(dataRec);
-                setOcrVerification(dataRec);
+                waitForParseToFinish(dataRec);
             },
             error: function (e) {
                 console.log("status code: " + e.status.toString());
             }
         });
     });
+}
+
+function waitForParseToFinish(jsonRes) {
+    req_id = jsonRes["pendingId"]
+    res = "";
+    while(res === "") {
+        sendGetRequest("https://billz-ocr-server.herokuapp.com/" + req_id, data => res=data);
+    }
+    setOcrVerification(res);
 }
 
 function setOcrVerification(ocrData) {
