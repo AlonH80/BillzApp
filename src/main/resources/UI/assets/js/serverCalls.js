@@ -170,6 +170,7 @@ function waitForParseToFinish(jsonRes) {
     req_id = jsonRes["pendingId"]
     res = "";
     while(res === "") {
+        await.sleep(10000);
         sendGetRequest("https://billz-ocr-server.herokuapp.com/" + req_id, data => res=data);
     }
     setOcrVerification(res);
