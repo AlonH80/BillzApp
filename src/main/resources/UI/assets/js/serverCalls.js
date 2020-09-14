@@ -5,7 +5,6 @@ function sendRequest(serverURL, jsonData, onResponse) {
         method: "POST",
         url: serverURL,
         data: JSON.stringify(jsonData),
-        timeout: 2*60*1000,
         success: function (dataRec) {
             onResponse(dataRec);
             console.log(dataRec);
@@ -155,6 +154,7 @@ function setSendBillFile() {
             url: "https://billz-ocr-server.herokuapp.com/uploadFile",
             processData: false,
             contentType: false,
+            timeout: 2*60*1000,
             success: function (dataRec) {
                 console.log(dataRec);
                 setOcrVerification(dataRec);
