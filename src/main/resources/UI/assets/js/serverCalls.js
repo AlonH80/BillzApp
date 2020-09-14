@@ -208,7 +208,7 @@ function setOcrVerification(ocrData) {
     amountLabel = document.createElement("label");
     amountLabel.textContent = "amount";
     amountInput = document.createElement("input");
-    amountInput.value = ocrData["price"];
+    amountInput.value = amount;
     amountInput.name = "amount";
     dDayLabel = document.createElement("label");
     dDayLabel.textContent = "Due date";
