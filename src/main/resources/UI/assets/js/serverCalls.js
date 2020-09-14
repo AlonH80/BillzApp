@@ -182,14 +182,14 @@ function waitForParseToFinish(jsonRes) {
 }
 
 function checkStatus(pendingId) {
-    res = "";
-    sendGetRequest("https://billz-ocr-server.herokuapp.com/" + req_id, data => res=data);
-    if (res === "") {
-        setTimeout(()=>checkStatus(pendingId), 5000);
-    }
-    else {
-        setOcrVerification(res);
-    }
+    a=sendGetRequest("https://billz-ocr-server.herokuapp.com/" + req_id, data => {
+        if (data === "") {
+            setTimeout(()=>checkStatus(pendingId), 5000);
+        }
+        else {
+            setOcrVerification(data);
+        }
+    });
     //return res;
 }
 
