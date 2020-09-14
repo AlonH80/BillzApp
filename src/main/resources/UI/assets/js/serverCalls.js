@@ -347,16 +347,19 @@ function addRowToBillSummary(summaryRowsNode, rowJson) {
         newTd.textContent = rowJson[info];
         tds[info] = newTd;
     }
+    tds["status"] = document.createElement("td");
     newRow.append(tds["billType"]);
     newRow.append(tds["owner"]);
     // newRow.append(tds["address"]);
     // newRow.append(tds["bill_number"]);
     // newRow.append(tds["account_number"]);
-    newRow.append(tds["amount"]);
+    newRow.append(tds["balance"]);
+    newRow.append(tds["paid"]);
     newRow.append(tds["dDay"]);
     newRow.append(tds["status"]);
     payButtons = 0;
-    if (rowJson["status"].toUpperCase() === "UNPAID") {
+    balance = parseFloat(rowJson["balance"]).toFixed(2) - parseFloat(rowJson["paid"]).toFixed(2);
+    if (balance > 0) {
         statusBtn = document.createElement("button");
         statusBtn.classList.add("not_paid");
         statusBtn.textContent = "PAY";
