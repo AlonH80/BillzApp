@@ -162,7 +162,6 @@ function setSendBillFile() {
             url: "https://billz-ocr-server.herokuapp.com/uploadFile",
             processData: false,
             contentType: false,
-            timeout: 2*60*1000,
             success: function (dataRec) {
                 console.log(dataRec);
                 waitForParseToFinish(dataRec);
@@ -176,6 +175,10 @@ function setSendBillFile() {
 
 function waitForParseToFinish(jsonRes) {
     parsedJson = JSON.parse(jsonRes);
+    verDiv = $("#verificationDiv")[0];
+    waitLabel = document.createElement("label");
+    waitLabel.id = "waitVerify";
+    waitLabel.textContent = "Wait while we process the file, this might take a minute...";
     req_id = parsedJson["pendingId"];
     checkStatus(req_id);
     //setOcrVerification(res);
@@ -205,6 +208,14 @@ function setOcrVerification(ocrData) {
         }
     }
     verificationNode = $("#verificationDiv")[0];
+    verificationNode.style.setProperty("display", "grid");
+    verificationNode.style.setProperty("grid-template-columns", "100px 100px 200px");
+    verificationNode.style.setProperty("grid-template-rows", "30px 30px");
+    verificationNode.style.setProperty("grid-row-gap", "3px");
+    verificationNode.style.setProperty("grid-column-gap", "3px");
+
+    waitLabel = $("#waitVerify")[0];
+    verificationNode.removeChild(waitLabel);
     amountLabel = document.createElement("label");
     amountLabel.textContent = "amount";
     amountInput = document.createElement("input");
@@ -215,15 +226,17 @@ function setOcrVerification(ocrData) {
     dDayInput = document.createElement("input");
     dDayInput.name = "dDay";
     submitButton = document.createElement("button");
+    submitButton.style.setProperty("height", "63px");
+    submitButton.style.setProperty("row-span", "2");
     submitButton.onclick = () => sendBillAfterVerification();
     submitButton.textContent = "Submit";
     //<label>Amount</label><input type="text" name="amount"><button type="submit" onclick="sendManualBilling()" style="row-span: 2; margin-left: 10px;">Submit</button>
     //                 <label>Due Date</label><input type="text" name="dDay">
     verificationNode.appendChild(amountLabel);
     verificationNode.appendChild(amountInput);
+    verificationNode.appendChild(submitButton);
     verificationNode.appendChild(dDayLabel);
     verificationNode.appendChild(dDayInput);
-    verificationNode.appendChild(submitButton);
 }
 
 function getAndPutParticipants() {
