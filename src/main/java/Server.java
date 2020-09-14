@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 public class Server extends Observable {
     private HttpServer server;
     private Logger logger;
+    private final static String serverAddress = "https://billz-app.herokuapp.com/";
     private static String resourcesPath;
     private static String UiPath;
     private PaymentManager paymentManager;
@@ -62,6 +63,11 @@ public class Server extends Observable {
         os.close();
     }
 
+    private void sendRedirect(HttpExchange httpExchange, String redirectUrl) throws Exception {
+        httpExchange.getResponseHeaders().set("Location", String.format("%s/%s", serverAddress, redirectUrl));
+        httpExchange.sendResponseHeaders(302, 0);
+    }
+
 
     protected class MyHttpHandler implements HttpHandler {
         @Override
@@ -96,8 +102,9 @@ public class Server extends Observable {
                 String apartmentId = requestURI.split("\\?")[2];
                 String userId = requestURI.split("\\?")[3];
                 apartsManager.addUserToApartment(apartmentId,userId);
-                sendDefaultResponse(httpExchange,"");
+                //sendDefaultResponse(httpExchange,"");
                 messageManager.addMessage(userId,apartmentId,"had joined the apartment!");
+                sendRedirect(httpExchange, "login.html");
                 return "";
             }
             else if(requestURI.contains("paymentId")) {
@@ -184,6 +191,7 @@ public class Server extends Observable {
                     break;
                 case "leaveApartment":
                     apartsManager.leaveApartment(userId);
+                    sendDefaultResponse(httpExchange, "");
                     break;
 //                case "execute":
 //                    paymentManager.executeOrder(requestParamValue.get("").toString(), requestParamValue.get("").toString());
@@ -197,12 +205,13 @@ public class Server extends Observable {
                     messageManager.addMessage(userId,apartmentId,"had added bill!");
                     break;
                 case "getBills":
-                    resLst = apartsManager.getBills(apartmentId);
+                    resLst = apartsManager.getBills(userId, apartmentId);
                     sendDefaultResponse(httpExchange, Utils.listToJson(resLst));
                     break;
                 case "addSupplier":
                     apartsManager.addSupplierToApartment(apartmentId, requestParamValue.get("billOwner").toString(), Enum.valueOf(Supplier.TYPE.class, requestParamValue.get("supplier").toString().toUpperCase()), (Map<String, Object>) requestParamValue.get(("partsMap")));
                     messageManager.addMessage(userId,apartmentId,"has added supplier!");
+                    sendDefaultResponse(httpExchange, "");
                     break;
                 case "getSuppliers":
                     resLst = apartsManager.getSuppliers(apartmentId);

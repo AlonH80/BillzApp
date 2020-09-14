@@ -469,4 +469,12 @@ public class MongoConnector {
         List<Map<String, Object>> resLst = find("billzDB", "suppliersBalance", balancesMap);
         return resLst;
     }
+
+    public List<Map<String, Object>> getUserSuppliersBalance(String userId) {
+        LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
+        queryMap.put("userID", userId);
+        List<Map<String, Object>> resLst = find("billzDB", "suppliersBalance", queryMap);
+        return resLst;
+
+    }
 }

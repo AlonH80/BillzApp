@@ -427,7 +427,7 @@ function getBalance() {
         for (d in dat) {
             list_dat.push({"user": d, "balance": parseFloat(dat[d])})
         }
-        list_dat = list_dat.filter(rm=>rm.user !== sessionStorage.getItem("user_name"));
+        //list_dat = list_dat.filter(rm=>rm.user !== sessionStorage.getItem("user_name"));
         max_balance = list_dat.map(r => Math.abs(r.balance)).reduce((x, y) => x > y ? x : y);
         // max_balance = 0;
         // for (d in dat) {
@@ -458,9 +458,10 @@ function addRoomateToBalance(balanceRowNode, roomate, balance, max_balance) {
     header1 = document.createElement("h3");
     barNode = createBarNode(intBalance, max_balance);
     if (intBalance >= 0) {
-        header0.textContent = "You owe " + roomate + ":";
+        //header0.textContent = "You owe " + roomate + ":";
+        header0.textContent = roomate + " needs to receive :";
     } else {
-        header0.textContent = roomate + " owe you:";
+        header0.textContent = roomate + " needs to pay:";
     }
     header1.textContent = intAbsBalance.toString() + " $";
     newTh.append(header0);
@@ -722,9 +723,13 @@ function createCreateAptButton() {
     let btnNode = document.createElement("button");
     btnNode.classList.add("apt-action");
     btnNode.textContent = "Create an apartment";
+    onCreate = dat => {
+        sessionStorage.setItem("apartmentId", dat["apartmentId"]);
+        onPageApproved();
+    }
     btnNode.onclick = () => {
         reqMap = {"userId": sessionStorage.getItem("user_name"), "token": "aaaa", "type": "createApartment"};
-        sendRequest(server_address, reqMap, onPageApproved);
+        sendRequest(server_address, reqMap, onCreate);
     };
     //redirectToPage("createApartment.html");
     $("#apt-action-nd")[0].appendChild(btnNode);
@@ -736,8 +741,8 @@ function createLeaveAptButton() {
     btnNode.textContent = "Leave the apartment";
     btnNode.onclick = () => {
         reqMap = {"userId": sessionStorage.getItem("user_name"), "token": "aaaa", "type": "leaveApartment"};
-        sendRequest(server_address, reqMap, onPageApproved);
         sessionStorage.setItem("apartmentId", "0");
+        sendRequest(server_address, reqMap, onPageApproved);
     };
     //redirectToPage("createApartment.html");
     $("#apt-action-nd")[0].appendChild(btnNode);

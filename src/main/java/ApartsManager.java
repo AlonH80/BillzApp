@@ -20,12 +20,14 @@ public class ApartsManager {
 
     public String createApartment(String creatorId) throws Exception {
         String apartId = mongoConnector.generateIdForApartment();
+        Map<String, String> newApartMap = new HashMap<>();
         Apartment newApart = new Apartment(apartId, creatorId);
         apartments.put(apartId, newApart);
         mongoConnector.insertApartment(apartId, newApart.getUsers(), newApart.getOwnerId());
         //addUserToApartment(apartId,creatorId);
         mongoConnector.updateApartmentForUsersId(apartId, creatorId);
-        return apartId;
+        newApartMap.put("apartmentId", apartId);
+        return Utils.mapToJson(newApartMap);
     }
 
     public String addSupplierToApartment(String apartmentId, String ownerId, Supplier.TYPE type, Map<String,Object> partsMap) throws Exception {
@@ -84,8 +86,10 @@ public class ApartsManager {
         currApart.addBill(dDay,amount, billType, userId);
     }
 
-    public List getBills(String apartmentId) {
-        return mongoConnector.getBills(apartmentId);
+    public List getBills(String userId, String apartmentId) {
+        //return mongoConnector.getBills(apartmentId);
+        List<Map<String, Object>> userSuppBalances = mongoConnector.getUserSuppliersBalance(userId);
+        return userSuppBalances;
     }
 
     public void addRoommate(String apartmentId, String userId) throws Exception {
