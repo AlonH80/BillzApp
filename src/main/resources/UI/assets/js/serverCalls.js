@@ -1,6 +1,6 @@
 function sendRequest(serverURL, jsonData, onResponse) {
     jsonData["apartmentId"] = sessionStorage.getItem("apartmentId") || "0";
-    jsonData["userId"] = sessionStorage.getItem("user_name");
+    jsonData["userId"] = sessionStorage.getItem("user_name") || jsonData["user_name"];
     $.ajax({
         method: "POST",
         url: serverURL,
@@ -10,8 +10,8 @@ function sendRequest(serverURL, jsonData, onResponse) {
             console.log(dataRec);
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            alert(xhr.status);
-            alert(thrownError);
+            console.log(xhr.status);
+            console.log(thrownError);
         }
     });
 }
@@ -83,7 +83,15 @@ function setChangePassForm() {
         //map_inps["token"] = sessionStorage.getItem("token");
         //map_inps["user_name"] = sessionStorage.getItem("user_name");
         //map_inps["confirm_password"]="none";
-        sendRequest(server_address, map_inps, onLoginConfirmed);
+        onChange = jsonData => {
+            if (sessionStorage.getItem("user_name") == null){
+                redirectToPage("login.html");
+            }
+            else {
+                redirectToPage("index.html");
+            }
+        }
+        sendRequest(server_address, map_inps, onChange);
     });
 }
 
@@ -205,7 +213,7 @@ function setOcrVerification(ocrData) {
     picker =  $(".selectpicker")[0];
     for (op in picker.options) {
         picker.selectedIndex = op;
-        if (picker.options[op].textContent == supplierType) {
+        if (picker.options[op].textContent.toLowerCase() == supplierType.toLowerCase()) {
             break;
         }
     }
@@ -409,6 +417,7 @@ function addRowToBillSummary(summaryRowsNode, rowJson) {
         newTd.textContent = rowJson[info];
         tds[info] = newTd;
     }
+    tds["type"].textContent = rowJson["type"][0] + rowJson["type"].substr(1).toLowerCase().replace("_", " ");
     tds["status"] = document.createElement("td");
     newRow.append(tds["type"]);
     newRow.append(tds["owner"]);
