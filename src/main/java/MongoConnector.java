@@ -476,6 +476,13 @@ public class MongoConnector {
         queryMap.put("userId", userId);
         List<Map<String, Object>> resLst = find("billzDB", "suppliersBalance", queryMap);
         return resLst;
+    }
 
+    public Double getUserPaidSuppliersBalance(String userId, String supplierType) {
+        LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
+        queryMap.put("userId", userId);
+        queryMap.put("type", supplierType);
+        Map<String, Object> resMap= find("billzDB", "suppliersBalance", queryMap).get(0);
+        return Double.parseDouble(resMap.get("paid").toString());
     }
 }

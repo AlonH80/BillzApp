@@ -97,8 +97,10 @@ public class Supplier {
         return currBalances;
     }
 
-    public void updateBalanceAfterTransaction(String userIdFrom, String userIdTo, Double amount) {
-        //mongoConnector.updateUserSupplierBalance(ownerId, belongToApartmentId, supplierType.toString(), String.valueOf(partsMap.get(ownerId)*amount), dDay);
+    public void updateBalanceAfterTransaction(String userIdFrom, String userIdTo, Double amount, String supplierType, String dDay) {
+        Double previousBalance = mongoConnector.getUserPaidSuppliersBalance(userIdFrom, supplierType);
+        Double newBalance = previousBalance + amount;
+        mongoConnector.updateUserSupplierBalance(userIdFrom, belongToApartmentId, supplierType, newBalance.toString(), dDay);
     }
 
     public Map<String, Double> getBalances() {
