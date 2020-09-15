@@ -42,11 +42,11 @@ public class UsersManager {
 
     private boolean changeUserPassword(String userId, String oldPassword, String newPassword) {
         boolean passwordChanged = false;
-        if (verifyPassword(userId, oldPassword)) {
-            String salt = encryptor.generateSalt();
-            String hashedPassword = encryptor.getEncryptedPassword(newPassword, salt);
-            passwordChanged = mongoConnector.updateUserPassword(userId, salt, hashedPassword);
-        }
+        //if (verifyPassword(userId, oldPassword)) {
+        String salt = encryptor.generateSalt();
+        String hashedPassword = encryptor.getEncryptedPassword(newPassword, salt);
+        passwordChanged = mongoConnector.updateUserPassword(userId, salt, hashedPassword);
+        //}
 
         return passwordChanged;
     }
