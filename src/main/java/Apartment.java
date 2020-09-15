@@ -45,7 +45,9 @@ public class Apartment {
     }
 
     public void addUser(String userId) {
-        userIds.add(userId);
+        if (!userIds.contains(userId)) {
+            userIds.add(userId);
+        }
     }
 
     public void removeUser(String userId) {
