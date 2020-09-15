@@ -54,6 +54,11 @@ public class Server extends Observable {
     }
 
     private void sendDefaultResponse(HttpExchange httpExchange, String response) throws IOException {
+        if (response.length() == 0){
+            HashMap<String, String> defaultMap = new HashMap<>(1);
+            defaultMap.put("status", "success");
+            response = Utils.mapToJson(defaultMap);
+        }
         byte[] bs = response.getBytes("UTF-8");
         httpExchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
         httpExchange.sendResponseHeaders(200, bs.length);
@@ -203,7 +208,7 @@ public class Server extends Observable {
                 case "addBill":
                     apartsManager.addBill(apartmentId, requestParamValue.get("dDay").toString(), requestParamValue.get("amount").toString(), requestParamValue.get("billType").toString(), userId);
                     messageManager.addMessage(userId,apartmentId,"had added bill!");
-                    sendDefaultResponse(httpExchange, "success");
+                    sendDefaultResponse(httpExchange, "");
                     break;
                 case "getBills":
                     resLst = apartsManager.getBills(userId, apartmentId);
@@ -212,7 +217,7 @@ public class Server extends Observable {
                 case "addSupplier":
                     apartsManager.addSupplierToApartment(apartmentId, requestParamValue.get("billOwner").toString(), Enum.valueOf(Supplier.TYPE.class, requestParamValue.get("supplier").toString().toUpperCase()), (Map<String, Object>) requestParamValue.get(("partsMap")));
                     messageManager.addMessage(userId,apartmentId,"has added supplier!");
-                    sendDefaultResponse(httpExchange, "success");
+                    sendDefaultResponse(httpExchange, "");
                     break;
                 case "getSuppliers":
                     resLst = apartsManager.getSuppliers(apartmentId);
@@ -231,7 +236,7 @@ public class Server extends Observable {
                     break;
                 case "addRoommate":
                     //apartsManager.addRoommate(apartmentId,userId);
-                    sendDefaultResponse(httpExchange, "success");
+                    sendDefaultResponse(httpExchange, "");
                     break;
                 case "balance":
                     resMap = apartsManager.getApartmentBalances(apartmentId);
