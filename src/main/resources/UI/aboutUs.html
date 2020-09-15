@@ -73,8 +73,26 @@
 <script src="assets/js/variables.js"></script>
 <script src="assets/js/serverCalls.js"></script>
 <script>$(window).load(function() {
-    getMessages();
-    createSideMenu();
+    if (sessionStorage.getItem("user_name") != null){
+        createSideMenu();
+    }
+    else {
+        links_nd = $(".links")[0];
+        links = {
+            "Login": "javascript:redirectToPage('login.html')",
+            "Register": "javascript:redirectToPage('register.html')",
+            "About Us": "javascript:redirectToPage('aboutUs.html')"
+        };
+        for (link in links) {
+            new_li = document.createElement("li");
+            new_a = document.createElement("a");
+            new_a.href=links[link];
+            new_a.textContent=link;
+            new_li.appendChild(new_a);
+            links_nd.appendChild(new_li);
+        }
+    }
+
 });</script>
 <!--script>setHeyLabel();</script-->
 </body>

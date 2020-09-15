@@ -78,9 +78,9 @@ function setChangePassForm() {
         for (i = 0; i < inps.length; i++) {
             map_inps[inps[i].name] = inps[i].value;
         }
-        map_inps["type"] = "change_password";
-        map_inps["token"] = sessionStorage.getItem("token");
-        map_inps["user_name"] = sessionStorage.getItem("user_name");
+        map_inps["type"] = "change";
+        //map_inps["token"] = sessionStorage.getItem("token");
+        //map_inps["user_name"] = sessionStorage.getItem("user_name");
         //map_inps["confirm_password"]="none";
         sendRequest(server_address, map_inps, onLoginConfirmed);
     });
@@ -90,7 +90,7 @@ function onRegisterConfirmed(jsonData) {
     console.log(jsonData);
     if (jsonData["status"] === "success") {
         sessionStorage.setItem("user_name", jsonData["userId"]);
-        sessionStorage.setItem("apartmentId", jsonData["apartmentId"]);
+        //sessionStorage.setItem("apartmentId", jsonData["apartmentId"]);
         setToken("jimbo");
         //window.location.href = server_address + "/index.html";
         onPageApproved(server_address + "/index.html");
@@ -305,6 +305,7 @@ function setOnAddRoomateRequest() {
         }
         whatsaap_add = "https://wa.me/" + map_inps["phone_number"] + "?text=" + whats_text;
         window.open(whatsaap_add);
+        redirectToPage("index.html");
     });
 }
 
@@ -750,7 +751,8 @@ function createHouseBox(jsonData) {
     roomatesBox.classList.add("roommates");
     for (i in roomates) {
         let roomateRow = document.createElement("li");
-        //let rooomates_str = roomates[i]["roomate"].padEnd(20) + roomates[i]["part"];
+        let roommates_str = roomates[i]["userId"].padEnd(20) + roomates[i]["part"];
+        roomateRow.textContent = roommates_str ;
         roomatesBox.appendChild(roomateRow);
     }
     houseboxNode.appendChild(roomatesBox);
@@ -839,7 +841,7 @@ function sendManualBilling() {
     }
     map_inps["apartmentId"] = sessionStorage.getItem("apartmentId");
     map_inps["userId"] = sessionStorage.getItem("user_name");
-    map_inps["billType"] = $(".selectpicker")[0].value.replace(" ", "_");
+    map_inps["billType"] = $(".selectpicker")[0].value.replace(" ", "_").toUpperCase();
     map_inps["type"] = "addBill";
     //onResp = $("#res_div")[0].textContent = "Check for new bill";
     onResp = dat => redirectToPage("billSummary.html");

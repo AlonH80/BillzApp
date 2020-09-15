@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 public class Server extends Observable {
     private HttpServer server;
     private Logger logger;
-    private final static String serverAddress = "https://billz-app.herokuapp.com/";
+    private final static String serverAddress = "https://billz-app.herokuapp.com";
     private static String resourcesPath;
     private static String UiPath;
     private PaymentManager paymentManager;
@@ -203,6 +203,7 @@ public class Server extends Observable {
                 case "addBill":
                     apartsManager.addBill(apartmentId, requestParamValue.get("dDay").toString(), requestParamValue.get("amount").toString(), requestParamValue.get("billType").toString(), userId);
                     messageManager.addMessage(userId,apartmentId,"had added bill!");
+                    sendDefaultResponse(httpExchange, "");
                     break;
                 case "getBills":
                     resLst = apartsManager.getBills(userId, apartmentId);
@@ -229,7 +230,8 @@ public class Server extends Observable {
                     sendDefaultResponse(httpExchange, Utils.listToJson(resLst));
                     break;
                 case "addRoommate":
-                    apartsManager.addRoommate(apartmentId,userId);
+                    //apartsManager.addRoommate(apartmentId,userId);
+                    sendDefaultResponse(httpExchange, "");
                     break;
                 case "balance":
                     resMap = apartsManager.getApartmentBalances(apartmentId);
