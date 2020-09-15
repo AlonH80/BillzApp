@@ -224,6 +224,7 @@ public class Server extends Observable {
                     break;
                 case "changeSetting":
                     usersManager.updateSetting(userId, requestParamValue.get("setting").toString(), requestParamValue.get("value").toString());
+                    sendDefaultResponse(httpExchange, "");
                     break;
                 case "createApartment":
                     resStr = apartsManager.createApartment(userId);
