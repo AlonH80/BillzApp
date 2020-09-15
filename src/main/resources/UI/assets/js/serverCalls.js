@@ -805,8 +805,8 @@ function createLeaveAptButton() {
     btnNode.textContent = "Leave the apartment";
     btnNode.onclick = () => {
         reqMap = {"userId": sessionStorage.getItem("user_name"), "token": "aaaa", "type": "leaveApartment"};
-        sessionStorage.setItem("apartmentId", "0");
-        sendRequest(server_address, reqMap, onPageApproved);
+        sendRequest(server_address, reqMap, dat=>{sessionStorage.setItem("apartmentId", "0");redirectToPage("index.html");});
+
     };
     //redirectToPage("createApartment.html");
     $("#apt-action-nd")[0].appendChild(btnNode);
