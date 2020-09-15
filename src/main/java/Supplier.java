@@ -98,7 +98,7 @@ public class Supplier {
     }
 
     public void updateBalanceAfterTransaction(String userIdFrom, String userIdTo, Double amount, String supplierType, String dDay) {
-        Double previousBalance = mongoConnector.getUserPaidSuppliersBalance(userIdFrom, supplierType);
+        Double previousBalance = mongoConnector.getUserPaidSuppliersBalance(userIdFrom, supplierType, dDay);
         Double newBalance = previousBalance + amount;
         mongoConnector.updateUserSupplierBalance(userIdFrom, belongToApartmentId, supplierType, newBalance.toString(), dDay);
     }

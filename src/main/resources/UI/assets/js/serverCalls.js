@@ -157,6 +157,10 @@ function setSendBillFile() {
         formDat.append("billFile", $("#pdfFile").prop("files")[0]);
         //formDat.append("cycle_billing", $("#isCycle")[0].checked);
         formDat.append("bill_type", $(".selectpicker")[0].value);
+        verDiv = $("#verificationDiv")[0];
+        waitLabel = document.createElement("label");
+        waitLabel.id = "waitVerify";
+        waitLabel.textContent = "Wait while we process the file, this might take a minute...";
         $.ajax({
             data: formDat,
             method: "POST",
@@ -176,10 +180,6 @@ function setSendBillFile() {
 
 function waitForParseToFinish(jsonRes) {
     parsedJson = JSON.parse(jsonRes);
-    verDiv = $("#verificationDiv")[0];
-    waitLabel = document.createElement("label");
-    waitLabel.id = "waitVerify";
-    waitLabel.textContent = "Wait while we process the file, this might take a minute...";
     req_id = parsedJson["pendingId"];
     checkStatus(req_id);
     verDiv.appendChild(waitLabel);
@@ -653,19 +653,36 @@ function createMsgRow(msgsNode, msgJson) {
     textNode = document.createElement("span");
     textNode.style.setProperty("margin-left", "10px");
     textNode.innerText = msgJson["message"];
+    if (msgJson["type"] === "ocr_approve"){
+        approveButton = document.createElement("button");
+        approveButton.textContent = "Approve";
+        approveButton.onclick = () => addBillFromMail(msgJson["message"]);
+        addManuallyButton = document.createElement("button");
+        addManuallyButton.textContent = "Add Manually";
+        addManuallyButton.onclick = () => redirectToPage("addBill.html");
+        textNode.appendChild(approveButton);
+        textNode.appendChild(addManuallyButton);
+    }
+
     msgTd.appendChild(textNode);
     //msgRow.append(svgTd);
     msgRow.append(msgTd);
     msgsNode.append(msgRow);
 }
 
+function addBillFromMail(msg) {
+    console.log("Adding bill from mail");
+}
+
 function createImgNode(msgType) {
     type_json = {
-        "debt": "pay.png",
+        "bill": "pay.png",
         "roomate_joined": "add-friend.png",
         "payment_approved": "list.png",
         "pay_reminder": "bell.png",
-        "user_joined": "home-run.png"
+        "user_joined": "home-run.png",
+        "new_supplier": "home-run.png",
+        "ocr_approve": "bell.png"
     };
     imgNode = document.createElement("img");
     imgNode.src = server_address + "/images/" + type_json[msgType];

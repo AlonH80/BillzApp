@@ -9,7 +9,7 @@
   "transactions": [{
     "amount": {
       "total": "0.01",
-      "currency": "USD",
+      "currency": "ILS",
       "details": {
         "subtotal": "0.01"
       }
@@ -27,7 +27,7 @@
         "description": "transaction_for_electricity",
         "quantity": "1",
         "price": "0.01",
-        "currency": "USD"
+        "currency": "ILS"
       }],
       "shipping_address": {
         "recipient_name": "Billz",

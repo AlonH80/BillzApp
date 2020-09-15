@@ -33,7 +33,7 @@ public class MessageManager {
         return mongoConnector.getMessages(apartmentId);
     }
 
-    public void addMessage(String userId, String apartmentId, String message){
-        mongoConnector.insertMessage(userId,apartmentId,userId + " " + message);
+    public void addMessage(String userId, String apartmentId,String type,  String message){
+        mongoConnector.insertMessage(userId,apartmentId, type, message);
     }
 }

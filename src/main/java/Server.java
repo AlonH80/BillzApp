@@ -108,9 +108,8 @@ public class Server extends Observable {
                 String userId = requestURI.split("\\?")[3];
                 apartsManager.addUserToApartment(apartmentId,userId);
                 //sendDefaultResponse(httpExchange,"");
-                messageManager.addMessage(userId,apartmentId,"had joined the apartment!");
-                sendRedirect(httpExchange, "login.html");
-                return "";
+                messageManager.addMessage(userId, apartmentId, "user_joined", String.format("%s has joined the apartment!", userId));
+                return fileToString(String.format("%s/%s", UiPath, "login.html"));
             }
             else if(requestURI.contains("paymentId")) {
                 String quer = requestURI.split("\\?")[1];
@@ -207,7 +206,7 @@ public class Server extends Observable {
                     break;
                 case "addBill":
                     apartsManager.addBill(apartmentId, requestParamValue.get("dDay").toString(), requestParamValue.get("amount").toString(), requestParamValue.get("billType").toString(), userId);
-                    messageManager.addMessage(userId,apartmentId,"had added bill!");
+                    messageManager.addMessage(userId, apartmentId, "bill", String.format("New bill added for supplier %s, amount: %s", requestParamValue.get("billType").toString(), requestParamValue.get("amount").toString()));
                     sendDefaultResponse(httpExchange, "");
                     break;
                 case "getBills":
@@ -216,7 +215,7 @@ public class Server extends Observable {
                     break;
                 case "addSupplier":
                     apartsManager.addSupplierToApartment(apartmentId, requestParamValue.get("billOwner").toString(), Enum.valueOf(Supplier.TYPE.class, requestParamValue.get("supplier").toString().toUpperCase()), (Map<String, Object>) requestParamValue.get(("partsMap")));
-                    messageManager.addMessage(userId,apartmentId,"has added supplier!");
+                    messageManager.addMessage(userId,apartmentId, "new_supplier",String.format("%s has added new supplier: %s", userId, requestParamValue.get("supplier").toString()));
                     sendDefaultResponse(httpExchange, "");
                     break;
                 case "getSuppliers":

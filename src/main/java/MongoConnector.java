@@ -218,10 +218,11 @@ public class MongoConnector {
         return resMap;
     }
 
-    public void insertMessage(String userID, String apartmentId, String message) {
+    public void insertMessage(String userID, String apartmentId, String msgType, String message) {
         LinkedTreeMap<String, Object> messageMap = new LinkedTreeMap<>();
         messageMap.put("userID", userID);
         messageMap.put("apartmentId", apartmentId);
+        messageMap.put("msgType", msgType);
         messageMap.put("message", message);
         insert(defaultDB, "messages", messageMap);
     }
@@ -478,10 +479,11 @@ public class MongoConnector {
         return resLst;
     }
 
-    public Double getUserPaidSuppliersBalance(String userId, String supplierType) {
+    public Double getUserPaidSuppliersBalance(String userId, String supplierType, String dDay) {
         LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
         queryMap.put("userId", userId);
         queryMap.put("type", supplierType);
+        queryMap.put("dDay", dDay);
         Map<String, Object> resMap= find("billzDB", "suppliersBalance", queryMap).get(0);
         return Double.parseDouble(resMap.get("paid").toString());
     }
