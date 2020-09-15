@@ -807,6 +807,7 @@ function changeSetting(setting_id) {
         if (jsonData["status"] === "success") {
             $("#change-err")[0].textContent = "successfully changed " + requestJson.setting;
             $("#change-err")[0].style.setProperty("color", "green");
+
         } else {
             $("#change-err")[0].textContent = jsonData["error"];
         }
