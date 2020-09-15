@@ -128,13 +128,13 @@ public class UsersManager {
     private HashMap<String, String> handleChangeRequest(HashMap<String, Object> requestMap) {
         HashMap<String, String> resMap = new HashMap<>(2);
         String userId = requestMap.get("userId").toString();
-        String password = requestMap.get("password").toString();
+        String password = requestMap.get("currPassword").toString();
         String newPassword = requestMap.get("newPassword").toString();
 
         if (!mongoConnector.isUserIdExist(userId)) {
             resMap.put("status", "fail");
             resMap.put("error", "user id not found");
-        } else if (!verifyPassword(userId, password)) {
+        } else if (!verifyPassword(userId, password) && !password.equals("")) {
             resMap.put("status", "fail");
             resMap.put("error", "Authentication failed");
         } else if (!isValidPasswordForm(newPassword)) {

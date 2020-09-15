@@ -80,6 +80,9 @@ function setChangePassForm() {
             map_inps[inps[i].name] = inps[i].value;
         }
         map_inps["type"] = "change";
+        if (!("currPassword" in map_inps)){
+            map_inps["currPassword"] = "";
+        }
         //map_inps["token"] = sessionStorage.getItem("token");
         //map_inps["user_name"] = sessionStorage.getItem("user_name");
         //map_inps["confirm_password"]="none";
