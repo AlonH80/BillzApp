@@ -117,8 +117,14 @@ public class PaymentManager {
             }
         }
         else {
-            mongoConnector.recordTransaction(userIdFrom, userIdTo, amount, supplierType, method);
-            return new HashMap<String, String>();
+            HashMap<String, String> payMap = new HashMap<>();
+            payMap.put("amount", amount.toString());
+            payMap.put("userIdFrom", userIdFrom);
+            payMap.put("userIdTo", userIdTo);
+            payMap.put("supplier", supplierType);
+            payMap.put("payMethod", method);
+            recordTransaction(userIdFrom, userIdTo, amount, supplierType, method);
+            return payMap;
         }
     }
 
@@ -304,11 +310,16 @@ public class PaymentManager {
 
     public Map<String, String> logTransaction(String paymentId) {
         HashMap<String, String> paymentMap = waitingApproved.get(paymentId);
-        mongoConnector.recordTransaction(paymentMap.get("userIdFrom"),
+        recordTransaction(paymentMap.get("userIdFrom"),
                 paymentMap.get("userIdTo"),
                 Double.parseDouble(paymentMap.get("amount")),
-                        paymentMap.get("supplier"), "Paypal");
+                paymentMap.get("supplier"), "Paypal");
         waitingApproved.remove(paymentId);
         return paymentMap;
+    }
+
+    private void recordTransaction(String userIdFrom, String userIdTo, double amount, String supplier, String method) {
+        mongoConnector.recordTransaction(userIdFrom, userIdTo, amount, supplier, method);
+
     }
 }
