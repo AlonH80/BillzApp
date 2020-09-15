@@ -329,6 +329,7 @@ function setOnSendPayment() {
         }
         map_inps["type"] = "payment";
         map_inps["supplier"] = sessionStorage.getItem("supplier");
+        map_inps["dDay"] = sessionStorage.getItem("dDay");
         sendRequest(server_address, map_inps, onPaymentReceived);
     });
 }
@@ -436,9 +437,11 @@ function gotoPayRoomate(elem) {
     supplier = $("td", elem.parentElement.parentElement)[0].textContent;
     owner = $("td", elem.parentElement.parentElement)[1].textContent;
     amount = $("td", elem.parentElement.parentElement)[2].textContent;
+    dDay = $("td", elem.parentElement.parentElement)[4].textContent;
     sessionStorage.setItem("owner", owner);
     sessionStorage.setItem("amount", amount);
     sessionStorage.setItem("supplier", supplier.toUpperCase());
+    sessionStorage.setItem("dDay", dDay);
     redirectToPage("paymentOptions.html");
 }
 
@@ -953,8 +956,8 @@ function setDefaultValuesOnPayPage() {
     picker = $("#payTo")[0];
     for (op in picker .options) {
         console.log(op);
-        if (picker .options[op].textContent == sessionStorage.getItem("owner")) {
-            picker .selectedIndex = op;
+        if (picker.options[op].textContent == sessionStorage.getItem("owner")) {
+            picker.selectedIndex = op;
             break;
         }
     }

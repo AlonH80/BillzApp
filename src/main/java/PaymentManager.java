@@ -83,7 +83,7 @@ public class PaymentManager {
         logger.info(String.format("ComponentConfig: %s", componentConfig.toString()));
     }
 
-    public Map<String, String> transferMoney(String userIdFrom, String userIdTo, Double amount, String supplierType, String method) throws Exception {
+    public Map<String, String> transferMoney(String userIdFrom, String userIdTo, Double amount, String supplierType, String method, String dDay) throws Exception {
         verifyAccessToken();
         logger.info(String.format("userIdFrom: %s", userIdFrom));
         logger.info(String.format("userIdTo: %s", userIdTo));

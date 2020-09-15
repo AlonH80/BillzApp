@@ -116,10 +116,10 @@ public class ApartsManager {
         return usersBalances;
     }
 
-    public void updateBillAfterTransaction(String userIdFrom, String userIdTo, Double amount, String supplier) throws Exception {
+    public void updateBillAfterTransaction(String userIdFrom, String userIdTo, Double amount, String supplier, String dDay) throws Exception {
         String usersApartmentId = mongoConnector.getUser(userIdFrom).get("apartmentId").toString();
         Apartment currApart = getApartment(usersApartmentId);
         Supplier currSupp = currApart.getSupplier(Supplier.TYPE.valueOf(supplier));
-        currSupp.updateBalanceAfterTransaction(userIdFrom, userIdTo, amount);
+        currSupp.updateBalanceAfterTransaction(userIdFrom, userIdTo, amount, supplier, dDay);
     }
 }
