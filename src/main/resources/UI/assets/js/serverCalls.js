@@ -9,8 +9,9 @@ function sendRequest(serverURL, jsonData, onResponse) {
             onResponse(dataRec);
             console.log(dataRec);
         },
-        error: function (e) {
-            console.log("status code: " + e.status.toString());
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.status);
+            alert(thrownError);
         }
     });
 }
