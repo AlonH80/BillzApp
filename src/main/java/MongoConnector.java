@@ -192,12 +192,13 @@ public class MongoConnector {
         return resMap;
     }
 
-    public void recordTransaction(String userIdFrom, String userIdTo, Double amount, String supplier) {
+    public void recordTransaction(String userIdFrom, String userIdTo, Double amount, String supplier, String payMethod) {
         Map<String, Object> recordMap = new LinkedHashMap<>(3);
         recordMap.put("userIdFrom", userIdFrom);
         recordMap.put("userIdTo", userIdTo);
         recordMap.put("amount", amount);
         recordMap.put("supplier", supplier);
+        recordMap.put("payMethod", payMethod);
         insert("billzDB", "transactions", recordMap);
     }
 

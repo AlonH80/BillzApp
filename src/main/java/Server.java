@@ -246,7 +246,8 @@ public class Server extends Observable {
                     String payTo =  requestParamValue.get("payTo").toString();
                     Double amount = Double.parseDouble(requestParamValue.get("amount").toString());
                     String supplierType = requestParamValue.get("supplier").toString();
-                    Map<String, String> transferTmpResponse = paymentManager.transferMoney(userId, payTo, amount, supplierType);
+                    String method = requestParamValue.get("payMethod").toString();
+                    Map<String, String> transferTmpResponse = paymentManager.transferMoney(userId, payTo, amount, supplierType, method);
                     sendDefaultResponse(httpExchange, Utils.mapToJson(transferTmpResponse));
                     break;
             }

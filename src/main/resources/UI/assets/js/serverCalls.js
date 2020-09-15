@@ -320,7 +320,12 @@ function setOnSendPayment() {
             map_inps[inps[i].name] = inps[i].value;
         }
         onPaymentReceived = dat => {
-            window.open(dat["approval_url"]);
+            if ("approval_url" in dat){
+                window.open(dat["approval_url"]);
+            }
+            else {
+                redirectToPage("billSummary.html");
+            }
         }
         map_inps["type"] = "payment";
         map_inps["supplier"] = sessionStorage.getItem("supplier");
@@ -903,7 +908,7 @@ function createSideMenu() {
         "Add Bill": "javascript:redirectToPage('addBill.html')",
         "Add Supplier": "javascript:redirectToPage('addSupplier.html')",
         "Bill History": "javascript:redirectToPage('billSummary.html')",
-        "History": "javascript:redirectToPage('generalSummary.html')",
+        //"History": "javascript:redirectToPage('generalSummary.html')",
         "Settings": "javascript:redirectToPage('settings.html')",
         "About Us": "javascript:redirectToPage('aboutUs.html')"
     };

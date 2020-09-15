@@ -83,36 +83,42 @@ public class PaymentManager {
         logger.info(String.format("ComponentConfig: %s", componentConfig.toString()));
     }
 
-    public Map<String, String> transferMoney(String userIdFrom, String userIdTo, Double amount, String supplierType) throws Exception {
+    public Map<String, String> transferMoney(String userIdFrom, String userIdTo, Double amount, String supplierType, String method) throws Exception {
         verifyAccessToken();
         logger.info(String.format("userIdFrom: %s", userIdFrom));
         logger.info(String.format("userIdTo: %s", userIdTo));
         logger.info(String.format("amount: %.2f", amount));
-        HashMap<String, String> waitMap = new HashMap<>();
-        Object queryUserMailTo = mongoConnector.getUser(userIdTo).get("paypal");
-        Object queryUserMailFrom = mongoConnector.getUser(userIdFrom).get("paypal");
-        if (queryUserMailTo!=null && queryUserMailFrom!=null){
-            String userToMail = queryUserMailTo.toString();
-            String userFromMail = queryUserMailFrom.toString();
-            String waitApprovedKey = processPayRequest(userIdTo, amount);
-            waitingApproved.get(waitApprovedKey).put("userToMail", userToMail);
-            waitingApproved.get(waitApprovedKey).put("userFromMail", userFromMail);
-            waitingApproved.get(waitApprovedKey).put("amount", amount.toString());
-            waitingApproved.get(waitApprovedKey).put("userIdFrom", userIdFrom);
-            waitingApproved.get(waitApprovedKey).put("userIdTo", userIdTo);
-            waitingApproved.get(waitApprovedKey).put("supplier", supplierType);
-            return waitingApproved.get(waitApprovedKey);
+        if (method.toLowerCase().equals("paypal")) {
+            HashMap<String, String> waitMap = new HashMap<>();
+            Object queryUserMailTo = mongoConnector.getUser(userIdTo).get("paypal");
+            Object queryUserMailFrom = mongoConnector.getUser(userIdFrom).get("paypal");
+            if (queryUserMailTo != null && queryUserMailFrom != null) {
+                String userToMail = queryUserMailTo.toString();
+                String userFromMail = queryUserMailFrom.toString();
+                String waitApprovedKey = processPayRequest(userIdTo, amount);
+                waitingApproved.get(waitApprovedKey).put("userToMail", userToMail);
+                waitingApproved.get(waitApprovedKey).put("userFromMail", userFromMail);
+                waitingApproved.get(waitApprovedKey).put("amount", amount.toString());
+                waitingApproved.get(waitApprovedKey).put("userIdFrom", userIdFrom);
+                waitingApproved.get(waitApprovedKey).put("userIdTo", userIdTo);
+                waitingApproved.get(waitApprovedKey).put("supplier", supplierType);
+                waitingApproved.get(waitApprovedKey).put("payMethod", method);
+                return waitingApproved.get(waitApprovedKey);
+            } else {
+                waitMap.put("status", "fail");
+                waitMap.put("reason", "");
+                if (queryUserMailFrom == null) {
+                    waitMap.put("reason", String.format("%s hasn't update his PayPal account", userIdFrom));
+                }
+                if (queryUserMailTo == null) {
+                    waitMap.put("reason", waitMap.get("reason") + ", " + String.format("%s hasn't update his PayPal account", userIdTo));
+                }
+                return waitMap;
+            }
         }
         else {
-            waitMap.put("status", "fail");
-            waitMap.put("reason", "");
-            if (queryUserMailFrom == null) {
-                waitMap.put("reason", String.format("%s hasn't update his PayPal account", userIdFrom));
-            }
-            if (queryUserMailTo == null) {
-                waitMap.put("reason", waitMap.get("reason") + ", " +String.format("%s hasn't update his PayPal account", userIdTo));
-            }
-            return waitMap;
+            mongoConnector.recordTransaction(userIdFrom, userIdTo, amount, supplierType, method);
+            return new HashMap<String, String>();
         }
     }
 
@@ -301,7 +307,7 @@ public class PaymentManager {
         mongoConnector.recordTransaction(paymentMap.get("userIdFrom"),
                 paymentMap.get("userIdTo"),
                 Double.parseDouble(paymentMap.get("amount")),
-                        paymentMap.get("supplier"));
+                        paymentMap.get("supplier"), "Paypal");
         waitingApproved.remove(paymentId);
         return paymentMap;
     }

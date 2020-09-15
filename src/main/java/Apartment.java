@@ -30,7 +30,7 @@ public class Apartment {
     }
 
     public void addSupplier(Supplier.TYPE type, String openerId) throws Exception {
-        mongoConnector.insertSupplier(apartmentId, type.toString(), ownerId);
+        mongoConnector.insertSupplier(apartmentId, type.toString(), openerId);
         HashMap<String, Object> usersBalances = new HashMap<>();
         userIds.forEach(uid->usersBalances.put(uid, "0"));
         //mongoConnector.insertSupplierBalance(apartmentId, type.toString(), usersBalances,openerId);
