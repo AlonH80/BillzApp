@@ -752,7 +752,7 @@ function createHouseBox(jsonData) {
     for (i in roomates) {
         let roomateRow = document.createElement("li");
         let roommates_str = roomates[i]["userId"].padEnd(20) + roomates[i]["part"];
-        roomateRow.textContent = roommates_str ;
+        roomateRow.textContent = roommates_str;
         roomatesBox.appendChild(roomateRow);
     }
     houseboxNode.appendChild(roomatesBox);
