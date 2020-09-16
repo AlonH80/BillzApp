@@ -670,7 +670,7 @@ function createMsgRow(msgsNode, msgJson) {
         textNode.innerText = "New bill uploaded from mail. Type: " + bill_detail["type"] + ", amount: "+bill_detail["price"] +", due date: " + bill_detail["date"];
         approveButton = document.createElement("button");
         approveButton.textContent = "Approve";
-        approveButton.onclick = () => addBillFromMail(bill_detail);
+        approveButton.onclick = () => addBillFromMail(event.target);
         addManuallyButton = document.createElement("button");
         addManuallyButton.textContent = "Add Manually";
         addManuallyButton.onclick = () => redirectToPage("addBill.html");
@@ -684,13 +684,17 @@ function createMsgRow(msgsNode, msgJson) {
     msgsNode.append(msgRow);
 }
 
-function addBillFromMail(billJson) {
+function addBillFromMail(rowNode) {
+    msg = $("span", rowNode.parentElement)[0];
+    billType = msg.substring(msg.indexOf("Type: ") + 6, msg.indexOf(", amount"));
+    amount = msg.substring(msg.indexOf("amount: ") + 8, msg.indexOf(", due"));
+    dDay = msg.substring(msg.indexOf("due date: ") + 10);
     map_inps = {};
-    map_inps["amount"] = billJson["price"];
-    map_inps["dDay"] = billJson["date"];
+    map_inps["amount"] = amount;
+    map_inps["dDay"] = dDay;
     map_inps["apartmentId"] = sessionStorage.getItem("apartmentId");
     map_inps["userId"] = sessionStorage.getItem("user_name");
-    map_inps["billType"] = billJson["type"].toUpperCase();
+    map_inps["billType"] = billType.toUpperCase();
     map_inps["type"] = "addBill";
     //onResp = $("#res_div")[0].textContent = "Check for new bill";
     onResp = dat => redirectToPage("billSummary.html");
@@ -748,6 +752,7 @@ function createHouseBox(jsonData) {
     let supplier_info = document.createElement("div");
     let owner_header = document.createElement("div");
     let owner_info = document.createElement("div");
+    let editSupplier = document.createElement("button");
 
     supplier_header.style.setProperty("margin-top", "3px");
     supplier_header.style.setProperty("padding", "0px");
@@ -804,6 +809,8 @@ function createHouseBox(jsonData) {
         roomateRow.textContent = roommates_str;
         roomatesBox.appendChild(roomateRow);
     }
+    editSupplier.textContent = "Edit"
+    editSupplier.onclick = () => redirectToPage("editSupplier.html");
     houseboxNode.appendChild(roomatesBox);
     houseboxNode.appendChild(emptySpan);
     houseboxNode.classList.add("house_box");
@@ -818,6 +825,7 @@ function changeSetting(setting_id) {
         if (jsonData["status"] === "success") {
             $("#change-err")[0].textContent = "successfully changed " + requestJson.setting;
             $("#change-err")[0].style.setProperty("color", "green");
+            $("#" + setting_id + "Curr")[0].textContent = input_value;
 
         } else {
             $("#change-err")[0].textContent = jsonData["error"];
@@ -1003,4 +1011,29 @@ function setDefaultValuesOnPayPage() {
         }
     }
     $("#amountToPay")[0].value = sessionStorage.getItem("amount");
+}
+
+function setCurrentSettings() {
+    onResp = dat =>{
+        $("#paypalCurr")[0].textContent = dat["paypal"];
+        $("#emailCurr")[0].textContent = dat["email"];
+    }
+    sendRequest(server_address, {"type": "userDetails"}, onResp);
+}
+
+function submitEditSupplier() {
+    rows = $("tr").slice(1);
+    pay_map = {};
+    for (i = 0; i < rows.length; i++) {
+        row = rows[i];
+        tds = $("td", row);
+        pay_map[tds[0].textContent] = $("input", tds[1])[0].value;
+    }
+    supplier_map = {"partsMap": pay_map};
+    supplier_map["billOwner"] = $("#billOwner")[0].value;
+    supplier_map["type"] = "addSupplier";
+    supplier_map["apartmentId"] = sessionStorage.getItem("apartmentId");
+    supplier_map["userId"] = sessionStorage.getItem("user_name");
+    gotoSuppliers = dat=>redirectToPage("suppliers.html");
+    sendRequest(server_address, supplier_map, gotoSuppliers);
 }

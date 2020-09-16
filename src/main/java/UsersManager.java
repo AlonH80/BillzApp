@@ -22,6 +22,13 @@ public class UsersManager {
         encryptor = new Encryptor();
     }
 
+    public Map getInfoOnUser(String userId) {
+        Map fullUserMap = mongoConnector.getUser(userId);
+        fullUserMap.remove("salt");
+        fullUserMap.remove("password");
+        return fullUserMap;
+    }
+
     public Logger getLogger() {
         return this.logger;
     }

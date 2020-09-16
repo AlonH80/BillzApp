@@ -254,6 +254,9 @@ public class Server extends Observable {
                     }
                     sendDefaultResponse(httpExchange, Utils.mapToJson(transferTmpResponse));
                     break;
+                case "userDetails":
+                    resMap = usersManager.getInfoOnUser(userId);
+                    sendDefaultResponse(httpExchange, Utils.mapToJson(resMap));
             }
         }
 

@@ -46,11 +46,13 @@
     <div class="container">
         <div class="settings-row">
             <label>PayPal Account</label>
+            <label id="paypalCurr"></label>
             <input type="text" id="paypal" name="paypal"/>
             <button onclick="changeSetting('paypal')">Change</button>
         </div>
         <div class="settings-row">
             <label>Email</label><input type="text" id="email" name="email">
+            <label id="emailCurr"></label>
             <button onclick="changeSetting('email')">Change</button>
         </div>
         <span id="change-err" style="color: red;"></span>
