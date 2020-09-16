@@ -667,7 +667,7 @@ function createMsgRow(msgsNode, msgJson) {
     textNode.innerText = msgJson["message"];
     if (msgJson["msgType"] === "ocr_approve"){
         bill_detail = JSON.parse(msgJson["message"]);
-        textNode.innerText("New bill uploaded from mail. Type: " + bill_detail["type"] + ", amount: "+bill_detail["price"] +", due date: " + bill_detail["date"]);
+        textNode.innerText = "New bill uploaded from mail. Type: " + bill_detail["type"] + ", amount: "+bill_detail["price"] +", due date: " + bill_detail["date"];
         approveButton = document.createElement("button");
         approveButton.textContent = "Approve";
         approveButton.onclick = () => addBillFromMail(bill_detail);
