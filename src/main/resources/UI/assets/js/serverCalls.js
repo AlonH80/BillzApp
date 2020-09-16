@@ -812,7 +812,7 @@ function createHouseBox(jsonData) {
     editSupplier.textContent = "Edit"
     editSupplier.onclick = () => redirectToPage("editSupplier.html");
     houseboxNode.appendChild(roomatesBox);
-    houseboxNode.appendChild(emptySpan);
+    houseboxNode.appendChild(editSupplier);
     houseboxNode.classList.add("house_box");
     suppliers_container.appendChild(houseboxNode);
 }
