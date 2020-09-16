@@ -665,10 +665,12 @@ function createMsgRow(msgsNode, msgJson) {
     textNode = document.createElement("span");
     textNode.style.setProperty("margin-left", "10px");
     textNode.innerText = msgJson["message"];
-    if (msgJson["type"] === "ocr_approve"){
+    if (msgJson["msgType"] === "ocr_approve"){
+        bill_detail = JSON.parse(msgJson["message"]);
+        textNode.innerText("New bill uploaded from mail. Type: " + bill_detail["type"] + ", amount: "+bill_detail["price"] +", due date: " + bill_detail["date"]);
         approveButton = document.createElement("button");
         approveButton.textContent = "Approve";
-        approveButton.onclick = () => addBillFromMail(msgJson["message"]);
+        approveButton.onclick = () => addBillFromMail(bill_detail);
         addManuallyButton = document.createElement("button");
         addManuallyButton.textContent = "Add Manually";
         addManuallyButton.onclick = () => redirectToPage("addBill.html");
@@ -682,8 +684,17 @@ function createMsgRow(msgsNode, msgJson) {
     msgsNode.append(msgRow);
 }
 
-function addBillFromMail(msg) {
-    console.log("Adding bill from mail");
+function addBillFromMail(billJson) {
+    map_inps = {};
+    map_inps["amount"] = billJson["price"];
+    map_inps["dDay"] = billJson["date"];
+    map_inps["apartmentId"] = sessionStorage.getItem("apartmentId");
+    map_inps["userId"] = sessionStorage.getItem("user_name");
+    map_inps["billType"] = $(".selectpicker")[0].value.replace(" ", "_").toUpperCase();
+    map_inps["type"] = "addBill";
+    //onResp = $("#res_div")[0].textContent = "Check for new bill";
+    onResp = dat => redirectToPage("billSummary.html");
+    sendRequest(server_address, map_inps, onResp);
 }
 
 function createImgNode(msgType) {
