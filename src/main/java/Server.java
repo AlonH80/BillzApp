@@ -218,6 +218,11 @@ public class Server extends Observable {
                     messageManager.addMessage(userId,apartmentId, "new_supplier",String.format("%s has added new supplier: %s", userId, requestParamValue.get("supplier").toString()));
                     sendDefaultResponse(httpExchange, "");
                     break;
+                case "editSupplier":
+                    apartsManager.editSupplier(apartmentId, requestParamValue.get("billOwner").toString(), Enum.valueOf(Supplier.TYPE.class, requestParamValue.get("supplier").toString().toUpperCase()), (Map<String, Object>) requestParamValue.get(("partsMap")));
+                    //messageManager.addMessage(userId,apartmentId, "edit_supplier",String.format("%s has added new supplier: %s", userId, requestParamValue.get("supplier").toString()));
+                    sendDefaultResponse(httpExchange, "");
+                    break;
                 case "getSuppliers":
                     resLst = apartsManager.getSuppliers(apartmentId);
                     sendDefaultResponse(httpExchange, Utils.listToJson(resLst));

@@ -487,4 +487,26 @@ public class MongoConnector {
         Map<String, Object> resMap= find("billzDB", "suppliersBalance", queryMap).get(0);
         return Double.parseDouble(resMap.get("paid").toString());
     }
+
+    public void updateSupplierDetails(String belongToApartmentId, String billOwner, String type, Map<String, Object> partsMap) {
+        LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
+        queryMap.put("apartmentId", belongToApartmentId);
+        queryMap.put("type", type);
+        Map<String, Object> updateMap = find("billzDB", "suppliers", queryMap).get(0);
+        updateMap.replace("ownerId", billOwner);
+        update("billzDB", "suppliers", queryMap, updateMap);
+    }
+
+
+    public void updateSupplierParts(String belongToApartmentId, String type, Map<String, Object> parts) {
+        parts.forEach((k, v) -> {
+            LinkedHashMap<String, String> queryMap = new LinkedHashMap<>();
+            queryMap.put("apartmentId", belongToApartmentId);
+            queryMap.put("type", type);
+            queryMap.put("userId", k);
+            Map<String, Object> updateMap = find("billzDB", "suppliersPart", queryMap).get(0);
+            updateMap.replace("part", v);
+            update("billzDB", "suppliersPart", queryMap, updateMap);
+        });
+    }
 }

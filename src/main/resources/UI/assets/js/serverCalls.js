@@ -805,7 +805,7 @@ function createHouseBox(jsonData) {
     roomatesBox.classList.add("roommates");
     for (i in roomates) {
         let roomateRow = document.createElement("li");
-        let roommates_str = roomates[i]["userId"].padEnd(20) + roomates[i]["part"];
+        let roommates_str = roomates[i]["userId"].padEnd(20) + ": " + roomates[i]["part"];
         roomateRow.textContent = roommates_str;
         roomatesBox.appendChild(roomateRow);
     }
@@ -1031,7 +1031,7 @@ function submitEditSupplier() {
     }
     supplier_map = {"partsMap": pay_map};
     supplier_map["billOwner"] = $("#billOwner")[0].value;
-    supplier_map["type"] = "addSupplier";
+    supplier_map["type"] = "editSupplier";
     supplier_map["apartmentId"] = sessionStorage.getItem("apartmentId");
     supplier_map["userId"] = sessionStorage.getItem("user_name");
     gotoSuppliers = dat=>redirectToPage("suppliers.html");

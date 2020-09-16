@@ -122,4 +122,11 @@ public class ApartsManager {
         Supplier currSupp = currApart.getSupplier(Supplier.TYPE.valueOf(supplier));
         currSupp.updateBalanceAfterTransaction(userIdFrom, userIdTo, amount, supplier, dDay);
     }
+
+    public void editSupplier(String apartmentId, String billOwner, Supplier.TYPE supplierType, Map<String, Object> partsMap) throws Exception {
+        Apartment currApart = getApartment(apartmentId);
+        Supplier supplier = currApart.getSupplier(supplierType);
+        supplier.updateDetails(billOwner, partsMap);
+        mongoConnector.updateSupplierParts(apartmentId, supplierType.toString(), partsMap);
+    }
 }

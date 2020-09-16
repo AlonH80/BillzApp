@@ -124,4 +124,8 @@ public class Supplier {
     public TYPE getSupplierType() {
         return supplierType;
     }
+
+    public void updateDetails(String billOwner, Map<String, Object> partsMap) {
+        mongoConnector.updateSupplierDetails(belongToApartmentId, billOwner, supplierType.toString(), partsMap);
+    }
 }
