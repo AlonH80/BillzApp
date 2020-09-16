@@ -155,7 +155,7 @@
 
 .settings-row {
 	display: grid;
-	grid-template-columns: 140px 100px 200px 120px;
+	grid-template-columns: 140px 300px 200px 120px;
 	grid-column-gap: 5px;
 	height: 50px;
 }

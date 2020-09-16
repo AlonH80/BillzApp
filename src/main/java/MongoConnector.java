@@ -152,7 +152,7 @@ public class MongoConnector {
         try {
             HashMap<String, String> queryMap = new HashMap<>(1);
             queryMap.put("userID", userID);
-            LinkedTreeMap<String, Object> updateMap = new LinkedTreeMap<>();
+            Map<String, Object> updateMap = find("billzDB", "UsersAuth", queryMap).get(0);
             updateMap.put("userID", userID);
             updateMap.put("salt", salt);
             updateMap.put("password", hashedPassword);

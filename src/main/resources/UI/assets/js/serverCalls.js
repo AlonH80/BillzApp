@@ -809,8 +809,11 @@ function createHouseBox(jsonData) {
         roomateRow.textContent = roommates_str;
         roomatesBox.appendChild(roomateRow);
     }
-    editSupplier.textContent = "Edit"
-    editSupplier.onclick = () => redirectToPage("editSupplier.html");
+    editSupplier.textContent = "Edit";
+    editSupplier.onclick = () => {
+        sessionStorage.setItem("targetNode", event.target);
+        redirectToPage("editSupplier.html")
+    };
     houseboxNode.appendChild(roomatesBox);
     houseboxNode.appendChild(editSupplier);
     houseboxNode.classList.add("house_box");
