@@ -811,13 +811,17 @@ function createHouseBox(jsonData) {
     }
     editSupplier.textContent = "Edit";
     editSupplier.onclick = () => {
-        sessionStorage.setItem("targetNode", event.target);
-        redirectToPage("editSupplier.html")
+        onEditSupplier(event.target);
     };
     houseboxNode.appendChild(roomatesBox);
     houseboxNode.appendChild(editSupplier);
     houseboxNode.classList.add("house_box");
     suppliers_container.appendChild(houseboxNode);
+}
+
+function onEditSupplier(nd) {
+    sessionStorage.setItem("supplierType", nd.parentElement.children[1].textContent);
+    redirectToPage("editSupplier.html")
 }
 
 function changeSetting(setting_id) {
@@ -1037,6 +1041,7 @@ function submitEditSupplier() {
     supplier_map["type"] = "editSupplier";
     supplier_map["apartmentId"] = sessionStorage.getItem("apartmentId");
     supplier_map["userId"] = sessionStorage.getItem("user_name");
+    supplier_map["supplier"] = sessionStorage.getItem("supplierType");
     gotoSuppliers = dat=>redirectToPage("suppliers.html");
     sendRequest(server_address, supplier_map, gotoSuppliers);
 }
