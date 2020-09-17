@@ -211,12 +211,19 @@ function checkStatus(pendingId) {
 
 function setOcrVerification(ocrData) {
     parsedJson = JSON.parse(ocrData);
+    if ("status" in parsedJson && parsedJson["status"] === "fail"){
+        waitLabel = $("#waitVerify")[0];
+        waitLabel.textContent = "Unable to infer data from file, please add manually";
+        waitLabel.style.setProperty("color", "red");
+        return;
+    }
     amount = parsedJson["price"];
     supplierType = parsedJson["type"];
     picker =  $(".selectpicker")[0];
     for (op in picker.options) {
-        picker.selectedIndex = op;
-        if (picker.options[op].textContent.toLowerCase() == supplierType.toLowerCase()) {
+        ind = parseInt(op);
+        picker.selectedIndex = ind;
+        if (picker.options[ind].textContent.toLowerCase() == supplierType.toLowerCase()) {
             break;
         }
     }
