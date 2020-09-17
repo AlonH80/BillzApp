@@ -103,6 +103,7 @@ public class PaymentManager {
                 waitingApproved.get(waitApprovedKey).put("userIdTo", userIdTo);
                 waitingApproved.get(waitApprovedKey).put("supplier", supplierType);
                 waitingApproved.get(waitApprovedKey).put("payMethod", method);
+                waitingApproved.get(waitApprovedKey).put("dDay", dDay);
                 return waitingApproved.get(waitApprovedKey);
             } else {
                 waitMap.put("status", "fail");
