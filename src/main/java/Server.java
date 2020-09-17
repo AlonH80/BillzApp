@@ -111,15 +111,6 @@ public class Server extends Observable {
                 messageManager.addMessage(userId, apartmentId, "user_joined", String.format("%s has joined the apartment!", userId));
                 return fileToString(String.format("%s/%s", UiPath, "login.html"));
             }
-            else if(requestURI.contains("paymentId")) {
-                String quer = requestURI.split("\\?")[1];
-                String[] querParams = quer.split("&");
-                HashMap<String, String> custMap = new HashMap<>();
-                Arrays.stream(querParams).forEach(par -> custMap.put(par.split("=")[0], par.split("=")[1]));
-                logger.info(Utils.mapToJson(custMap));
-                paymentManager.executeOrder(custMap.get("paymentId"), custMap.get("PayerID"));
-                return fileToString(String.format("%s/%s", UiPath, "index.html"));
-            }
             else if(requestURI.contains("paymentApproved")){
                 String quer = requestURI.split("\\?")[1];
                 String[] querParams = quer.split("&");
@@ -128,6 +119,15 @@ public class Server extends Observable {
                 logger.info(Utils.mapToJson(custMap));
                 Map<String, String> transac = paymentManager.logTransaction(custMap.get("paymentId"));
                 apartsManager.updateBillAfterTransaction(transac.get("userIdFrom"), transac.get("userIdTo"), Double.parseDouble(transac.get("amount")), transac.get("supplier"), transac.get("dDay"));
+                return fileToString(String.format("%s/%s", UiPath, "index.html"));
+            }
+            else if(requestURI.contains("paymentId")) {
+                String quer = requestURI.split("\\?")[1];
+                String[] querParams = quer.split("&");
+                HashMap<String, String> custMap = new HashMap<>();
+                Arrays.stream(querParams).forEach(par -> custMap.put(par.split("=")[0], par.split("=")[1]));
+                logger.info(Utils.mapToJson(custMap));
+                paymentManager.executeOrder(custMap.get("paymentId"), custMap.get("PayerID"));
                 return fileToString(String.format("%s/%s", UiPath, "index.html"));
             }
             else if (requestURI.contains("favicon") || requestURI.contains("compass")) {

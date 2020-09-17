@@ -660,7 +660,7 @@ function createMsgRow(msgsNode, msgJson) {
     msgTd = document.createElement("td");
     //svgNode = getSvgNode(msgJson["type"]);
     //svgTd.appendChild(svgNode);
-    imgNode = createImgNode(msgJson["type"]);
+    imgNode = createImgNode(msgJson["msgType"]);
     msgTd.appendChild(imgNode);
     textNode = document.createElement("span");
     textNode.style.setProperty("margin-left", "10px");
@@ -810,9 +810,7 @@ function createHouseBox(jsonData) {
         roomatesBox.appendChild(roomateRow);
     }
     editSupplier.textContent = "Edit";
-    editSupplier.onclick = () => {
-        onEditSupplier(event.target);
-    };
+    editSupplier.onclick = () => onEditSupplier(event.target);
     houseboxNode.appendChild(roomatesBox);
     houseboxNode.appendChild(editSupplier);
     houseboxNode.classList.add("house_box");
@@ -820,7 +818,7 @@ function createHouseBox(jsonData) {
 }
 
 function onEditSupplier(nd) {
-    sessionStorage.setItem("supplierType", nd.parentElement.children[1].textContent);
+    sessionStorage.setItem("supplierType", nd.parentElement.children[1].textContent.toUpperCase());
     redirectToPage("editSupplier.html")
 }
 
