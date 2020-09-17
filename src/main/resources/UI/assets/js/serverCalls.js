@@ -220,8 +220,8 @@ function setOcrVerification(ocrData) {
     amount = parsedJson["price"];
     supplierType = parsedJson["type"];
     picker =  $(".selectpicker")[0];
-    for (op in picker.options) {
-        ind = parseInt(op);
+    for (ind = 0; ind < picker.options.length; i++) {
+        //ind = parseInt(op);
         picker.selectedIndex = ind;
         if (picker.options[ind].textContent.toLowerCase() == supplierType.toLowerCase()) {
             break;
