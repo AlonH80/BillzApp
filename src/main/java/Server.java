@@ -118,6 +118,7 @@ public class Server extends Observable {
                 Arrays.stream(querParams).forEach(par -> custMap.put(par.split("=")[0], par.split("=")[1]));
                 logger.info(Utils.mapToJson(custMap));
                 Map<String, String> transac = paymentManager.logTransaction(custMap.get("paymentId"));
+                logger.info(Utils.mapToJson(transac));
                 apartsManager.updateBillAfterTransaction(transac.get("userIdFrom"), transac.get("userIdTo"), Double.parseDouble(transac.get("amount")), transac.get("supplier"), transac.get("dDay"));
                 return fileToString(String.format("%s/%s", UiPath, "index.html"));
             }

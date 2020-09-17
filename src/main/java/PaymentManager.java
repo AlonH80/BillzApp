@@ -314,7 +314,7 @@ public class PaymentManager {
                 paymentMap.get("userIdTo"),
                 Double.parseDouble(paymentMap.get("amount")),
                 paymentMap.get("supplier"), "Paypal");
-        waitingApproved.remove(paymentId);
+        //waitingApproved.remove(paymentId);
         return paymentMap;
     }
 
