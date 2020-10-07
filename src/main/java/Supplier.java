@@ -90,7 +90,7 @@ public class Supplier {
                 bal.put("dDay", dDay);
                 bal.put("balance", String.format("%.2f", part*amount));
                 currBalances.add(bal);
-                mongoConnector.addUserSupplierBalance(uid, belongToApartmentId, supplierType.toString(), String.valueOf(part*amount), dDay, ownerId);
+                mongoConnector.addUserSupplierBalance(uid, belongToApartmentId, supplierType.toString(),  String.format("%.2f", part*amount), dDay, ownerId);
             });
 //        }
         mongoConnector.updateUserSupplierBalance(ownerId, belongToApartmentId, supplierType.toString(), String.format("%.2f", partsMap.get(ownerId)*amount), dDay);
