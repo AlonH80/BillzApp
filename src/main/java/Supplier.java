@@ -88,12 +88,12 @@ public class Supplier {
                 bal.put("type", supplierType.toString());
                 bal.put("userId", uid);
                 bal.put("dDay", dDay);
-                bal.put("balance", String.valueOf(part*amount));
+                bal.put("balance", String.format("%.2f", part*amount));
                 currBalances.add(bal);
                 mongoConnector.addUserSupplierBalance(uid, belongToApartmentId, supplierType.toString(), String.valueOf(part*amount), dDay, ownerId);
             });
 //        }
-        mongoConnector.updateUserSupplierBalance(ownerId, belongToApartmentId, supplierType.toString(), String.valueOf(partsMap.get(ownerId)*amount), dDay);
+        mongoConnector.updateUserSupplierBalance(ownerId, belongToApartmentId, supplierType.toString(), String.format("%.2f", partsMap.get(ownerId)*amount), dDay);
         return currBalances;
     }
 

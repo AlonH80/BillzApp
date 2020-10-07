@@ -967,13 +967,12 @@ function createSideMenu() {
     links_nd = $(".links")[0];
     links = {
         "Home": "javascript:redirectToPage('index.html')",
-        "Messages": "javascript:redirectToPage('messages.html')",
         "Add Roommate": "javascript:redirectToPage('invite.html')",
+        "Add Supplier": "javascript:redirectToPage('addSupplier.html')",
         "Suppliers": "javascript:redirectToPage('suppliers.html')",
         "Add Bill": "javascript:redirectToPage('addBill.html')",
-        "Add Supplier": "javascript:redirectToPage('addSupplier.html')",
         "Bill History": "javascript:redirectToPage('billSummary.html')",
-        //"History": "javascript:redirectToPage('generalSummary.html')",
+        "Messages": "javascript:redirectToPage('messages.html')",
         "Settings": "javascript:redirectToPage('settings.html')",
         "About Us": "javascript:redirectToPage('aboutUs.html')"
     };
