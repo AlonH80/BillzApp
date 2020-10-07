@@ -697,7 +697,7 @@ function addBillFromMail(rowNode) {
     msg = rowNode.parentElement.textContent;
     billType = msg.substring(msg.indexOf("Type: ") + 6, msg.indexOf(", amount"));
     amount = msg.substring(msg.indexOf("amount: ") + 8, msg.indexOf(", due"));
-    dDay = msg.substring(msg.indexOf("due date: ") + 10);
+    dDay = msg.substring(msg.indexOf("due date: ") + 10, msg.indexOf("Approve"));
     map_inps = {};
     map_inps["amount"] = amount;
     map_inps["dDay"] = dDay;
