@@ -485,7 +485,7 @@ public class MongoConnector {
         queryMap.put("type", supplierType);
         queryMap.put("dDay", dDay);
         Map<String, Object> resMap= find("billzDB", "suppliersBalance", queryMap).get(0);
-        return Double.parseDouble(resMap.get("paid").toString());
+        return Double.parseDouble(String.format("%.2f", Double.parseDouble(resMap.get("paid").toString())));
     }
 
     public void updateSupplierDetails(String belongToApartmentId, String billOwner, String type, Map<String, Object> partsMap) {
