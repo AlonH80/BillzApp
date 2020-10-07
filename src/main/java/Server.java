@@ -206,7 +206,7 @@ public class Server extends Observable {
                     sendDefaultResponse(httpExchange, Utils.listToJson(resLst));
                     break;
                 case "addBill":
-                    apartsManager.addBill(apartmentId, requestParamValue.get("dDay").toString(), requestParamValue.get("amount").toString(), requestParamValue.get("billType").toString(), userId);
+                    apartsManager.addBill(apartmentId, requestParamValue.get("dDay").toString(), String.format("%.2f", Double.parseDouble(requestParamValue.get("amount").toString())), requestParamValue.get("billType").toString(), userId);
                     messageManager.addMessage(userId, apartmentId, "bill", String.format("New bill added for supplier %s, amount: %s", requestParamValue.get("billType").toString(), requestParamValue.get("amount").toString()));
                     sendDefaultResponse(httpExchange, "");
                     break;
